@@ -55,6 +55,24 @@ class VenvAndLintContractTest(unittest.TestCase):
         self.assertIn("test_repo.py", text)
 
 
+class ReadmeContractTest(unittest.TestCase):
+    def test_readme_is_a_short_connect_guide(self):
+        text = (HERE / "README.md").read_text(encoding="utf-8")
+        lines = text.splitlines()
+        self.assertLessEqual(len(lines), 110, len(lines))
+        self.assertIn("https://spaces-ghost.apps.andrewriley.info", text)
+        self.assertIn("MCP_BEARER_TOKEN", text)
+        self.assertIn("not `local-dev`", text)
+        self.assertIn("another spaces-ghost", text)
+        self.assertEqual(text.count("```json"), 2, text.count("```json"))
+        self.assertEqual(text.count('"mcpServers"'), 2)
+        self.assertNotIn("claude mcp add-json", text)
+        self.assertNotIn("Claude Desktop", text)
+        self.assertNotIn("<tokengoeshere>", text)
+        self.assertIn("make venv", text)
+        self.assertIn("--stdio", text)
+
+
 class CiWorkflowTest(unittest.TestCase):
     def test_ci_runs_lint_and_tests_in_venv(self):
         text = (HERE / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
