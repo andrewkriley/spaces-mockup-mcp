@@ -1,7 +1,74 @@
+# Secrets and local env. Keep .env.example.
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Virtualenvs
 .venv/
+venv/
+ENV/
+env/
+
+# Bytecode and caches
 __pycache__/
 *.py[cod]
-.pytest_cache/
+*$py.class
+*.so
+.ruff_cache/
 .mypy_cache/
+.pytest_cache/
+.pytype/
+.pyright/
+.tox/
+.nox/
+.cache/
+
+# Tests and coverage
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Packaging / build
+build/
+dist/
+wheels/
+downloads/
+eggs/
+.eggs/
+*.egg
+*.egg-info/
+sdist/
+var/
+share/python-wheels/
+pip-wheel-metadata/
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local leftovers
+*.log
+tmp/
+temp/

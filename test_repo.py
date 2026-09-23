@@ -21,9 +21,21 @@ class VenvAndLintContractTest(unittest.TestCase):
         self.assertIn("target-version", text)
         self.assertIn("line-length", text)
 
-    def test_gitignore_excludes_venv(self):
+    def test_gitignore_covers_python_and_secrets(self):
         text = (HERE / ".gitignore").read_text(encoding="utf-8")
-        self.assertIn(".venv/", text)
+        for needle in (
+            ".venv/",
+            "__pycache__/",
+            ".env",
+            "!.env.example",
+            ".ruff_cache/",
+            ".coverage",
+            "htmlcov/",
+            "dist/",
+            ".idea/",
+            ".DS_Store",
+        ):
+            self.assertIn(needle, text, needle)
 
     def test_setup_script_creates_venv(self):
         script = (HERE / "scripts" / "setup-venv.sh").read_text(encoding="utf-8")
