@@ -4,7 +4,7 @@ Read-only MCP that answers **Webex Workspaces** and **Cisco Spaces Firehose** qu
 
 It does **not** wrap `https://mcp.webexapis.com` and it does **not** open a Cisco Spaces partner stream. Identities are `@ghost.example` only. No Cisco API keys.
 
-Python 3.12+, standard library only. Runs on a local workstation (stdio or loopback HTTP). Not a Kubernetes service.
+Python 3.12+, standard library only. Dev tools (Ruff) live in a local `.venv`. Runs on a workstation (stdio or loopback HTTP). Not a Kubernetes service.
 
 ## Tools
 
@@ -24,8 +24,12 @@ Occupancy is a clock-shifted 24-hour weekday replay. Hour 17 is near “now”, 
 ```bash
 git clone git@github.com:andrewkriley/spaces-ghost-mcp.git
 cd spaces-ghost-mcp
-python3 test_server.py
+make venv
+make lint
+make test
 ```
+
+`scripts/setup-venv.sh` creates `.venv` and installs `requirements-dev.txt` (Ruff). Runtime still needs no third-party packages. GitHub Actions `ci` runs the same lint + tests in a venv.
 
 ### Cursor / Claude Desktop (stdio)
 
@@ -35,7 +39,7 @@ Add to MCP config (absolute path to this clone):
 {
   "mcpServers": {
     "spaces-ghost": {
-      "command": "python3",
+      "command": "/absolute/path/to/spaces-ghost-mcp/.venv/bin/python",
       "args": ["/absolute/path/to/spaces-ghost-mcp/server.py", "--stdio"]
     }
   }
@@ -73,10 +77,12 @@ HTTP clients (Cursor url transport, a sidecar, another agent) must send `Authori
 python3 dataset.py   # rewrite dataset.json
 ```
 
-## Tests
+## Tests and lint
 
 ```bash
-python3 test_server.py
+make venv          # once
+make lint          # ruff check + format --check
+make test          # test_server.py + test_repo.py
 ```
 
 No live Cisco calls. No cluster, Flux, or Infisical.

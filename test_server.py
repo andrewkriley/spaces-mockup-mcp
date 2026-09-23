@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Unit and HTTP tests for spaces-ghost-mcp. No live Cisco APIs. No cluster."""
+
 from __future__ import annotations
 
-import io
 import importlib.util
+import io
 import json
 import threading
 import unittest
@@ -306,7 +307,11 @@ class StdioTest(unittest.TestCase):
                 "jsonrpc": "2.0",
                 "id": 1,
                 "method": "initialize",
-                "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "t"}},
+                "params": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {"name": "t"},
+                },
             }
         )
         self.assertEqual(init["result"]["serverInfo"]["name"], "spaces-ghost")

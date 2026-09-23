@@ -5,6 +5,7 @@ Mimics Cisco Spaces Firehose EventRecord envelopes plus Webex Workspaces
 Control Hub inventory (locations, workspaces, RoomOS devices, metrics).
 All identities are synthetic (@ghost.example). No live Cisco APIs.
 """
+
 from __future__ import annotations
 
 import json
@@ -50,6 +51,29 @@ def loc(location_id: str, name: str, kinds: list[str], parent=None, **extra) -> 
     return row
 
 
+NORTH_BLDG = {
+    "locationId": "loc-bldg-north",
+    "name": "North Building",
+    "inferredLocationTypes": ["BUILDING"],
+}
+SOUTH_BLDG = {
+    "locationId": "loc-bldg-south",
+    "name": "South Building",
+    "inferredLocationTypes": ["BUILDING"],
+}
+
+
+def ref(row: dict, kinds: list[str], *, include_parent: bool = False) -> dict:
+    out = {
+        "locationId": row["locationId"],
+        "name": row["name"],
+        "inferredLocationTypes": kinds,
+    }
+    if include_parent and row.get("parent"):
+        out["parent"] = row["parent"]
+    return out
+
+
 def build_locations() -> list[dict]:
     campus = loc(
         "loc-campus-ghost",
@@ -66,7 +90,7 @@ def build_locations() -> list[dict]:
         "loc-bldg-north",
         "North Building",
         ["BUILDING"],
-        parent={"locationId": campus["locationId"], "name": campus["name"], "inferredLocationTypes": ["CAMPUS"]},
+        parent=ref(campus, ["CAMPUS"]),
         city="Sydney",
         address="1 Ghost Lane, North Wing",
         country="Australia",
@@ -77,7 +101,7 @@ def build_locations() -> list[dict]:
         "loc-bldg-south",
         "South Building",
         ["BUILDING"],
-        parent={"locationId": campus["locationId"], "name": campus["name"], "inferredLocationTypes": ["CAMPUS"]},
+        parent=ref(campus, ["CAMPUS"]),
         city="Sydney",
         address="1 Ghost Lane, South Wing",
         country="Australia",
@@ -88,7 +112,7 @@ def build_locations() -> list[dict]:
         "loc-floor-n1",
         "North L1",
         ["FLOOR"],
-        parent={"locationId": north["locationId"], "name": north["name"], "inferredLocationTypes": ["BUILDING"], "parent": north["parent"]},
+        parent=ref(north, ["BUILDING"], include_parent=True),
         floorNumber=1,
         apCount=4,
         mapId="map-north-l1",
@@ -97,7 +121,7 @@ def build_locations() -> list[dict]:
         "loc-floor-n2",
         "North L2",
         ["FLOOR"],
-        parent={"locationId": north["locationId"], "name": north["name"], "inferredLocationTypes": ["BUILDING"], "parent": north["parent"]},
+        parent=ref(north, ["BUILDING"], include_parent=True),
         floorNumber=2,
         apCount=4,
         mapId="map-north-l2",
@@ -106,7 +130,7 @@ def build_locations() -> list[dict]:
         "loc-floor-s1",
         "South L1",
         ["FLOOR"],
-        parent={"locationId": south["locationId"], "name": south["name"], "inferredLocationTypes": ["BUILDING"], "parent": south["parent"]},
+        parent=ref(south, ["BUILDING"], include_parent=True),
         floorNumber=1,
         apCount=4,
         mapId="map-south-l1",
@@ -353,7 +377,9 @@ def build_error_codes() -> list[dict]:
             "severity": "error",
             "appliesTo": ["workspace", "device"],
             "description": "Camera HDMI input lost sync.",
-            "recommendedAction": "Reseat the HDMI cable and reboot the codec if the camera stays dark.",
+            "recommendedAction": (
+                "Reseat the HDMI cable and reboot the codec if the camera stays dark."
+            ),
         },
         {
             "code": "SIGNAGE_CONTENT_STALE",
@@ -445,7 +471,7 @@ def floor_n1() -> dict:
         "loc-floor-n1",
         "North L1",
         ["FLOOR"],
-        parent={"locationId": "loc-bldg-north", "name": "North Building", "inferredLocationTypes": ["BUILDING"]},
+        parent=NORTH_BLDG,
         floorNumber=1,
         apCount=4,
     )
@@ -456,7 +482,7 @@ def floor_s1() -> dict:
         "loc-floor-s1",
         "South L1",
         ["FLOOR"],
-        parent={"locationId": "loc-bldg-south", "name": "South Building", "inferredLocationTypes": ["BUILDING"]},
+        parent=SOUTH_BLDG,
         floorNumber=1,
         apCount=4,
     )
@@ -555,7 +581,11 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
             "name": "Boardroom North",
             "floorId": "loc-floor-n1",
             "type": "ROOM",
-            "spaceType": {"isPrivate": True, "type": "MEETING_ROOM", "meetingRoom": "MR_MEETING_ROOM"},
+            "spaceType": {
+                "isPrivate": True,
+                "type": "MEETING_ROOM",
+                "meetingRoom": "MR_MEETING_ROOM",
+            },
             "capacity": 10,
             "occupancyType": "BOTH",
         }
@@ -596,12 +626,16 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
         if ws_id == "ws-board":
             continue
         ws = ws_by_id[ws_id]
-        floor = floor_s1() if ws["locationId"] == "loc-floor-s1" else (
-            loc(
-                ws["locationId"],
-                "North L2" if ws["locationId"] == "loc-floor-n2" else "North L1",
-                ["FLOOR"],
-                parent={"locationId": "loc-bldg-north", "name": "North Building", "inferredLocationTypes": ["BUILDING"]},
+        floor = (
+            floor_s1()
+            if ws["locationId"] == "loc-floor-s1"
+            else (
+                loc(
+                    ws["locationId"],
+                    "North L2" if ws["locationId"] == "loc-floor-n2" else "North L1",
+                    ["FLOOR"],
+                    parent=NORTH_BLDG,
+                )
             )
         )
         for hour, people, presence, booked in series:
@@ -701,7 +735,11 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                         "location": floor_n1(),
                         "visitId": f"visit-user-{idx:02d}",
                         "timeZone": "Australia/Sydney",
-                        "activeUsersCount": {"usersWithUserId": 8, "usersWithoutUserId": 4, "totalUsers": 12},
+                        "activeUsersCount": {
+                            "usersWithUserId": 8,
+                            "usersWithoutUserId": 4,
+                            "totalUsers": 12,
+                        },
                         "connection": "CONN_WIRELESS",
                     },
                 )
@@ -820,7 +858,11 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                         "workspaceId": ws_id,
                         "orgId": "org-ghost-001",
                     },
-                    "location": {"locationId": loc_id, "name": loc_id, "inferredLocationTypes": ["FLOOR"]},
+                    "location": {
+                        "locationId": loc_id,
+                        "name": loc_id,
+                        "inferredLocationTypes": ["FLOOR"],
+                    },
                     "telemetries": [
                         {"peopleCount": people},
                         {"presence": presence},
@@ -837,9 +879,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
         )
 
     for minutes_ago in (45, 30, 15):
-        events.append(
-            envelope(next_uid("ka"), -minutes_ago * MINUTE, "KEEP_ALIVE", "", {})
-        )
+        events.append(envelope(next_uid("ka"), -minutes_ago * MINUTE, "KEEP_ALIVE", "", {}))
     return events
 
 

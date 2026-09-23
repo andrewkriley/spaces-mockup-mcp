@@ -4,6 +4,7 @@
 Read-only workstation MCP. Does not call mcp.webexapis.com or the live Firehose
 API. Dataset timestamps are offset_ms from query time so occupancy looks live.
 """
+
 from __future__ import annotations
 
 import json
@@ -561,7 +562,12 @@ def device_configuration_template_diff(args: dict) -> dict:
     return {
         "device_id": device_id,
         "template_id": template_id,
-        "diffs": _diff_maps(device.get("config") or {}, template.get("config") or {}, "device", "template"),
+        "diffs": _diff_maps(
+            device.get("config") or {},
+            template.get("config") or {},
+            "device",
+            "template",
+        ),
     }
 
 
@@ -603,7 +609,9 @@ def _walk_values(obj):
             yield from _walk_values(item)
 
 
-def _event_matches(row: dict, event_type: str, location_id: str, device_id: str, workspace_id: str) -> bool:
+def _event_matches(
+    row: dict, event_type: str, location_id: str, device_id: str, workspace_id: str
+) -> bool:
     if event_type and row.get("eventType") != event_type:
         return False
     if not (location_id or device_id or workspace_id):
@@ -791,7 +799,7 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "spaces-ghost-mcp/0.1"
 
     def log_message(self, fmt: str, *args) -> None:  # noqa: A003
-        __import__("sys").stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
+        sys.stderr.write(f"{self.address_string()} - {fmt % args}\n")
 
     def _send(self, code: int, payload) -> None:
         data = json.dumps(payload, default=str).encode()
@@ -823,10 +831,20 @@ class Handler(BaseHTTPRequestHandler):
         try:
             body = json.loads(self.rfile.read(length) or b"{}")
         except json.JSONDecodeError:
-            self._send(400, {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}})
+            self._send(
+                400,
+                {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}},
+            )
             return
         if not isinstance(body, dict):
-            self._send(400, {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "invalid request"}})
+            self._send(
+                400,
+                {
+                    "jsonrpc": "2.0",
+                    "id": None,
+                    "error": {"code": -32600, "message": "invalid request"},
+                },
+            )
             return
         self._send(200, rpc(body))
 
