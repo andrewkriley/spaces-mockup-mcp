@@ -23,7 +23,7 @@ Occupancy is a clock-shifted 24-hour weekday replay. Hour 17 is near “now”, 
 
 A public Ghost Campus instance is at `https://spaces-ghost.apps.andrewriley.info`. Same 19 read-only tools as a local clone. `/health` is open; `/mcp` needs a bearer.
 
-Get `MCP_BEARER_TOKEN` from Infisical. Do not commit the real value. Replace `<MCP_BEARER_TOKEN>` below.
+Replace `<MCP_BEARER_TOKEN>` with the bearer.
 
 **Cursor** — `.cursor/mcp.json` or `~/.cursor/mcp.json`:
 
@@ -237,7 +237,7 @@ make lint          # ruff check + format --check
 make test          # test_server.py + test_repo.py
 ```
 
-No live Cisco calls. The demo bearer lives in Infisical; a local `./run.sh` still uses `.env` / `local-dev`.
+No live Cisco calls.
 
 ## Research notes
 
