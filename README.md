@@ -19,6 +19,63 @@ Sixteen Workspaces names plus three Firehose pulls. All reads.
 
 Occupancy is a clock-shifted 24-hour weekday replay. Hour 17 is near “now”, so Boardroom North still overcrowds at the morning stand-up (peak 12 in a 10-seat room).
 
+## Demo server
+
+A public Ghost Campus instance is at `https://spaces-ghost.apps.andrewriley.info`. Same 19 read-only tools as a local clone. `/health` is open; `/mcp` needs a bearer.
+
+Replace `<MCP_BEARER_TOKEN>` with the bearer.
+
+**Cursor** — `.cursor/mcp.json` or `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
+      "headers": {
+        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+**Claude Code** — `.mcp.json` or `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "type": "http",
+      "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
+      "headers": {
+        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+Or:
+
+```bash
+claude mcp add-json spaces-ghost '{"type":"http","url":"https://spaces-ghost.apps.andrewriley.info/mcp","headers":{"Authorization":"Bearer <MCP_BEARER_TOKEN>"}}'
+```
+
+Claude Desktop’s `claude_desktop_config.json` is stdio-only. Use a local stdio clone, or bridge with `mcp-remote` pointing at the same HTTPS URL and bearer.
+
+Check the door:
+
+```bash
+curl -s https://spaces-ghost.apps.andrewriley.info/health
+curl -s https://spaces-ghost.apps.andrewriley.info/mcp \
+  -H "Authorization: Bearer <MCP_BEARER_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"firehose_latest","arguments":{}}}'
+```
+
+`/health` returns `{"status":"ok","server":"spaces-ghost"}`. `/mcp` without a valid bearer returns `401`.
+
 ## Run locally
 
 ```bash
@@ -31,9 +88,26 @@ make test
 
 `scripts/setup-venv.sh` creates `.venv` and installs `requirements-dev.txt` (Ruff). Runtime still needs no third-party packages. GitHub Actions `ci` runs the same lint + tests in a venv.
 
-### Cursor / Claude Desktop (stdio)
+### Client JSON (stdio)
 
-Add to MCP config (absolute path to this clone):
+Stdio is the local path. No bearer. Run `make venv` first. Replace `/absolute/path/to/spaces-ghost-mcp` with your clone (Windows: `.venv\Scripts\python.exe` and `server.py`). If the file already has other servers, add only the `"spaces-ghost"` object under `mcpServers`.
+
+#### Cursor
+
+Project (open this repo): `.cursor/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": ["${workspaceFolder}/server.py", "--stdio"]
+    }
+  }
+}
+```
+
+All projects: `~/.cursor/mcp.json`
 
 ```json
 {
@@ -46,7 +120,52 @@ Add to MCP config (absolute path to this clone):
 }
 ```
 
-Stdio does not need a bearer. The process is local.
+Cursor Settings → MCP, or save the file and restart Cursor.
+
+#### Claude Desktop
+
+macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+Windows: `%APPDATA%\Claude\claude_desktop_config.json`  
+
+Settings → Developer → Edit Config, then fully quit and reopen Claude Desktop.
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "command": "/absolute/path/to/spaces-ghost-mcp/.venv/bin/python",
+      "args": ["/absolute/path/to/spaces-ghost-mcp/server.py", "--stdio"]
+    }
+  }
+}
+```
+
+Claude Desktop only launches stdio servers from this file. Do not put a `url` entry here.
+
+#### Claude Code
+
+This project: `.mcp.json` in the repo root  
+Your user config: `mcpServers` in `~/.claude.json`
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "type": "stdio",
+      "command": "/absolute/path/to/spaces-ghost-mcp/.venv/bin/python",
+      "args": ["/absolute/path/to/spaces-ghost-mcp/server.py", "--stdio"]
+    }
+  }
+}
+```
+
+Or:
+
+```bash
+claude mcp add-json spaces-ghost '{"type":"stdio","command":"/absolute/path/to/spaces-ghost-mcp/.venv/bin/python","args":["/absolute/path/to/spaces-ghost-mcp/server.py","--stdio"]}'
+```
+
+Add `--scope user` to write `~/.claude.json`, or `--scope project` to write `.mcp.json`. Start a new Claude Code session after saving.
 
 ### HTTP on loopback
 
@@ -67,7 +186,40 @@ curl -s http://127.0.0.1:8080/mcp \
 
 Override with `LISTEN`, `MCP_BEARER_TOKEN`, or `DATASET_PATH`. Binding to `0.0.0.0` is optional and not the default.
 
-HTTP clients (Cursor url transport, a sidecar, another agent) must send `Authorization: Bearer <token>`.
+HTTP clients (Cursor url transport, Claude Code `type: http`, a sidecar) must send `Authorization: Bearer <token>`.
+
+Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "url": "http://127.0.0.1:8080/mcp",
+      "headers": {
+        "Authorization": "Bearer local-dev"
+      }
+    }
+  }
+}
+```
+
+Claude Code (`.mcp.json` or `~/.claude.json`):
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "type": "http",
+      "url": "http://127.0.0.1:8080/mcp",
+      "headers": {
+        "Authorization": "Bearer local-dev"
+      }
+    }
+  }
+}
+```
+
+Claude Desktop does not take a `url` in `claude_desktop_config.json`. Use the stdio block above.
 
 ## Dataset
 
@@ -85,7 +237,7 @@ make lint          # ruff check + format --check
 make test          # test_server.py + test_repo.py
 ```
 
-No live Cisco calls. No cluster, Flux, or Infisical.
+No live Cisco calls.
 
 ## Research notes
 
