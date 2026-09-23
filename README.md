@@ -90,3 +90,5 @@ No live Cisco calls. No cluster, Flux, or Infisical.
 ## Research notes
 
 Webex Workspaces MCP is Control Hub device and room intelligence ([docs](https://developer.webex.com/mcp/docs/workspaces-mcp-server)). Cisco Spaces Firehose is a partner **stream** ([intro](https://developer.cisco.com/docs/cisco-spaces-firehose/), [event types](https://developer.cisco.com/docs/cisco-spaces-firehose/event-types/)). This server keeps the tool names and the `EventRecord` shape so agents can demo occupancy, overcrowding, and RoomOS drift without tenant PII.
+
+Capacity for ~100 users and ~50 concurrent multi-tool MCP questions (application stack plus AWS vs dedicated hosting) is in [docs/capacity.md](docs/capacity.md).
