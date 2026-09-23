@@ -19,6 +19,63 @@ Sixteen Workspaces names plus three Firehose pulls. All reads.
 
 Occupancy is a clock-shifted 24-hour weekday replay. Hour 17 is near “now”, so Boardroom North still overcrowds at the morning stand-up (peak 12 in a 10-seat room).
 
+## Demo server
+
+A public Ghost Campus instance is at `https://spaces-ghost.apps.andrewriley.info`. Same 19 read-only tools as a local clone. `/health` is open; `/mcp` needs a bearer.
+
+Get `MCP_BEARER_TOKEN` from Infisical. Do not commit the real value. Replace `<MCP_BEARER_TOKEN>` below.
+
+**Cursor** — `.cursor/mcp.json` or `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
+      "headers": {
+        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+**Claude Code** — `.mcp.json` or `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "spaces-ghost": {
+      "type": "http",
+      "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
+      "headers": {
+        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+Or:
+
+```bash
+claude mcp add-json spaces-ghost '{"type":"http","url":"https://spaces-ghost.apps.andrewriley.info/mcp","headers":{"Authorization":"Bearer <MCP_BEARER_TOKEN>"}}'
+```
+
+Claude Desktop’s `claude_desktop_config.json` is stdio-only. Use a local stdio clone, or bridge with `mcp-remote` pointing at the same HTTPS URL and bearer.
+
+Check the door:
+
+```bash
+curl -s https://spaces-ghost.apps.andrewriley.info/health
+curl -s https://spaces-ghost.apps.andrewriley.info/mcp \
+  -H "Authorization: Bearer <MCP_BEARER_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"firehose_latest","arguments":{}}}'
+```
+
+`/health` returns `{"status":"ok","server":"spaces-ghost"}`. `/mcp` without a valid bearer returns `401`.
+
 ## Run locally
 
 ```bash
@@ -180,7 +237,7 @@ make lint          # ruff check + format --check
 make test          # test_server.py + test_repo.py
 ```
 
-No live Cisco calls. No cluster, Flux, or Infisical.
+No live Cisco calls. The demo bearer lives in Infisical; a local `./run.sh` still uses `.env` / `local-dev`.
 
 ## Research notes
 
