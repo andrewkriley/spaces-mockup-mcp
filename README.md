@@ -23,7 +23,11 @@ Occupancy is a clock-shifted 24-hour weekday replay. Hour 17 is near “now”, 
 
 A public Ghost Campus instance is at `https://spaces-ghost.apps.andrewriley.info`. Same 19 read-only tools as a local clone. `/health` is open; `/mcp` needs a bearer.
 
-Replace `<MCP_BEARER_TOKEN>` with the bearer.
+```bash
+export MCP_BEARER_TOKEN=<tokengoeshere>
+```
+
+Put that in the shell you launch the client from (or in your profile). The JSON below reads the variable; do not paste the token into the file.
 
 **Cursor** — `.cursor/mcp.json` or `~/.cursor/mcp.json`:
 
@@ -33,7 +37,7 @@ Replace `<MCP_BEARER_TOKEN>` with the bearer.
     "spaces-ghost": {
       "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
       "headers": {
-        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+        "Authorization": "Bearer ${env:MCP_BEARER_TOKEN}"
       }
     }
   }
@@ -49,7 +53,7 @@ Replace `<MCP_BEARER_TOKEN>` with the bearer.
       "type": "http",
       "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
       "headers": {
-        "Authorization": "Bearer <MCP_BEARER_TOKEN>"
+        "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
       }
     }
   }
@@ -59,17 +63,17 @@ Replace `<MCP_BEARER_TOKEN>` with the bearer.
 Or:
 
 ```bash
-claude mcp add-json spaces-ghost '{"type":"http","url":"https://spaces-ghost.apps.andrewriley.info/mcp","headers":{"Authorization":"Bearer <MCP_BEARER_TOKEN>"}}'
+claude mcp add-json spaces-ghost '{"type":"http","url":"https://spaces-ghost.apps.andrewriley.info/mcp","headers":{"Authorization":"Bearer ${MCP_BEARER_TOKEN}"}}'
 ```
 
-Claude Desktop’s `claude_desktop_config.json` is stdio-only. Use a local stdio clone, or bridge with `mcp-remote` pointing at the same HTTPS URL and bearer.
+Claude Desktop’s `claude_desktop_config.json` is stdio-only. Use a local stdio clone, or bridge with `mcp-remote` pointing at the same HTTPS URL and `$MCP_BEARER_TOKEN`.
 
 Check the door:
 
 ```bash
 curl -s https://spaces-ghost.apps.andrewriley.info/health
 curl -s https://spaces-ghost.apps.andrewriley.info/mcp \
-  -H "Authorization: Bearer <MCP_BEARER_TOKEN>" \
+  -H "Authorization: Bearer ${MCP_BEARER_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"firehose_latest","arguments":{}}}'
 ```
