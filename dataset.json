@@ -1,8 +1,8 @@
 {
   "meta": {
-    "spacesTenantId": "tenant-ghost-001",
-    "spacesTenantName": "Ghost Campus",
-    "partnerTenantId": "partner-glam-ghost",
+    "spacesTenantId": "tenant-mockup-001",
+    "spacesTenantName": "Mockup Campus",
+    "partnerTenantId": "partner-glam-mockup",
     "window_ms": 86400000,
     "timezone": "Australia/Sydney",
     "subscribedEventTypes": [
@@ -21,17 +21,17 @@
       "KEEP_ALIVE",
       "APP_ACTIVATION"
     ],
-    "note": "Synthetic Ghost Campus. Timestamps are offset_ms from query time."
+    "note": "Synthetic Mockup Campus. Timestamps are offset_ms from query time."
   },
   "locations": [
     {
-      "locationId": "loc-campus-ghost",
-      "name": "Ghost Campus",
+      "locationId": "loc-campus-mockup",
+      "name": "Mockup Campus",
       "inferredLocationTypes": [
         "CAMPUS"
       ],
       "city": "Sydney",
-      "address": "1 Ghost Lane, Pyrmont NSW 2009",
+      "address": "1 Mockup Lane, Pyrmont NSW 2009",
       "country": "Australia",
       "floor_count": 3,
       "latitude": -33.8688,
@@ -44,14 +44,14 @@
         "BUILDING"
       ],
       "parent": {
-        "locationId": "loc-campus-ghost",
-        "name": "Ghost Campus",
+        "locationId": "loc-campus-mockup",
+        "name": "Mockup Campus",
         "inferredLocationTypes": [
           "CAMPUS"
         ]
       },
       "city": "Sydney",
-      "address": "1 Ghost Lane, North Wing",
+      "address": "1 Mockup Lane, North Wing",
       "country": "Australia",
       "floor_count": 2,
       "apCount": 8
@@ -63,14 +63,14 @@
         "BUILDING"
       ],
       "parent": {
-        "locationId": "loc-campus-ghost",
-        "name": "Ghost Campus",
+        "locationId": "loc-campus-mockup",
+        "name": "Mockup Campus",
         "inferredLocationTypes": [
           "CAMPUS"
         ]
       },
       "city": "Sydney",
-      "address": "1 Ghost Lane, South Wing",
+      "address": "1 Mockup Lane, South Wing",
       "country": "Australia",
       "floor_count": 1,
       "apCount": 4
@@ -88,8 +88,8 @@
           "BUILDING"
         ],
         "parent": {
-          "locationId": "loc-campus-ghost",
-          "name": "Ghost Campus",
+          "locationId": "loc-campus-mockup",
+          "name": "Mockup Campus",
           "inferredLocationTypes": [
             "CAMPUS"
           ]
@@ -112,8 +112,8 @@
           "BUILDING"
         ],
         "parent": {
-          "locationId": "loc-campus-ghost",
-          "name": "Ghost Campus",
+          "locationId": "loc-campus-mockup",
+          "name": "Mockup Campus",
           "inferredLocationTypes": [
             "CAMPUS"
           ]
@@ -136,8 +136,8 @@
           "BUILDING"
         ],
         "parent": {
-          "locationId": "loc-campus-ghost",
-          "name": "Ghost Campus",
+          "locationId": "loc-campus-mockup",
+          "name": "Mockup Campus",
           "inferredLocationTypes": [
             "CAMPUS"
           ]
@@ -220,7 +220,7 @@
       "displayName": "Boardroom North - Room Bar Pro",
       "product": "Cisco Room Bar Pro",
       "productType": "roombar-pro",
-      "serial": "GHOSTBAR001",
+      "serial": "MOCKBAR001",
       "macAddress": "02:00:00:00:10:01",
       "ipAddress": "10.54.90.11",
       "softwareVersion": "RoomOS 11.32.1.5",
@@ -241,7 +241,7 @@
       "displayName": "Huddle A - Room Kit Mini",
       "product": "Cisco Room Kit Mini",
       "productType": "roomkit-mini",
-      "serial": "GHOSTKIT002",
+      "serial": "MOCKKIT002",
       "macAddress": "02:00:00:00:10:02",
       "ipAddress": "10.54.90.12",
       "softwareVersion": "RoomOS 11.28.1.3",
@@ -262,7 +262,7 @@
       "displayName": "Focus Desk 12 - Desk Pro",
       "product": "Cisco Desk Pro",
       "productType": "desk-pro",
-      "serial": "GHOSTDESK003",
+      "serial": "MOCKDESK003",
       "macAddress": "02:00:00:00:10:03",
       "ipAddress": "10.54.90.13",
       "softwareVersion": "RoomOS 11.32.1.5",
@@ -283,7 +283,7 @@
       "displayName": "Lab Bench - Board Pro 55",
       "product": "Cisco Board Pro 55",
       "productType": "board-pro-55",
-      "serial": "GHOSTBRD004",
+      "serial": "MOCKBRD004",
       "macAddress": "02:00:00:00:10:04",
       "ipAddress": "10.54.90.21",
       "softwareVersion": "RoomOS 11.26.1.1",
@@ -304,7 +304,7 @@
       "displayName": "Workshop Bay - Room Bar",
       "product": "Cisco Room Bar",
       "productType": "roombar",
-      "serial": "GHOSTBAR005",
+      "serial": "MOCKBAR005",
       "macAddress": "02:00:00:00:10:05",
       "ipAddress": "10.54.90.22",
       "softwareVersion": "RoomOS 11.32.1.5",
@@ -937,7 +937,7 @@
       "type": "proximity.fail",
       "code": "PROXIMITY_PAIRING_FAIL",
       "severity": "warning",
-      "message": "Ultrasound pairing failed for a nearby ghost client."
+      "message": "Ultrasound pairing failed for a nearby mockup client."
     }
   ],
   "firehose": [
@@ -945,17 +945,17 @@
       "recordUid": "evt-aa-0001",
       "offset_ms": -82800000,
       "eventType": "APP_ACTIVATION",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "appActivation": {
-        "spacesTenantId": "tenant-ghost-001",
-        "spacesTenantName": "Ghost Campus",
-        "partnerTenantId": "partner-glam-ghost",
-        "name": "Ghost Firehose Replay",
-        "referenceId": "ref-ghost-001",
-        "instanceName": "ghost-replay",
-        "appId": "app-spaces-ghost",
+        "spacesTenantId": "tenant-mockup-001",
+        "spacesTenantName": "Mockup Campus",
+        "partnerTenantId": "partner-glam-mockup",
+        "name": "Mockup Firehose Replay",
+        "referenceId": "ref-mockup-001",
+        "instanceName": "mockup-replay",
+        "appId": "app-spaces-mockup",
         "region": "ap-southeast-2"
       }
     },
@@ -963,9 +963,9 @@
       "recordUid": "evt-so-0002",
       "offset_ms": -57600000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1007,9 +1007,9 @@
       "recordUid": "evt-soc-0003",
       "offset_ms": -55800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1049,9 +1049,9 @@
       "recordUid": "evt-so-0004",
       "offset_ms": -54000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1093,9 +1093,9 @@
       "recordUid": "evt-soc-0005",
       "offset_ms": -52200000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1135,9 +1135,9 @@
       "recordUid": "evt-so-0006",
       "offset_ms": -50400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1179,9 +1179,9 @@
       "recordUid": "evt-soc-0007",
       "offset_ms": -48600000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1221,9 +1221,9 @@
       "recordUid": "evt-so-0008",
       "offset_ms": -46800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1265,9 +1265,9 @@
       "recordUid": "evt-soc-0009",
       "offset_ms": -45000000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1307,9 +1307,9 @@
       "recordUid": "evt-so-0010",
       "offset_ms": -43200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1351,9 +1351,9 @@
       "recordUid": "evt-soc-0011",
       "offset_ms": -41400000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1393,9 +1393,9 @@
       "recordUid": "evt-so-0012",
       "offset_ms": -39600000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1437,9 +1437,9 @@
       "recordUid": "evt-soc-0013",
       "offset_ms": -37800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1479,9 +1479,9 @@
       "recordUid": "evt-so-0014",
       "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1523,9 +1523,9 @@
       "recordUid": "evt-soc-0015",
       "offset_ms": -34200000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1565,9 +1565,9 @@
       "recordUid": "evt-so-0016",
       "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1609,9 +1609,9 @@
       "recordUid": "evt-soc-0017",
       "offset_ms": -30600000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1651,9 +1651,9 @@
       "recordUid": "evt-so-0018",
       "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1695,9 +1695,9 @@
       "recordUid": "evt-soc-0019",
       "offset_ms": -27000000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1737,9 +1737,9 @@
       "recordUid": "evt-so-0020",
       "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1781,9 +1781,9 @@
       "recordUid": "evt-soc-0021",
       "offset_ms": -23400000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1823,9 +1823,9 @@
       "recordUid": "evt-so-0022",
       "offset_ms": -21600000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1867,9 +1867,9 @@
       "recordUid": "evt-soc-0023",
       "offset_ms": -19800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancyChange": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1909,9 +1909,9 @@
       "recordUid": "evt-so-0024",
       "offset_ms": -54000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1945,9 +1945,9 @@
       "recordUid": "evt-so-0025",
       "offset_ms": -50400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -1981,9 +1981,9 @@
       "recordUid": "evt-so-0026",
       "offset_ms": -46800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2017,9 +2017,9 @@
       "recordUid": "evt-so-0027",
       "offset_ms": -43200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2053,9 +2053,9 @@
       "recordUid": "evt-so-0028",
       "offset_ms": -39600000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2089,9 +2089,9 @@
       "recordUid": "evt-so-0029",
       "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2125,9 +2125,9 @@
       "recordUid": "evt-so-0030",
       "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2161,9 +2161,9 @@
       "recordUid": "evt-so-0031",
       "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2197,9 +2197,9 @@
       "recordUid": "evt-so-0032",
       "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -2233,9 +2233,9 @@
       "recordUid": "evt-so-0033",
       "offset_ms": -50400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2269,9 +2269,9 @@
       "recordUid": "evt-so-0034",
       "offset_ms": -43200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2305,9 +2305,9 @@
       "recordUid": "evt-so-0035",
       "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2341,9 +2341,9 @@
       "recordUid": "evt-so-0036",
       "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2377,9 +2377,9 @@
       "recordUid": "evt-so-0037",
       "offset_ms": -46800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2413,9 +2413,9 @@
       "recordUid": "evt-so-0038",
       "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2449,9 +2449,9 @@
       "recordUid": "evt-so-0039",
       "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-n2",
@@ -2485,9 +2485,9 @@
       "recordUid": "evt-so-0040",
       "offset_ms": -54000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2523,9 +2523,9 @@
       "recordUid": "evt-so-0041",
       "offset_ms": -46800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2561,9 +2561,9 @@
       "recordUid": "evt-so-0042",
       "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2599,9 +2599,9 @@
       "recordUid": "evt-so-0043",
       "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2637,9 +2637,9 @@
       "recordUid": "evt-so-0044",
       "offset_ms": -21600000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2675,9 +2675,9 @@
       "recordUid": "evt-so-0045",
       "offset_ms": -54000000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2713,9 +2713,9 @@
       "recordUid": "evt-so-0046",
       "offset_ms": -43200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2751,9 +2751,9 @@
       "recordUid": "evt-so-0047",
       "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2789,9 +2789,9 @@
       "recordUid": "evt-so-0048",
       "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "spaceOccupancy": {
         "location": {
           "locationId": "loc-floor-s1",
@@ -2827,21 +2827,21 @@
       "recordUid": "evt-dp-0049",
       "offset_ms": -54000000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_ENTRY_EVENT",
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -2861,7 +2861,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 12,
@@ -2872,20 +2872,20 @@
       "recordUid": "evt-dlu-0050",
       "offset_ms": -53700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -2905,7 +2905,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "mapId": "map-north-l1",
         "xPos": 20.0,
@@ -2923,17 +2923,17 @@
       "recordUid": "evt-up-0051",
       "offset_ms": -53940000,
       "eventType": "USER_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "userPresence": {
         "presenceEventType": "USER_ENTRY_EVENT",
         "user": {
-          "userId": "ghost-user-01",
+          "userId": "mockup-user-01",
           "deviceIds": [
-            "ghost-phone-01"
+            "mockup-phone-01"
           ],
-          "email": "visitor-01@ghost.example",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -2967,21 +2967,21 @@
       "recordUid": "evt-dp-0052",
       "offset_ms": -54000000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_ENTRY_EVENT",
         "device": {
-          "deviceId": "ghost-phone-02",
-          "userId": "ghost-user-02",
+          "deviceId": "mockup-phone-02",
+          "userId": "mockup-user-02",
           "macAddress": "02:00:00:aa:00:02",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-02@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3001,7 +3001,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-02",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 12,
@@ -3012,20 +3012,20 @@
       "recordUid": "evt-dlu-0053",
       "offset_ms": -53700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-02",
-          "userId": "ghost-user-02",
+          "deviceId": "mockup-phone-02",
+          "userId": "mockup-user-02",
           "macAddress": "02:00:00:aa:00:02",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-02@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3045,7 +3045,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-02",
         "mapId": "map-north-l1",
         "xPos": 22.0,
@@ -3063,17 +3063,17 @@
       "recordUid": "evt-up-0054",
       "offset_ms": -53940000,
       "eventType": "USER_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "userPresence": {
         "presenceEventType": "USER_ENTRY_EVENT",
         "user": {
-          "userId": "ghost-user-02",
+          "userId": "mockup-user-02",
           "deviceIds": [
-            "ghost-phone-02"
+            "mockup-phone-02"
           ],
-          "email": "visitor-02@ghost.example",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3107,21 +3107,21 @@
       "recordUid": "evt-dp-0055",
       "offset_ms": -50400000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_ENTRY_EVENT",
         "device": {
-          "deviceId": "ghost-phone-03",
-          "userId": "ghost-user-03",
+          "deviceId": "mockup-phone-03",
+          "userId": "mockup-user-03",
           "macAddress": "02:00:00:aa:00:03",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-03@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-03@mockup.example",
           "firstName": "Visitor",
           "lastName": "03"
         },
@@ -3141,7 +3141,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-03",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 12,
@@ -3152,20 +3152,20 @@
       "recordUid": "evt-dlu-0056",
       "offset_ms": -50100000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-03",
-          "userId": "ghost-user-03",
+          "deviceId": "mockup-phone-03",
+          "userId": "mockup-user-03",
           "macAddress": "02:00:00:aa:00:03",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-03@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-03@mockup.example",
           "firstName": "Visitor",
           "lastName": "03"
         },
@@ -3185,7 +3185,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-03",
         "mapId": "map-north-l1",
         "xPos": 40.0,
@@ -3203,17 +3203,17 @@
       "recordUid": "evt-up-0057",
       "offset_ms": -50340000,
       "eventType": "USER_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "userPresence": {
         "presenceEventType": "USER_ENTRY_EVENT",
         "user": {
-          "userId": "ghost-user-03",
+          "userId": "mockup-user-03",
           "deviceIds": [
-            "ghost-phone-03"
+            "mockup-phone-03"
           ],
-          "email": "visitor-03@ghost.example",
+          "email": "visitor-03@mockup.example",
           "firstName": "Visitor",
           "lastName": "03"
         },
@@ -3247,21 +3247,21 @@
       "recordUid": "evt-dp-0058",
       "offset_ms": -39600000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_INACTIVE_EVENT",
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -3281,7 +3281,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 12,
@@ -3292,20 +3292,20 @@
       "recordUid": "evt-dlu-0059",
       "offset_ms": -39300000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -3325,7 +3325,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "mapId": "map-north-l1",
         "xPos": 21.0,
@@ -3343,21 +3343,21 @@
       "recordUid": "evt-dp-0060",
       "offset_ms": -36000000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_ACTIVE_EVENT",
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -3377,7 +3377,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 12,
@@ -3388,20 +3388,20 @@
       "recordUid": "evt-dlu-0061",
       "offset_ms": -35700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -3421,7 +3421,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-01",
         "mapId": "map-north-l1",
         "xPos": 21.5,
@@ -3439,21 +3439,21 @@
       "recordUid": "evt-dp-0062",
       "offset_ms": -21600000,
       "eventType": "DEVICE_PRESENCE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "devicePresence": {
         "presenceEventType": "DEVICE_EXIT_EVENT",
         "device": {
-          "deviceId": "ghost-phone-02",
-          "userId": "ghost-user-02",
+          "deviceId": "mockup-phone-02",
+          "userId": "mockup-user-02",
           "macAddress": "02:00:00:aa:00:02",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-02@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3473,7 +3473,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-02",
         "deviceClassification": "ASSOCIATED",
         "activeDevicesCount": 9,
@@ -3484,20 +3484,20 @@
       "recordUid": "evt-dlu-0063",
       "offset_ms": -21300000,
       "eventType": "DEVICE_LOCATION_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceLocationUpdate": {
         "device": {
-          "deviceId": "ghost-phone-02",
-          "userId": "ghost-user-02",
+          "deviceId": "mockup-phone-02",
+          "userId": "mockup-user-02",
           "macAddress": "02:00:00:aa:00:02",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-02@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3517,7 +3517,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "visitId": "visit-02",
         "mapId": "map-north-l1",
         "xPos": 22.0,
@@ -3535,9 +3535,9 @@
       "recordUid": "evt-dc-0064",
       "offset_ms": -46800000,
       "eventType": "DEVICE_COUNT",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceCount": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -3564,20 +3564,20 @@
       "recordUid": "evt-da-0065",
       "offset_ms": -53880000,
       "eventType": "DEVICE_ASSOCIATION",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "deviceAssociation": {
         "device": {
-          "deviceId": "ghost-phone-01",
-          "userId": "ghost-user-01",
+          "deviceId": "mockup-phone-01",
+          "userId": "mockup-user-01",
           "macAddress": "02:00:00:aa:00:01",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-01@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-01@mockup.example",
           "firstName": "Visitor",
           "lastName": "01"
         },
@@ -3597,7 +3597,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "ssid": "GhostCampus",
+        "ssid": "MockupCampus",
         "associationState": "ASSOCIATED"
       }
     },
@@ -3605,20 +3605,20 @@
       "recordUid": "evt-pu-0066",
       "offset_ms": -50400000,
       "eventType": "PROFILE_UPDATE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "profileUpdate": {
         "device": {
-          "deviceId": "ghost-phone-02",
-          "userId": "ghost-user-02",
+          "deviceId": "mockup-phone-02",
+          "userId": "mockup-user-02",
           "macAddress": "02:00:00:aa:00:02",
-          "manufacturer": "GhostPhone",
-          "os": "GhostOS",
+          "manufacturer": "MockupPhone",
+          "os": "MockupOS",
           "osVersion": "1.0",
           "type": "MOBILE",
-          "deviceModel": "Ghost Phone",
-          "email": "visitor-02@ghost.example",
+          "deviceModel": "Mockup Phone",
+          "email": "visitor-02@mockup.example",
           "firstName": "Visitor",
           "lastName": "02"
         },
@@ -3647,9 +3647,9 @@
       "recordUid": "evt-cc-0067",
       "offset_ms": -46800000,
       "eventType": "CAMERA_COUNT",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "cameraCounts": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -3675,9 +3675,9 @@
       "recordUid": "evt-rcc-0068",
       "offset_ms": -46740000,
       "eventType": "RAW_CAMERA_COUNT",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "rawCameraCounts": {
         "location": {
           "locationId": "loc-floor-n1",
@@ -3695,7 +3695,7 @@
           "floorNumber": 1,
           "apCount": 4
         },
-        "cameraId": "cam-ghost-n1-lobby",
+        "cameraId": "cam-mockup-n1-lobby",
         "cameraZoneId": "zone-lobby",
         "count": 6
       }
@@ -3704,15 +3704,15 @@
       "recordUid": "evt-iot-0069",
       "offset_ms": -28800000,
       "eventType": "IOT_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "iotTelemetry": {
         "device": {
-          "deviceId": "ghost-sensor-lab-01",
+          "deviceId": "mockup-sensor-lab-01",
           "macAddress": "02:00:00:bb:00:01",
           "type": "SENSOR",
-          "manufacturer": "GhostSense"
+          "manufacturer": "MockupSense"
         },
         "location": {
           "locationId": "loc-floor-s1",
@@ -3739,9 +3739,9 @@
       "recordUid": "evt-wt-0070",
       "offset_ms": -46800000,
       "eventType": "WEBEX_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "webexTelemetryUpdate": {
         "deviceInfo": {
           "deviceId": "dev-roombar-board",
@@ -3749,10 +3749,10 @@
           "ipAddress": "10.54.90.11",
           "product": "Cisco Room Bar Pro",
           "displayName": "Boardroom North - Room Bar Pro",
-          "serialNumber": "GHOSTBAR001",
+          "serialNumber": "MOCKBAR001",
           "softwareVersion": "RoomOS 11.32.1.5",
           "workspaceId": "ws-board",
-          "orgId": "org-ghost-001"
+          "orgId": "org-mockup-001"
         },
         "location": {
           "locationId": "loc-floor-n1",
@@ -3796,9 +3796,9 @@
       "recordUid": "evt-wt-0071",
       "offset_ms": -43200000,
       "eventType": "WEBEX_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "webexTelemetryUpdate": {
         "deviceInfo": {
           "deviceId": "dev-kitmini-huddle",
@@ -3806,10 +3806,10 @@
           "ipAddress": "10.54.90.12",
           "product": "Cisco Room Kit Mini",
           "displayName": "Huddle A - Room Kit Mini",
-          "serialNumber": "GHOSTKIT002",
+          "serialNumber": "MOCKKIT002",
           "softwareVersion": "RoomOS 11.28.1.3",
           "workspaceId": "ws-huddle",
-          "orgId": "org-ghost-001"
+          "orgId": "org-mockup-001"
         },
         "location": {
           "locationId": "loc-floor-n1",
@@ -3853,9 +3853,9 @@
       "recordUid": "evt-wt-0072",
       "offset_ms": -28800000,
       "eventType": "WEBEX_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "webexTelemetryUpdate": {
         "deviceInfo": {
           "deviceId": "dev-boardpro-lab",
@@ -3863,10 +3863,10 @@
           "ipAddress": "10.54.90.21",
           "product": "Cisco Board Pro 55",
           "displayName": "Lab Bench - Board Pro 55",
-          "serialNumber": "GHOSTBRD004",
+          "serialNumber": "MOCKBRD004",
           "softwareVersion": "RoomOS 11.26.1.1",
           "workspaceId": "ws-lab",
-          "orgId": "org-ghost-001"
+          "orgId": "org-mockup-001"
         },
         "location": {
           "locationId": "loc-floor-s1",
@@ -3910,9 +3910,9 @@
       "recordUid": "evt-wt-0073",
       "offset_ms": -32400000,
       "eventType": "WEBEX_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "webexTelemetryUpdate": {
         "deviceInfo": {
           "deviceId": "dev-deskpro-focus",
@@ -3920,10 +3920,10 @@
           "ipAddress": "10.54.90.13",
           "product": "Cisco Desk Pro",
           "displayName": "Focus Desk 12 - Desk Pro",
-          "serialNumber": "GHOSTDESK003",
+          "serialNumber": "MOCKDESK003",
           "softwareVersion": "RoomOS 11.32.1.5",
           "workspaceId": "ws-focus",
-          "orgId": "org-ghost-001"
+          "orgId": "org-mockup-001"
         },
         "location": {
           "locationId": "loc-floor-n2",
@@ -3967,9 +3967,9 @@
       "recordUid": "evt-wt-0074",
       "offset_ms": -32400000,
       "eventType": "WEBEX_TELEMETRY",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
       "webexTelemetryUpdate": {
         "deviceInfo": {
           "deviceId": "dev-roombar-workshop",
@@ -3977,10 +3977,10 @@
           "ipAddress": "10.54.90.22",
           "product": "Cisco Room Bar",
           "displayName": "Workshop Bay - Room Bar",
-          "serialNumber": "GHOSTBAR005",
+          "serialNumber": "MOCKBAR005",
           "softwareVersion": "RoomOS 11.32.1.5",
           "workspaceId": "ws-workshop",
-          "orgId": "org-ghost-001"
+          "orgId": "org-mockup-001"
         },
         "location": {
           "locationId": "loc-floor-s1",
@@ -4024,25 +4024,25 @@
       "recordUid": "evt-ka-0075",
       "offset_ms": -2700000,
       "eventType": "KEEP_ALIVE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost"
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup"
     },
     {
       "recordUid": "evt-ka-0076",
       "offset_ms": -1800000,
       "eventType": "KEEP_ALIVE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost"
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup"
     },
     {
       "recordUid": "evt-ka-0077",
       "offset_ms": -900000,
       "eventType": "KEEP_ALIVE",
-      "spacesTenantId": "tenant-ghost-001",
-      "spacesTenantName": "Ghost Campus",
-      "partnerTenantId": "partner-glam-ghost"
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup"
     }
   ]
 }

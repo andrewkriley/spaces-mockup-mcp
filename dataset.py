@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic Ghost Campus dataset for spaces-ghost-mcp.
+"""Deterministic Mockup Campus dataset for spaces-mockup-mcp.
 
 Mimics Cisco Spaces Firehose EventRecord envelopes plus Webex Workspaces
 Control Hub inventory (locations, workspaces, RoomOS devices, metrics).
-All identities are synthetic (@ghost.example). No live Cisco APIs.
+All identities are synthetic (@mockup.example). No live Cisco APIs.
 """
 
 from __future__ import annotations
@@ -16,9 +16,9 @@ DAY = 24 * HOUR
 MINUTE = 60_000
 
 TENANT = {
-    "spacesTenantId": "tenant-ghost-001",
-    "spacesTenantName": "Ghost Campus",
-    "partnerTenantId": "partner-glam-ghost",
+    "spacesTenantId": "tenant-mockup-001",
+    "spacesTenantName": "Mockup Campus",
+    "partnerTenantId": "partner-glam-mockup",
 }
 
 SUBSCRIBED_EVENTS = [
@@ -76,11 +76,11 @@ def ref(row: dict, kinds: list[str], *, include_parent: bool = False) -> dict:
 
 def build_locations() -> list[dict]:
     campus = loc(
-        "loc-campus-ghost",
-        "Ghost Campus",
+        "loc-campus-mockup",
+        "Mockup Campus",
         ["CAMPUS"],
         city="Sydney",
-        address="1 Ghost Lane, Pyrmont NSW 2009",
+        address="1 Mockup Lane, Pyrmont NSW 2009",
         country="Australia",
         floor_count=3,
         latitude=-33.8688,
@@ -92,7 +92,7 @@ def build_locations() -> list[dict]:
         ["BUILDING"],
         parent=ref(campus, ["CAMPUS"]),
         city="Sydney",
-        address="1 Ghost Lane, North Wing",
+        address="1 Mockup Lane, North Wing",
         country="Australia",
         floor_count=2,
         apCount=8,
@@ -103,7 +103,7 @@ def build_locations() -> list[dict]:
         ["BUILDING"],
         parent=ref(campus, ["CAMPUS"]),
         city="Sydney",
-        address="1 Ghost Lane, South Wing",
+        address="1 Mockup Lane, South Wing",
         country="Australia",
         floor_count=1,
         apCount=4,
@@ -204,7 +204,7 @@ def build_devices() -> list[dict]:
             "displayName": "Boardroom North - Room Bar Pro",
             "product": "Cisco Room Bar Pro",
             "productType": "roombar-pro",
-            "serial": "GHOSTBAR001",
+            "serial": "MOCKBAR001",
             "macAddress": "02:00:00:00:10:01",
             "ipAddress": "10.54.90.11",
             "softwareVersion": "RoomOS 11.32.1.5",
@@ -225,7 +225,7 @@ def build_devices() -> list[dict]:
             "displayName": "Huddle A - Room Kit Mini",
             "product": "Cisco Room Kit Mini",
             "productType": "roomkit-mini",
-            "serial": "GHOSTKIT002",
+            "serial": "MOCKKIT002",
             "macAddress": "02:00:00:00:10:02",
             "ipAddress": "10.54.90.12",
             "softwareVersion": "RoomOS 11.28.1.3",
@@ -246,7 +246,7 @@ def build_devices() -> list[dict]:
             "displayName": "Focus Desk 12 - Desk Pro",
             "product": "Cisco Desk Pro",
             "productType": "desk-pro",
-            "serial": "GHOSTDESK003",
+            "serial": "MOCKDESK003",
             "macAddress": "02:00:00:00:10:03",
             "ipAddress": "10.54.90.13",
             "softwareVersion": "RoomOS 11.32.1.5",
@@ -267,7 +267,7 @@ def build_devices() -> list[dict]:
             "displayName": "Lab Bench - Board Pro 55",
             "product": "Cisco Board Pro 55",
             "productType": "board-pro-55",
-            "serial": "GHOSTBRD004",
+            "serial": "MOCKBRD004",
             "macAddress": "02:00:00:00:10:04",
             "ipAddress": "10.54.90.21",
             "softwareVersion": "RoomOS 11.26.1.1",
@@ -288,7 +288,7 @@ def build_devices() -> list[dict]:
             "displayName": "Workshop Bay - Room Bar",
             "product": "Cisco Room Bar",
             "productType": "roombar",
-            "serial": "GHOSTBAR005",
+            "serial": "MOCKBAR005",
             "macAddress": "02:00:00:00:10:05",
             "ipAddress": "10.54.90.22",
             "softwareVersion": "RoomOS 11.32.1.5",
@@ -452,15 +452,15 @@ def envelope(uid: str, offset_ms: int, event_type: str, payload_key: str, payloa
 
 def wifi_device(idx: int) -> dict:
     return {
-        "deviceId": f"ghost-phone-{idx:02d}",
-        "userId": f"ghost-user-{idx:02d}",
+        "deviceId": f"mockup-phone-{idx:02d}",
+        "userId": f"mockup-user-{idx:02d}",
         "macAddress": f"02:00:00:aa:00:{idx:02d}",
-        "manufacturer": "GhostPhone",
-        "os": "GhostOS",
+        "manufacturer": "MockupPhone",
+        "os": "MockupOS",
         "osVersion": "1.0",
         "type": "MOBILE",
-        "deviceModel": "Ghost Phone",
-        "email": f"visitor-{idx:02d}@ghost.example",
+        "deviceModel": "Mockup Phone",
+        "email": f"visitor-{idx:02d}@mockup.example",
         "firstName": "Visitor",
         "lastName": f"{idx:02d}",
     }
@@ -565,10 +565,10 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
             "appActivation",
             {
                 **TENANT,
-                "name": "Ghost Firehose Replay",
-                "referenceId": "ref-ghost-001",
-                "instanceName": "ghost-replay",
-                "appId": "app-spaces-ghost",
+                "name": "Mockup Firehose Replay",
+                "referenceId": "ref-mockup-001",
+                "instanceName": "mockup-replay",
+                "appId": "app-spaces-mockup",
                 "region": "ap-southeast-2",
             },
         )
@@ -663,7 +663,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                 )
             )
 
-    # Wi-Fi presence and locations for three ghost visitors.
+    # Wi-Fi presence and locations for three mockup visitors.
     for idx, hour, x, y, kind in (
         (1, 8, 20.0, 30.0, "DEVICE_ENTRY_EVENT"),
         (2, 8, 22.0, 28.0, "DEVICE_ENTRY_EVENT"),
@@ -684,7 +684,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                     "presenceEventType": kind,
                     "device": device,
                     "location": floor_n1(),
-                    "ssid": "GhostCampus",
+                    "ssid": "MockupCampus",
                     "visitId": f"visit-{idx:02d}",
                     "deviceClassification": "ASSOCIATED",
                     "activeDevicesCount": 12 if "EXIT" not in kind else 9,
@@ -701,7 +701,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                 {
                     "device": device,
                     "location": floor_n1(),
-                    "ssid": "GhostCampus",
+                    "ssid": "MockupCampus",
                     "visitId": f"visit-{idx:02d}",
                     "mapId": "map-north-l1",
                     "xPos": x,
@@ -768,7 +768,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
             {
                 "device": wifi_device(1),
                 "location": floor_n1(),
-                "ssid": "GhostCampus",
+                "ssid": "MockupCampus",
                 "associationState": "ASSOCIATED",
             },
         )
@@ -803,7 +803,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
             "rawCameraCounts",
             {
                 "location": floor_n1(),
-                "cameraId": "cam-ghost-n1-lobby",
+                "cameraId": "cam-mockup-n1-lobby",
                 "cameraZoneId": "zone-lobby",
                 "count": 6,
             },
@@ -817,10 +817,10 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
             "iotTelemetry",
             {
                 "device": {
-                    "deviceId": "ghost-sensor-lab-01",
+                    "deviceId": "mockup-sensor-lab-01",
                     "macAddress": "02:00:00:bb:00:01",
                     "type": "SENSOR",
-                    "manufacturer": "GhostSense",
+                    "manufacturer": "MockupSense",
                 },
                 "location": floor_s1(),
                 "temperatureC": 23.4,
@@ -856,7 +856,7 @@ def build_firehose(workspaces: list[dict]) -> list[dict]:
                         "serialNumber": device["serial"],
                         "softwareVersion": device["softwareVersion"],
                         "workspaceId": ws_id,
-                        "orgId": "org-ghost-001",
+                        "orgId": "org-mockup-001",
                     },
                     "location": {
                         "locationId": loc_id,
@@ -923,7 +923,7 @@ def build_device_events() -> list[dict]:
             "type": "proximity.fail",
             "code": "PROXIMITY_PAIRING_FAIL",
             "severity": "warning",
-            "message": "Ultrasound pairing failed for a nearby ghost client.",
+            "message": "Ultrasound pairing failed for a nearby mockup client.",
         },
     ]
 
@@ -961,7 +961,7 @@ def build_dataset() -> dict:
             "window_ms": DAY,
             "timezone": "Australia/Sydney",
             "subscribedEventTypes": SUBSCRIBED_EVENTS,
-            "note": "Synthetic Ghost Campus. Timestamps are offset_ms from query time.",
+            "note": "Synthetic Mockup Campus. Timestamps are offset_ms from query time.",
         },
         "locations": locations,
         "workspaces": workspaces,

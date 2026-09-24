@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""spaces-ghost-mcp: query a synthetic Cisco Spaces + Webex Workspaces dataset.
+"""spaces-mockup-mcp: query a synthetic Cisco Spaces + Webex Workspaces dataset.
 
 Read-only workstation MCP. Does not call mcp.webexapis.com or the live Firehose
 API. Dataset timestamps are offset_ms from query time so occupancy looks live.
@@ -29,8 +29,8 @@ TOOLS = [
     {
         "name": "location_search",
         "description": (
-            "Search Ghost Campus locations by name, city, address, "
-            "locationId, or floor count. Workspaces MCP location_search ghost."
+            "Search Mockup Campus locations by name, city, address, "
+            "locationId, or floor count. Workspaces MCP location_search mockup."
         ),
         "inputSchema": {
             "type": "object",
@@ -123,7 +123,7 @@ TOOLS = [
     },
     {
         "name": "product_lifecycle",
-        "description": "Lifecycle milestones for Cisco device product types in the ghost catalog.",
+        "description": "Lifecycle milestones for Cisco device product types in the mockup catalog.",
         "inputSchema": {
             "type": "object",
             "properties": {"product": {"type": "string"}, "productType": {"type": "string"}},
@@ -140,7 +140,7 @@ TOOLS = [
     },
     {
         "name": "device_configuration_template_list",
-        "description": "Configuration templates in the ghost organization.",
+        "description": "Configuration templates in the mockup organization.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
@@ -181,7 +181,7 @@ TOOLS = [
     {
         "name": "firehose_health",
         "description": (
-            "Ghost Firehose health: subscribed event types and tenant. "
+            "Mockup Firehose health: subscribed event types and tenant. "
             "Mimics GET /api/partners/v1/firehose/health."
         ),
         "inputSchema": {"type": "object", "properties": {}},
@@ -189,7 +189,7 @@ TOOLS = [
     {
         "name": "firehose_events",
         "description": (
-            "Pull Firehose EventRecords from the ghost replay. Filter by "
+            "Pull Firehose EventRecords from the mockup replay. Filter by "
             "eventType, locationId, deviceId, workspaceId, fromTimestamp."
         ),
         "inputSchema": {
@@ -595,7 +595,7 @@ def firehose_health(_args: dict) -> dict:
         "partnerTenantId": meta.get("partnerTenantId"),
         "subscribedEventTypes": list(meta.get("subscribedEventTypes") or []),
         "replay": True,
-        "note": "Ghost pull channel. Not Cisco Spaces live Firehose.",
+        "note": "Mockup pull channel. Not Cisco Spaces live Firehose.",
     }
 
 
@@ -764,7 +764,7 @@ def rpc(body: dict) -> dict:
             "result": {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}},
-                "serverInfo": {"name": "spaces-ghost", "version": "0.1.0"},
+                "serverInfo": {"name": "spaces-mockup", "version": "0.1.0"},
             },
         }
     if method == "tools/list":
@@ -796,7 +796,7 @@ def rpc(body: dict) -> dict:
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "spaces-ghost-mcp/0.1"
+    server_version = "spaces-mockup-mcp/0.1"
 
     def log_message(self, fmt: str, *args) -> None:  # noqa: A003
         sys.stderr.write(f"{self.address_string()} - {fmt % args}\n")
@@ -816,7 +816,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path.split("?", 1)[0] in ("/health", "/healthz"):
-            self._send(200, {"status": "ok", "server": "spaces-ghost"})
+            self._send(200, {"status": "ok", "server": "spaces-mockup"})
             return
         self._send(404, {"error": "not found"})
 
@@ -895,7 +895,7 @@ def main(argv: list[str] | None = None) -> None:
         return
     host, port_s = LISTEN.rsplit(":", 1)
     httpd = ThreadingHTTPServer((host, int(port_s)), Handler)
-    print(f"spaces-ghost-mcp listening on {LISTEN}", flush=True)
+    print(f"spaces-mockup-mcp listening on {LISTEN}", flush=True)
     httpd.serve_forever()
 
 

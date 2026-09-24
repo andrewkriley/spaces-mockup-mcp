@@ -1,6 +1,6 @@
 # Capacity: 100 users, 50 concurrent MCP questions
 
-Planning note for hosting `spaces-ghost-mcp` beyond a single workstation.
+Planning note for hosting `spaces-mockup-mcp` beyond a single workstation.
 Target: **~100 named users**, **~50 concurrent MCP questions**, each question using **multiple tools**.
 Hosting options to compare: **(1) AWS** and **(2) a dedicated server** (or equivalent always-on VPS).
 
@@ -24,9 +24,9 @@ So 50 concurrent questions with multiple tools is closer to:
 
 100 users is the named population. Only a subset will be asking at once; 50 concurrent is the design peak.
 
-The expensive part of that picture is almost never this process. Ghost Campus is a **~110 KB in-memory JSON file** (6 locations, 6 workspaces, 5 devices, 77 firehose rows). Tool handlers are CPU-bound filters plus `json.dumps` over tiny lists. The LLM that *asks* the questions is a separate cost.
+The expensive part of that picture is almost never this process. Mockup Campus is a **~110 KB in-memory JSON file** (6 locations, 6 workspaces, 5 devices, 77 firehose rows). Tool handlers are CPU-bound filters plus `json.dumps` over tiny lists. The LLM that *asks* the questions is a separate cost.
 
-If we later swap the ghost dataset for live Control Hub / Spaces Firehose, **upstream Cisco rate limits and pull-channel backpressure become the real ceiling**, not Python.
+If we later swap the mockup dataset for live Control Hub / Spaces Firehose, **upstream Cisco rate limits and pull-channel backpressure become the real ceiling**, not Python.
 
 ## Current stack
 
@@ -85,19 +85,19 @@ From `server.py` and `README.md` today:
    - Pin runtime deps if we leave “stdlib only”.
    - Keep `make lint` / `make test` and add a **load test** that models the real burst: 50 virtual users × 3–6 sequential/parallel `tools/call`s (k6, Locust, or an MCP stress tester).
 
-### Nice-to-have / only if we grow past ghost data
+### Nice-to-have / only if we grow past mockup data
 
 - Shared secret for `RequestStateSecurity` **if** we add multi-round-trip tools (elicitation / `Resolve`). Default per-process keys break across workers.
 - Redis / NATS `SubscriptionBus` **only if** we add live subscriptions.
 - If Firehose becomes a real partner stream: one pull/consumer process, durable offset, backpressure, and a cache — **do not** open 50 Cisco streams for 50 questions.
-- Horizontal scale is optional at this size. One box with 2 workers is likely enough for the ghost dataset.
+- Horizontal scale is optional at this size. One box with 2 workers is likely enough for the mockup dataset.
 
 ### Load-test acceptance sketch
 
 Treat a hosting spike as done when a candidate deploy can show:
 
 - 50 concurrent “questions”, each calling ≥3 tools (mix of cheap search + `firehose_events` + a diff)
-- p95 tool-call under 100 ms on ghost data (should be easy); p99 connection errors ≈ 0
+- p95 tool-call under 100 ms on mockup data (should be easy); p99 connection errors ≈ 0
 - 401s for bad tokens; 429s under a deliberate stampede
 - Rolling restart does not 5xx the health check for more than a few seconds
 
@@ -109,9 +109,9 @@ Recommended shape (always-on, low CPU, HTTP/SSE-friendly):
 
 | Piece | Suggestion | Why |
 | --- | --- | --- |
-| Compute | **ECS Fargate** 2 tasks, **0.5–1 vCPU / 1–2 GB** each, or one **t4g.small / t3.small** if we accept a single instance | Ghost data will not use this CPU. Two tasks buy restart cover, not compute |
+| Compute | **ECS Fargate** 2 tasks, **0.5–1 vCPU / 1–2 GB** each, or one **t4g.small / t3.small** if we accept a single instance | Mockup data will not use this CPU. Two tasks buy restart cover, not compute |
 | Edge | **ALB** + ACM cert on a public hostname, HTTP/2, idle timeout raised if we use SSE | TLS and health checks (`/health`) without managing nginx |
-| Scaling | Target tracking on CPU or ALB request count; min 1–2, max 4 | 50 concurrent questions should not need max 4 on ghost data |
+| Scaling | Target tracking on CPU or ALB request count; min 1–2, max 4 | 50 concurrent questions should not need max 4 on mockup data |
 | Secrets | **Secrets Manager** or SSM for bearer/OAuth verifier keys | Stop shipping `MCP_BEARER_TOKEN` in `.env` on a public bind |
 | Logs / metrics | CloudWatch logs + Container Insights; later ALB access logs | Need tool-level latency, not just 2xx counts |
 | Network | Private subnets, public ALB only; security group: 443 from clients | Matches “do not bind `0.0.0.0` naked” |
@@ -135,7 +135,7 @@ If clients are still sessionful, ALB stickiness must hash `Mcp-Session-Id` (not 
 
 **Fit:** one team-owned box, lowest cost, SSH is acceptable, HA can wait.
 
-A **2 vCPU / 4 GB** host (Hetzner CX22-class, OVH, an existing colo VM, or a single EC2) is oversized for ghost data and still the right minimum so nginx + 2 workers + logs have headroom.
+A **2 vCPU / 4 GB** host (Hetzner CX22-class, OVH, an existing colo VM, or a single EC2) is oversized for mockup data and still the right minimum so nginx + 2 workers + logs have headroom.
 
 Classic stack:
 
@@ -169,7 +169,7 @@ Internet → :443 nginx/Caddy (TLS, HTTP/2, rate limit)
 | Compliance / VPC | Easier to drop beside existing AWS apps | Easier if the campus already has a rack/VPN |
 | Blast radius | Security group + optional WAF | One public IP; harden SSH |
 
-For **100 users / 50 concurrent ghost questions**, option 2 is technically enough. Choose AWS if we need org-standard networking, secrets, and a second task more than we need $50/mo.
+For **100 users / 50 concurrent mockup questions**, option 2 is technically enough. Choose AWS if we need org-standard networking, secrets, and a second task more than we need $50/mo.
 
 ## Recommendation to validate
 
