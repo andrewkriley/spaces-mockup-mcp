@@ -85,6 +85,66 @@ class ReadmeContractTest(unittest.TestCase):
         self.assertIn("./run.sh", text)
         self.assertIn("--stdio", text)
         self.assertIn("does not use a bearer", text.lower())
+        self.assertIn("docs/lab-guide.md", text)
+
+
+class LabGuideContractTest(unittest.TestCase):
+    def test_lab_guide_maps_data_and_how_to_connect(self):
+        text = (HERE / "docs" / "lab-guide.md").read_text(encoding="utf-8")
+        self.assertIn("# Lab guide", text)
+        self.assertIn("## Data sources", text)
+        self.assertIn("| Source |", text)
+        for source in (
+            "Locations",
+            "Workspaces",
+            "Workspace metrics",
+            "RoomOS devices",
+            "Device events",
+            "Issue catalog",
+            "Product lifecycle",
+            "Device configuration",
+            "Firehose EventRecords",
+        ):
+            self.assertIn(source, text, source)
+        for tool in (
+            "location_search",
+            "workspace_search",
+            "workspace_metrics",
+            "workspace_aggregated_capacity_utilization",
+            "device_search",
+            "device_configuration_diff",
+            "firehose_events",
+            "firehose_latest",
+        ):
+            self.assertIn(f"`{tool}`", text, tool)
+        for event in (
+            "SPACE_OCCUPANCY",
+            "DEVICE_LOCATION_UPDATE",
+            "WEBEX_TELEMETRY",
+            "KEEP_ALIVE",
+        ):
+            self.assertIn(event, text, event)
+        self.assertIn("ws-board", text)
+        self.assertIn("locationId", text)
+        self.assertIn("workspaceId", text)
+        self.assertIn("deviceId", text)
+        self.assertIn("@mockup.example", text)
+        self.assertIn("Australia/Sydney", text)
+        self.assertIn("## Self-host", text)
+        self.assertIn("## Demo server", text)
+        self.assertLess(text.index("## Self-host"), text.index("## Demo server"))
+        self.assertIn("http://127.0.0.1:8080/mcp", text)
+        self.assertIn("https://spaces-mockup.apps.andrewriley.info/mcp", text)
+        self.assertIn("MCP_BEARER_TOKEN", text)
+        self.assertIn("${env:MCP_BEARER_TOKEN}", text)
+        self.assertIn("## Configure from Claude or Cursor", text)
+        self.assertIn("## Suggested prompts", text)
+        self.assertIn("## Building with other apps", text)
+        self.assertIn("not a live cisco api", text.lower())
+        self.assertNotIn("local-dev", text)
+        self.assertNotIn("<tokengoeshere>", text)
+        self.assertNotIn("spaces-ghost", text)
+        self.assertNotIn("WEBEX_TOKEN", text)
 
 
 class CiWorkflowTest(unittest.TestCase):
