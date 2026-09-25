@@ -23,16 +23,20 @@ Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 
 ## Self-host
 
-Python 3.12+ only. No Make, Xcode, or extra packages. Set `MCP_BEARER_TOKEN`
-(HTTP will not start without it), then run the server:
+Python 3.12+ only. No Make, Xcode, or extra packages. Clone this repo, set
+`MCP_BEARER_TOKEN` (HTTP will not start without it), then run the server.
 
 ```bash
 cp .env.example .env
 export MCP_BEARER_TOKEN=   # same value as in .env
-python3 server.py
+python3 server.py          # http://127.0.0.1:8080
 ```
 
-`./run.sh` does the same thing and sources `.env` if you have a POSIX shell.
+`./run.sh` sources `.env` and starts the same process if you have a POSIX shell.
+
+```bash
+curl -sS http://127.0.0.1:8080/health
+```
 
 ```json
 {
@@ -54,14 +58,14 @@ internet without HTTPS.
 `dataset.py` rewrites `dataset.json`. Capacity notes:
 [docs/capacity.md](docs/capacity.md).
 
-Optional: `python server.py --stdio` for one local client. That path does not use a bearer.
+Optional: `python3 server.py --stdio` for one local client. That path does not use a bearer.
 
 ## Demo server
 
-Hosted instance: `https://spaces-mockup.apps.andrewriley.info`. Do not run the
-server. `/health` is open; `/mcp` needs a bearer. That bearer is **only** for
-this host. It is not `local-dev` and it is not a token from another spaces-mockup
-server.
+Do not run the server. Point a client at
+`https://spaces-mockup.apps.andrewriley.info`. `/health` is open; `/mcp` needs a
+bearer. That bearer is **only** for this host. It is not `local-dev` and it is
+not a token from another spaces-mockup server.
 
 ```bash
 export MCP_BEARER_TOKEN=   # demo-host token
