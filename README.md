@@ -90,3 +90,14 @@ curl -sS https://spaces-mockup.apps.andrewriley.info/health
 ```
 
 Do not paste the token into the file. Some clients want `"type": "http"`.
+
+## Data and timestamps
+
+`python3 dataset.py` rewrites `dataset.json`. That file is a fixed Mockup
+Campus: locations, rooms, RoomOS devices, and a weekday occupancy curve.
+The running server loads it once and does not update Spaces data.
+
+Timestamps are stored as `offset_ms` from query time. Each read adds that
+offset to now, so occupancy and firehose events always look like the last
+24 hours. Inventory and counts stay the same until you run `dataset.py`
+again.
