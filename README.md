@@ -23,11 +23,16 @@ Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 
 ## Self-host
 
+Python 3.12+ only. No Make, Xcode, or extra packages. Set `MCP_BEARER_TOKEN`
+(HTTP will not start without it), then run the server:
+
 ```bash
-make venv && make lint && make test
-cp .env.example .env   # set MCP_BEARER_TOKEN; HTTP will not start without it
-./run.sh
+cp .env.example .env
+export MCP_BEARER_TOKEN=   # same value as in .env
+python3 server.py
 ```
+
+`./run.sh` does the same thing and sources `.env` if you have a POSIX shell.
 
 ```json
 {

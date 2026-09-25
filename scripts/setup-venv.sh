@@ -6,4 +6,4 @@ python3 -m venv .venv
 .venv/bin/pip install --upgrade pip
 .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/ruff --version
-echo "venv ready. Run: make lint && make test"
+echo "venv ready. Run: .venv/bin/ruff check . && .venv/bin/python test_server.py"
