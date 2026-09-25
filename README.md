@@ -4,7 +4,7 @@ Read-only MCP for a synthetic **Mockup Campus**. Same tool names as Webex
 Workspaces MCP plus Cisco Spaces Firehose pulls. No live Cisco APIs. Identities
 are `@mockup.example` only.
 
-Python 3.12+, standard library only. Workstation stdio or loopback HTTP.
+Python 3.12+, standard library only. Use the hosted demo or run your own.
 
 ## Tools
 
@@ -20,14 +20,14 @@ Nineteen reads.
 Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 (12 in a 10-seat room).
 
-## Public host
+## Demo server
 
-`https://spaces-mockup.apps.andrewriley.info` — `/health` is open; `/mcp` needs
-a bearer. That bearer is **only** for this host. It is not `local-dev` and it
-is not a token from another spaces-mockup server.
+Hosted instance: `https://spaces-mockup.apps.andrewriley.info`. `/health` is
+open; `/mcp` needs a bearer. That bearer is **only** for this host. It is not `local-dev`
+and it is not a token from another spaces-mockup server.
 
 ```bash
-export MCP_BEARER_TOKEN=   # public-host token
+export MCP_BEARER_TOKEN=   # demo-host token
 curl -sS https://spaces-mockup.apps.andrewriley.info/health
 ```
 
@@ -46,13 +46,13 @@ curl -sS https://spaces-mockup.apps.andrewriley.info/health
 
 Do not paste the token into the file. Some clients want `"type": "http"`.
 
-## Local
+## Self-host
 
 ```bash
 make venv && make lint && make test
 ```
 
-Stdio (no bearer):
+Stdio (no bearer; one client per process):
 
 ```json
 {
@@ -67,6 +67,10 @@ Stdio (no bearer):
 
 Loopback HTTP: `cp .env.example .env && ./run.sh` then
 `Authorization: Bearer local-dev` at `http://127.0.0.1:8080/mcp`.
+
+To publish your own URL, set a non-default `MCP_BEARER_TOKEN` and `LISTEN`
+(for example `0.0.0.0:8080`) and terminate TLS on a reverse proxy. Do not
+expose the process on the public internet without HTTPS.
 
 `dataset.py` rewrites `dataset.json`. Capacity notes:
 [docs/capacity.md](docs/capacity.md).
