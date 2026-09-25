@@ -17,7 +17,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEFAULT_LISTEN = "127.0.0.1:8080"
 DEFAULT_DATASET_PATH = HERE / "dataset.json"
-DEFAULT_TOKEN = "local-dev"
 
 LISTEN = os.environ.get("LISTEN", DEFAULT_LISTEN)
 TOKEN = os.environ.get("MCP_BEARER_TOKEN", "")
@@ -888,11 +887,13 @@ def serve_stdio() -> None:
 def main(argv: list[str] | None = None) -> None:
     global DATASET, TOKEN
     args = list(sys.argv[1:] if argv is None else argv)
-    TOKEN = os.environ.get("MCP_BEARER_TOKEN", "") or DEFAULT_TOKEN
+    TOKEN = os.environ.get("MCP_BEARER_TOKEN", "")
     DATASET = load_dataset(DATASET_PATH)
     if "--stdio" in args:
         serve_stdio()
         return
+    if not TOKEN:
+        raise SystemExit("MCP_BEARER_TOKEN is required")
     host, port_s = LISTEN.rsplit(":", 1)
     httpd = ThreadingHTTPServer((host, int(port_s)), Handler)
     print(f"spaces-mockup-mcp listening on {LISTEN}", flush=True)

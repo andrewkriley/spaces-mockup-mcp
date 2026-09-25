@@ -6,6 +6,9 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import os
+import subprocess
+import sys
 import threading
 import unittest
 import urllib.error
@@ -69,6 +72,26 @@ class LocalDefaultsTest(unittest.TestCase):
     def test_no_cluster_paths_in_defaults(self):
         self.assertNotIn("/data/", str(srv.DEFAULT_DATASET_PATH))
         self.assertNotIn("agents.svc", srv.DEFAULT_LISTEN)
+
+    def test_http_has_no_baked_bearer(self):
+        self.assertFalse(hasattr(srv, "DEFAULT_TOKEN"))
+        source = (HERE / "server.py").read_text(encoding="utf-8")
+        self.assertNotIn("DEFAULT_TOKEN", source)
+        self.assertNotIn("local-dev", source)
+
+    def test_http_main_exits_without_bearer(self):
+        env = {k: v for k, v in os.environ.items() if k != "MCP_BEARER_TOKEN"}
+        proc = subprocess.run(
+            [sys.executable, str(HERE / "server.py")],
+            cwd=HERE,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("MCP_BEARER_TOKEN", proc.stderr)
 
 
 class DatasetContractTest(unittest.TestCase):
