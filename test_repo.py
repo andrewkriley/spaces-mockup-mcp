@@ -46,6 +46,8 @@ class VenvAndLintContractTest(unittest.TestCase):
     def test_run_prefers_venv_python(self):
         text = (HERE / "run.sh").read_text(encoding="utf-8")
         self.assertIn(".venv/bin/python", text)
+        self.assertNotIn(":-local-dev", text)
+        self.assertIn("MCP_BEARER_TOKEN is required", text)
 
     def test_makefile_has_lint_and_test(self):
         text = (HERE / "Makefile").read_text(encoding="utf-8")
@@ -59,13 +61,15 @@ class ReadmeContractTest(unittest.TestCase):
     def test_readme_is_a_short_connect_guide(self):
         text = (HERE / "README.md").read_text(encoding="utf-8")
         lines = text.splitlines()
-        self.assertLessEqual(len(lines), 110, len(lines))
+        self.assertLessEqual(len(lines), 120, len(lines))
         self.assertIn("https://spaces-mockup.apps.andrewriley.info", text)
+        self.assertIn("http://127.0.0.1:8080/mcp", text)
         self.assertIn("MCP_BEARER_TOKEN", text)
         self.assertIn("not `local-dev`", text)
         self.assertIn("another spaces-mockup", text)
-        self.assertIn("## Demo server", text)
         self.assertIn("## Self-host", text)
+        self.assertIn("## Demo server", text)
+        self.assertLess(text.index("## Self-host"), text.index("## Demo server"))
         self.assertIn("LISTEN", text)
         self.assertEqual(text.count("```json"), 2, text.count("```json"))
         self.assertEqual(text.count('"mcpServers"'), 2)
@@ -73,8 +77,12 @@ class ReadmeContractTest(unittest.TestCase):
         self.assertNotIn("Claude Desktop", text)
         self.assertNotIn("<tokengoeshere>", text)
         self.assertNotIn("spaces-ghost", text)
+        self.assertNotIn("Dockerfile", text)
+        self.assertNotIn("docker compose", text)
         self.assertIn("make venv", text)
+        self.assertIn("./run.sh", text)
         self.assertIn("--stdio", text)
+        self.assertIn("does not use a bearer", text.lower())
 
 
 class CiWorkflowTest(unittest.TestCase):
