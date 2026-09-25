@@ -63,13 +63,16 @@ Optional: `python3 server.py --stdio` for one local client. That path does not u
 
 ## Demo server
 
-Do not run the server. Point a client at
-`https://spaces-mockup.apps.andrewriley.info`. `/health` is open; `/mcp` needs a
-bearer. That bearer is **only** for this host. It is not `local-dev` and it is
-not a token from another spaces-mockup server.
+The hosted URL is for **specific demo use cases** only. Do not run the
+server. Point a client at `https://spaces-mockup.apps.andrewriley.info`.
+`/health` is open; `/mcp` needs a bearer.
+
+The maintainer provides that bearer for those demos. It is **only** for this
+host. It is not `local-dev` and it is not a token from another spaces-mockup
+server.
 
 ```bash
-export MCP_BEARER_TOKEN=   # demo-host token
+export MCP_BEARER_TOKEN=   # token from the maintainer
 curl -sS https://spaces-mockup.apps.andrewriley.info/health
 ```
 
@@ -87,3 +90,14 @@ curl -sS https://spaces-mockup.apps.andrewriley.info/health
 ```
 
 Do not paste the token into the file. Some clients want `"type": "http"`.
+
+## Data and timestamps
+
+`python3 dataset.py` rewrites `dataset.json`. That file is a fixed Mockup
+Campus: locations, rooms, RoomOS devices, and a weekday occupancy curve.
+The running server loads it once and does not update Spaces data.
+
+Timestamps are stored as `offset_ms` from query time. Each read adds that
+offset to now, so occupancy and firehose events always look like the last
+24 hours. Inventory and counts stay the same until you run `dataset.py`
+again.
