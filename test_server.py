@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit and HTTP tests for spaces-ghost-mcp. No live Cisco APIs. No cluster."""
+"""Unit and HTTP tests for spaces-mockup-mcp. No live Cisco APIs. No cluster."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-spec = importlib.util.spec_from_file_location("spaces_ghost_mcp", HERE / "server.py")
+spec = importlib.util.spec_from_file_location("spaces_mockup_mcp", HERE / "server.py")
 srv = importlib.util.module_from_spec(spec)
 assert spec.loader is not None
 spec.loader.exec_module(srv)
@@ -79,11 +79,11 @@ class DatasetContractTest(unittest.TestCase):
         self.assertGreaterEqual(len(data["devices"]), 5)
         types = {row["eventType"] for row in data["firehose"]}
         self.assertTrue(REQUIRED_EVENT_TYPES.issubset(types), types)
-        self.assertEqual(data["meta"]["spacesTenantName"], "Ghost Campus")
+        self.assertEqual(data["meta"]["spacesTenantName"], "Mockup Campus")
 
     def test_dataset_is_synthetic(self):
         blob = json.dumps(srv.DATASET)
-        self.assertIn("@ghost.example", blob)
+        self.assertIn("@mockup.example", blob)
         self.assertNotIn("andreril@", blob)
         self.assertNotIn("jdoe@example.com", blob)
         self.assertNotIn("+14155551234", blob)
@@ -171,7 +171,7 @@ class FirehoseTest(unittest.TestCase):
     def test_health_lists_subscribed_types(self):
         out = srv.firehose_health({})
         self.assertTrue(REQUIRED_EVENT_TYPES.issubset(set(out["subscribedEventTypes"])))
-        self.assertEqual(out["spacesTenantName"], "Ghost Campus")
+        self.assertEqual(out["spacesTenantName"], "Mockup Campus")
         self.assertEqual(out["channel"], "pull")
 
     def test_events_filter_and_live_clock(self):
@@ -187,16 +187,16 @@ class FirehoseTest(unittest.TestCase):
             self.assertGreater(row["recordTimestamp"], now - srv.DAY)
 
     def test_events_device_and_limit(self):
-        out = srv.firehose_events({"deviceId": "ghost-phone-01", "limit": 3})
+        out = srv.firehose_events({"deviceId": "mockup-phone-01", "limit": 3})
         self.assertLessEqual(out["count"], 3)
         self.assertTrue(out["events"])
         blob = json.dumps(out)
-        self.assertIn("ghost-phone-01", blob)
+        self.assertIn("mockup-phone-01", blob)
 
     def test_latest_snapshot(self):
         now = 1_800_000_000_000
         out = srv.firehose_latest({"now_ms": now})
-        self.assertIn("ghost-phone-01", {row["deviceId"] for row in out["locations"]})
+        self.assertIn("mockup-phone-01", {row["deviceId"] for row in out["locations"]})
         board = next(row for row in out["occupancy"] if row["workspaceId"] == "ws-board")
         self.assertIn("peopleCount", board)
         self.assertLessEqual(board["timestamp"], now)
@@ -261,7 +261,7 @@ class RpcAndHttpTest(unittest.TestCase):
             base = f"http://{host}:{port}"
             health = json.loads(urllib.request.urlopen(base + "/health", timeout=5).read())
             self.assertEqual(health["status"], "ok")
-            self.assertEqual(health["server"], "spaces-ghost")
+            self.assertEqual(health["server"], "spaces-mockup")
             req = urllib.request.Request(
                 base + "/mcp",
                 data=json.dumps(
@@ -314,7 +314,7 @@ class StdioTest(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual(init["result"]["serverInfo"]["name"], "spaces-ghost")
+        self.assertEqual(init["result"]["serverInfo"]["name"], "spaces-mockup")
         listed = srv.rpc({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
         names = [t["name"] for t in listed["result"]["tools"]]
         self.assertIn("workspace_search", names)

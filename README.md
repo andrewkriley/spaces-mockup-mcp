@@ -1,8 +1,8 @@
-# spaces-ghost-mcp
+# spaces-mockup-mcp
 
-Read-only MCP for a synthetic **Ghost Campus**. Same tool names as Webex
+Read-only MCP for a synthetic **Mockup Campus**. Same tool names as Webex
 Workspaces MCP plus Cisco Spaces Firehose pulls. No live Cisco APIs. Identities
-are `@ghost.example` only.
+are `@mockup.example` only.
 
 Python 3.12+, standard library only. Workstation stdio or loopback HTTP.
 
@@ -22,20 +22,20 @@ Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 
 ## Public host
 
-`https://spaces-ghost.apps.andrewriley.info` — `/health` is open; `/mcp` needs
+`https://spaces-mockup.apps.andrewriley.info` — `/health` is open; `/mcp` needs
 a bearer. That bearer is **only** for this host. It is not `local-dev` and it
-is not a token from another spaces-ghost server.
+is not a token from another spaces-mockup server.
 
 ```bash
 export MCP_BEARER_TOKEN=   # public-host token
-curl -sS https://spaces-ghost.apps.andrewriley.info/health
+curl -sS https://spaces-mockup.apps.andrewriley.info/health
 ```
 
 ```json
 {
   "mcpServers": {
-    "spaces-ghost": {
-      "url": "https://spaces-ghost.apps.andrewriley.info/mcp",
+    "spaces-mockup": {
+      "url": "https://spaces-mockup.apps.andrewriley.info/mcp",
       "headers": {
         "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
       }
@@ -57,7 +57,7 @@ Stdio (no bearer):
 ```json
 {
   "mcpServers": {
-    "spaces-ghost": {
+    "spaces-mockup": {
       "command": "${workspaceFolder}/.venv/bin/python",
       "args": ["${workspaceFolder}/server.py", "--stdio"]
     }

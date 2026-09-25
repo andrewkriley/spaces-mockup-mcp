@@ -1,5 +1,5 @@
 [project]
-name = "spaces-ghost-mcp"
+name = "spaces-mockup-mcp"
 version = "0.1.0"
 description = "Synthetic Cisco Spaces + Webex Workspaces MCP for local workstations"
 requires-python = ">=3.12"
