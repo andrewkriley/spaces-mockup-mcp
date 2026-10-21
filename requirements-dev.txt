@@ -1,0 +1,2 @@
+# Dev-only. Runtime is the Python standard library.
+ruff==0.13.2
