@@ -1,0 +1,35 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Create venv
+        run: python3 -m venv .venv
+      - name: Install dev tools
+        run: .venv/bin/pip install -r requirements-dev.txt
+      - name: Ruff lint
+        run: .venv/bin/ruff check .
+      - name: Ruff format
+        run: .venv/bin/ruff format --check .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Create venv
+        run: python3 -m venv .venv
+      - name: Install dev tools
+        run: .venv/bin/pip install -r requirements-dev.txt
+      - name: Unit tests
+        run: |
+          .venv/bin/python test_server.py
+          .venv/bin/python test_repo.py
