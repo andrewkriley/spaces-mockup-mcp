@@ -290,7 +290,7 @@ Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggre
    - Expected: no booked-but-empty hours.
    - Hours used without a booking: Lab Bench 3, Boardroom North 2, Workshop Bay 2, and 1 each for Huddle A, Focus Desk 12 and Phone Booth N2.
 3. **Live vs. history.** *"Does firehose\_latest agree with the latest workspace\_metrics point for each room?"*
-   - Expected: yes for headcount (for example Workshop Bay 3, Boardroom 0). The timestamps differ by up to about an hour per room.
+   - Expected: yes for headcount (for example Workshop Bay 3, Boardroom 0). Most timestamps match exactly; Boardroom North's snapshot is about 30 minutes newer than its last metrics point.
 4. **Make the case.** *"Recommend one change to the room mix. Cite the numbers from at least two tools."*
    - A strong answer uses the capacity tool (Boardroom at 1.2×) and the usage tool (Focus Desk and Phone Booth at 50 min, never booked). It might suggest moving large meetings to Workshop Bay (8 seats, peak 7).
 
@@ -305,7 +305,7 @@ Tools: `device_search`, `device_event_history`, `device_aggregated_event_history
 2. **Explain an error.** *"What does SIGNAGE\_CONTENT\_STALE mean and how do I fix it?"*
    - Expected: the signage playlist hasn't refreshed in 24 hours. Push the workspace playlist from Control Hub.
 3. **End of sale.** *"Which device models reach end-of-sale soonest?"*
-   - Expected: Room Kit Mini on 31 Oct 2026, then Desk Pro on 30 Jun 2027.
+   - Expected: the Room Kit Mini already reached end-of-sale on 31 Oct 2026. Next is the Desk Pro on 30 Jun 2027.
 
 ### Advanced
 
@@ -316,7 +316,7 @@ Tools: `device_search`, `device_event_history`, `device_aggregated_event_history
 2. **Triage table.** *"Build a triage table: device, serial, room, open issue, severity and recommended action."*
    - Expected: 2 rows. `GHOSTBRD004` at Lab Bench (warning, push the signage playlist), and `GHOSTBAR005` at Workshop Bay (warning, confirm `Proximity.Mode` is On and that ultrasound isn't blocked).
 3. **Risk by usage.** *"Combine lifecycle dates with room popularity. Which replacement matters most?"*
-   - Expected: the Room Kit Mini. It reaches end-of-sale in 17 days and sits in Huddle A, the second-most-used room (400 min). Software maintenance for it ends 31 Oct 2029.
+   - Expected: the Room Kit Mini. It passed end-of-sale on 31 Oct 2026 and sits in Huddle A, the second-most-used room (400 min). Software maintenance for it ends 31 Oct 2029.
 4. **Software currency.** *"Which devices are behind on RoomOS, and does that line up with any device issues?"*
    - Expected: the Board Pro 55 (11.26.1.1) and Room Kit Mini (11.28.1.3) trail 11.32.1.5.
    - Both have had events, and the Board Pro 55 is the only device in warning. That's a correlation worth checking, not proof of a cause.
@@ -374,7 +374,8 @@ Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events
 1. **Event mix.** *"Pull Firehose events and count them by type."*
    - Expected: 50 events per pull. `SPACE_OCCUPANCY` is the most common type, at roughly 20 of the 50.
 2. **Rebuild a meeting.** *"Using SPACE\_OCCUPANCY\_CHANGE events only, trace Boardroom North's headcount."*
-   - Expected: 0 → 2 → 7 → 12 → 8 → 1 → 5. This matches the 12-person peak from Labs 1 and 2.
+   - Expected: 0 → 2 → 7 → 12 → 8 → 1 → 5 → 9 → 3 → 1 → 0. This matches the 12-person peak from Labs 1 and 2.
+   - If the answer stops at 5, the assistant used an unfiltered pull, which only holds the first 7 changes. Ask it to filter `firehose_events` by `eventType`.
 3. **Visitor journey.** *"Follow ghost-phone-01 across all event types in time order."*
    - Expected: device entry, user entry (`ghost-user-01`), Wi-Fi association, position (20, 30), inactive, position (21, 31), active, then position (21.5, 30.5).
 4. **Reconcile the counts.** *"North L1 reports DEVICE\_COUNT, CAMERA\_COUNT and USER\_PRESENCE totals. Why don't they agree?"*
