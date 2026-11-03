@@ -16,7 +16,7 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 **Checking your answers:** each exercise lists the expected result from the sample data. If yours differs, ask *"Which tool did you call, and with what arguments?"* Metric timestamps move with the clock, so read times relative to now, for example "about an hour ago".
 
-### Demo server
+## Demo server
 
 Do not run the server. Point the harness at
 `https://spaces-mockup.mcp.buildermate.ai`. `/health` is public.
