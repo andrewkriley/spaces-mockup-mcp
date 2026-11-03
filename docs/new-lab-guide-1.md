@@ -25,7 +25,7 @@ export MCP_BEARER_TOKEN=XXXFound-In-Box-Folder
 claude
 ```
 
-Replace `XXXFound-In-Box-Folder` with the token from the Box file. Claude only reads the variable when it starts, so if Claude is already open, exit and relaunch it from the shell where you ran `export`.
+Replace `XXXFound-In-Box-Folder` with the token from the Box file. Claude only reads the variable when it starts, so if Claude is already open, exit and relaunch it from the shell where you ran `export`. Do not paste the token into git, tickets, or chat.
 
 Do not run the server. Point the harness at
 `https://spaces-mockup.mcp.buildermate.ai`. `/health` is public.
