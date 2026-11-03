@@ -394,7 +394,7 @@ These have no single expected answer. Each one lists what a complete result incl
    - [ ] Lab Bench Board Pro: stale signage, oldest RoomOS, two drifted keys
    - [ ] Workshop Bay proximity failure ruled out as a config problem
    - [ ] Room Kit Mini already past end-of-sale (31 Oct 2026), in the second-busiest room
-2. **Room profile.** Pick one room with a device and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
+2. **Room profile.** Pick one room and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
 3. **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
    - Device telemetry and room metrics disagree on temperature.
    - Phone Booth N2 has environment readings but no device.
