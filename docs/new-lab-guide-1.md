@@ -20,21 +20,33 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run anything locally.
 
-### Linux CLI setup
+### Linux / macOS CLI setup
 
-1. **Set your token.** Copy the token from the `.txt` file in the lab's Box folder and export it in your shell. Replace `Found-In-Box-Folder` with that token:
+1. **Create a lab folder.** Work in a new, empty folder so the lab files stay together:
+
+   ```bash
+   mkdir spaces-lab && cd spaces-lab
+   ```
+
+2. **Set your token.** Copy the token from the `.txt` file in the lab's Box folder and export it in your shell. Replace `Found-In-Box-Folder` with that token:
 
    ```bash
    export MCP_BEARER_TOKEN=Found-In-Box-Folder
    ```
 
-2. **Check the server.** The health endpoint doesn't need the token. The response should mention `spaces-mockup`:
+3. **Check the server.** The health endpoint doesn't need the token:
 
    ```bash
    curl -sS https://spaces-mockup.mcp.buildermate.ai/health
    ```
 
-3. **Add the MCP server.** Create `.mcp.json` in the folder you'll run Claude from. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
+   You should see:
+
+   ```json
+   {"status":"ok","server":"spaces-mockup"}
+   ```
+
+4. **Add the MCP server.** Create `.mcp.json` in the lab folder. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
 
    ```bash
    cat > .mcp.json <<'EOF'
@@ -52,13 +64,16 @@ You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mc
    EOF
    ```
 
-4. **Launch Claude** from the same shell. If Claude asks whether to use the project MCP servers in `.mcp.json`, approve `spaces-mockup`:
+5. **Launch Claude** from the same shell. Claude may ask two questions: first whether to trust this folder (say yes), then whether to use the project MCP servers in `.mcp.json` (approve `spaces-mockup`):
 
    ```bash
    claude
    ```
 
-5. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If you get a 401 error, exit Claude, re-export the token in this shell, and relaunch.
+6. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If it doesn't:
+
+   - **401 error or `Missing environment variables: MCP_BEARER_TOKEN`:** the token isn't set in the shell Claude was launched from. Exit Claude, run the `export` from step 2 in this shell, and relaunch.
+   - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
 
 Do not paste the token into git, tickets, or chat.
 
