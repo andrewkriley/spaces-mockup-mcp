@@ -1,0 +1,37 @@
+{
+  "manifest_version": "0.2",
+  "name": "spaces-mockup",
+  "display_name": "Spaces Mockup (Lab)",
+  "version": "1.0.0",
+  "description": "Connects Claude Desktop to the hosted spaces-mockup lab MCP server.",
+  "long_description": "Read-only sample Webex Workspaces and Spaces Firehose data for the Spaces Mockup MCP lab. Enter the bearer token from the lab's Box folder when prompted.",
+  "author": {
+    "name": "Jason Churchill"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "MCP_BEARER_TOKEN": "${user_config.bearer_token}"
+      }
+    }
+  },
+  "user_config": {
+    "bearer_token": {
+      "type": "string",
+      "title": "Bearer token",
+      "description": "The token from the .txt file in the lab's Box folder.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "compatibility": {
+    "platforms": ["win32", "darwin"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}

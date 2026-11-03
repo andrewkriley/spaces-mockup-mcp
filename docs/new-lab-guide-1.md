@@ -6,7 +6,7 @@ Oct 14, 2026 · @Jason Churchill
 
 This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow 45 minutes for the Easy track only, or about 2 hours for everything.
 
-**You need:** Claude Code and the bearer token from the lab's Box folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. No other connectors are used.
+**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. No other connectors are used.
 
 **How the tracks work**
 
@@ -20,7 +20,7 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run anything locally.
 
-### Linux / macOS CLI setup
+### Claude Code CLI (Linux / macOS)
 
 1. **Create a lab folder.** Work in a new, empty folder so the lab files stay together:
 
@@ -75,11 +75,70 @@ You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mc
    - **401 error or `Missing environment variables: MCP_BEARER_TOKEN`:** the token isn't set in the shell Claude was launched from. Exit Claude, run the `export` from step 2 in this shell, and relaunch.
    - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
 
+### Claude Desktop (Windows / macOS)
+
+Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs on the Node.js built into Claude Desktop, so you don't need to install anything else, and the token is stored in your system's credential store rather than in a config file.
+
+1. **Download the extension.** Get `spaces-mockup.mcpb` from the lab's Box folder.
+
+2. **Install it.** Double-click `spaces-mockup.mcpb`, or drag it onto the Claude Desktop window. You can also go to **Settings → Extensions → Advanced settings → Install Extension…** and choose the file. Click **Install** when Claude Desktop shows the extension details.
+
+3. **Enter your token.** When asked for **Bearer token**, paste the token from the `.txt` file in the lab's Box folder and save.
+
+4. **Turn it on.** In **Settings → Extensions**, make sure **Spaces Mockup (Lab)** is enabled.
+
+5. **Verify.** Start a new chat and open the tools menu. It should list the `spaces-mockup` tools. As a quick check, ask *"Call firehose_health"*. The reply should mention Ghost Campus. If it doesn't:
+
+   - **"rejected the bearer token (HTTP 401)":** the token is wrong or missing. Go to **Settings → Extensions → Spaces Mockup (Lab) → Configure**, paste the token again, then turn the extension off and on.
+   - **Tools don't appear:** quit Claude Desktop fully (on Windows, right-click the Claude icon in the system tray and choose **Quit**) and reopen it.
+
+### Cursor
+
+Cursor connects to the server directly and reads the token from an environment variable, so it stays out of the config file.
+
+1. **Set your token.** Cursor only sees the variable if it's set before Cursor starts.
+
+   - **Windows (PowerShell):** this saves it for your user account. Quit Cursor completely, then reopen it afterwards:
+
+     ```powershell
+     setx MCP_BEARER_TOKEN "Found-In-Box-Folder"
+     ```
+
+   - **Linux / macOS:** export it, then open Cursor from the same shell:
+
+     ```bash
+     export MCP_BEARER_TOKEN=Found-In-Box-Folder
+     cursor .
+     ```
+
+   Replace `Found-In-Box-Folder` with the token from the Box file.
+
+2. **Add the MCP server.** Open **Cursor Settings → MCP** (shown as **Tools & MCP** in some versions) and choose **Add Custom MCP**. This opens `mcp.json`. Add:
+
+   ```json
+   {
+     "mcpServers": {
+       "spaces-mockup": {
+         "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
+         "headers": {
+           "Authorization": "Bearer ${env:MCP_BEARER_TOKEN}"
+         }
+       }
+     }
+   }
+   ```
+
+   Cursor uses `${env:...}`, not the `${...}` form that Claude Code uses.
+
+3. **Verify.** Back in **Cursor Settings → MCP**, `spaces-mockup` should show a green dot and list its tools. If it's red or shows a 401, the variable wasn't set when Cursor started: on Windows, quit Cursor fully and reopen it; on Linux or macOS, relaunch it from the shell where you ran `export`.
+
+4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
+
 Do not paste the token into git, tickets, or chat.
 
 ## Data sources
 
-The server serves one sample tenant, Ghost Campus in Sydney. It is read-only: nothing you ask can change bookings or devices. You don't call the tools directly. Ask a question and Claude picks the tool.
+The server serves one sample tenant, Ghost Campus in Sydney. It is read-only: nothing you ask can change bookings or devices. You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
 
 ### Tools
 
