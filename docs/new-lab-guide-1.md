@@ -190,7 +190,7 @@ Cursor connects to the server directly and reads the token from an environment v
 
 ## Data sources
 
-The server serves one sample tenant, Ghost Campus in Sydney. It is read-only: nothing you ask can change bookings or devices. You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
+You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
 
 ### Tools
 
@@ -203,7 +203,7 @@ The server serves one sample tenant, Ghost Campus in Sydney. It is read-only: no
 | `workspace_aggregated_popularity_metrics` | Utilization | Rooms ranked by minutes used | — |
 | `workspace_aggregated_capacity_utilization` | Utilization | Overcrowded and under-utilized rooms with peak ratio | — |
 | `firehose_latest` | Live | Current headcount per room and positions of tracked phones | — |
-| `firehose_events` | Live | Raw `EventRecord` stream (50 per pull) | — |
+| `firehose_events` | Live | Raw `EventRecord` stream (up to 50 per pull) | optional `eventType`, `locationId`, `deviceId`, `workspaceId`, `fromTimestamp`, `limit` |
 | `firehose_health` | Live | Stream status, tenant, subscribed event types | — |
 | `device_search` | Devices | Model, serial, RoomOS version, room, connection status | optional filter |
 | `device_event_history` | Devices | Recent events for one device | `device_id` |
