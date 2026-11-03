@@ -27,6 +27,21 @@ curl -sS https://spaces-mockup.mcp.buildermate.ai/health
 
 Replace `Found-In-Box-Folder` with the token from the Box file. Claude only reads the variable when it starts, so if Claude is already open, exit and relaunch it from the shell where you ran `export`. Do not paste the token into git, tickets, or chat.
 
+### Add MCP server
+
+```json
+{
+  "mcpServers": {
+    "spaces-mockup": {
+      "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
+      }
+    }
+  }
+}
+```
+
 Do not run the server. Point the harness at
 `https://spaces-mockup.mcp.buildermate.ai`. `/health` is public.
 `/mcp` needs the bearer issued **for that host only**. It is not a token
