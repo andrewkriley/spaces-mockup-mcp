@@ -263,23 +263,23 @@ Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
 ### Easy
 
 1. **Temperature everywhere.** *"Show me the temperature in all the rooms."*
-   - Answer: **1.E1** in the [Answer key](#answer-key).
+   - → Answer **1.E1**
 2. **One room over the day.** *"Show Boardroom North's temperature history."*
-   - Answer: **1.E2** in the [Answer key](#answer-key).
+   - → Answer **1.E2**
 3. **Quietest rooms.** *"Which rooms are quietest?"*
-   - Answer: **1.E3** in the [Answer key](#answer-key).
+   - → Answer **1.E3**
 
 ### Advanced
 
 1. **Comfort alerts.** *"Flag any hour in any room where temperature went over 24 °C or humidity reached 60%."*
-   - Answer: **1.A1** in the [Answer key](#answer-key).
+   - → Answer **1.A1**
 2. **Build a model.** *"Across all rooms, how do temperature, humidity and noise change with headcount?"*
-   - Answer: **1.A2** in the [Answer key](#answer-key).
+   - → Answer **1.A2**
 3. **Two sources, one room.** *"Compare Boardroom North's temperature in workspace\_metrics with the WEBEX\_TELEMETRY ambientTemp for the same hour."*
    - Discuss: which source would you trust for a comfort complaint, and why?
-   - Answer: **1.A3** in the [Answer key](#answer-key).
+   - → Answer **1.A3**
 4. **Data freshness.** *"How many readings does each room have, and how old is each room's latest one?"*
-   - Answer: **1.A4** in the [Answer key](#answer-key).
+   - → Answer **1.A4**
 
 ## Lab 2 — Utilization and occupancy
 
@@ -288,22 +288,22 @@ Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggre
 ### Easy
 
 1. **Who's in now.** *"How many people are in each room right now?"*
-   - Answer: **2.E1** in the [Answer key](#answer-key).
+   - → Answer **2.E1**
 2. **Most popular.** *"Rank rooms by actual use."*
-   - Answer: **2.E2** in the [Answer key](#answer-key).
+   - → Answer **2.E2**
 3. **Wrong-sized rooms.** *"Which rooms are overcrowded or under-utilized?"*
-   - Answer: **2.E3** in the [Answer key](#answer-key).
+   - → Answer **2.E3**
 
 ### Advanced
 
 1. **Booking accuracy.** *"For each room, divide used minutes by booked minutes and explain what the ratio means."*
-   - Answer: **2.A1** in the [Answer key](#answer-key).
+   - → Answer **2.A1**
 2. **No-shows and walk-ins, hour by hour.** *"Using workspace\_metrics, find hours that were booked but empty, and hours that were used without a booking."*
-   - Answer: **2.A2** in the [Answer key](#answer-key).
+   - → Answer **2.A2**
 3. **Live vs. history.** *"Does firehose\_latest agree with the latest workspace\_metrics point for each room?"*
-   - Answer: **2.A3** in the [Answer key](#answer-key).
+   - → Answer **2.A3**
 4. **Make the case.** *"Recommend one change to the room mix. Cite the numbers from at least two tools."*
-   - Answer: **2.A4** in the [Answer key](#answer-key).
+   - → Answer **2.A4**
 
 ## Lab 3 — Devices, errors and lifecycle
 
@@ -312,22 +312,22 @@ Tools: `device_search`, `device_event_history`, `device_aggregated_event_history
 ### Easy
 
 1. **Fleet status.** *"List all devices with status and RoomOS version."*
-   - Answer: **3.E1** in the [Answer key](#answer-key).
+   - → Answer **3.E1**
 2. **Explain an error.** *"What does SIGNAGE\_CONTENT\_STALE mean and how do I fix it?"*
-   - Answer: **3.E2** in the [Answer key](#answer-key).
+   - → Answer **3.E2**
 3. **End of sale.** *"Which device models reach end-of-sale soonest?"*
-   - Answer: **3.E3** in the [Answer key](#answer-key).
+   - → Answer **3.E3**
 
 ### Advanced
 
 1. **Open vs. resolved.** *"Summarize events across the organization, then check each device's history and tell me which issues are still open."*
-   - Answer: **3.A1** in the [Answer key](#answer-key).
+   - → Answer **3.A1**
 2. **Triage table.** *"Build a triage table: device, serial, room, open issue, severity and recommended action."*
-   - Answer: **3.A2** in the [Answer key](#answer-key).
+   - → Answer **3.A2**
 3. **Risk by usage.** *"Combine lifecycle dates with room popularity. Which replacement matters most?"*
-   - Answer: **3.A3** in the [Answer key](#answer-key).
+   - → Answer **3.A3**
 4. **Software currency.** *"Which devices are behind on RoomOS, and does that line up with any device issues?"*
-   - Answer: **3.A4** in the [Answer key](#answer-key).
+   - → Answer **3.A4**
 
 ## Lab 4 — Configuration and drift
 
@@ -336,24 +336,25 @@ Tools: `device_configuration_schema`, `device_configuration_template_list`, `dev
 ### Easy
 
 1. **What can be set.** *"List the configuration keys and their allowed values."*
-   - Answer: **4.E1** in the [Answer key](#answer-key).
+   - → Answer **4.E1**
 2. **Templates.** *"What configuration templates exist?"*
-   - Answer: **4.E2** in the [Answer key](#answer-key).
+   - → Answer **4.E2**
 3. **One device.** *"Show the Boardroom Room Bar Pro's settings."*
-   - Answer: **4.E3** in the [Answer key](#answer-key).
+   - → Answer **4.E3**
 
 ### Advanced
 
 1. **Fleet drift report.** *"Check every device against its template and tabulate the drift."*
-   - Answer: **4.A1** in the [Answer key](#answer-key).
+   - → Answer **4.A1**
 2. **Rule out config.** *"Workshop Bay reported PROXIMITY\_PAIRING\_FAIL. Is its configuration the cause?"*
-   - Answer: **4.A2** in the [Answer key](#answer-key).
+   - → Answer **4.A2**
 3. **Same model, different rooms.** *"Diff the two Room Bars (Boardroom and Workshop)."*
-   - Answer: **4.A3** in the [Answer key](#answer-key).
+   - Discuss: does a bigger room justify the louder default?
+   - → Answer **4.A3**
 4. **Remediation plan.** *"Write the exact changes needed to bring every device back to template, and validate each value against the schema."*
-   - Answer: **4.A4** in the [Answer key](#answer-key).
+   - → Answer **4.A4**
 5. **Question the template.** *"Lab Bench is an open workspace but uses the meeting-room template. Is that the right template?"*
-   - Answer: **4.A5** in the [Answer key](#answer-key).
+   - → Answer **4.A5**
 
 ## Lab 5 — Locations and the Firehose replay
 
@@ -362,31 +363,31 @@ Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events
 ### Easy
 
 1. **Site map.** *"Show me the location hierarchy."*
-   - Answer: **5.E1** in the [Answer key](#answer-key).
+   - → Answer **5.E1**
 2. **Stream health.** *"Is the Firehose healthy, and what does it subscribe to?"*
-   - Answer: **5.E2** in the [Answer key](#answer-key).
+   - → Answer **5.E2**
 3. **Who's on which floor.** *"Where are the tracked phones right now?"*
-   - Answer: **5.E3** in the [Answer key](#answer-key).
+   - → Answer **5.E3**
 
 ### Advanced
 
 1. **Event mix.** *"Pull Firehose events and count them by type."*
-   - Answer: **5.A1** in the [Answer key](#answer-key).
+   - → Answer **5.A1**
 2. **Rebuild a meeting.** *"Using SPACE\_OCCUPANCY\_CHANGE events only, trace Boardroom North's headcount."*
-   - Answer: **5.A2** in the [Answer key](#answer-key).
+   - → Answer **5.A2**
 3. **Visitor journey.** *"Follow ghost-phone-01 across all event types in time order."*
-   - Answer: **5.A3** in the [Answer key](#answer-key).
+   - → Answer **5.A3**
 4. **Reconcile the counts.** *"North L1 reports DEVICE\_COUNT, CAMERA\_COUNT and USER\_PRESENCE totals. Why don't they agree?"*
-   - Answer: **5.A4** in the [Answer key](#answer-key).
+   - → Answer **5.A4**
 5. **Spot personal data.** *"Which Firehose fields would be personal data in a real tenant?"*
-   - Answer: **5.A5** in the [Answer key](#answer-key).
+   - → Answer **5.A5**
 
 ## Stretch goals
 
 These have no single expected answer. Each one lists what a complete result includes; checklists and worked numbers are in the Answer key.
 
 1. **Campus health report in one prompt.** Ask for a full report covering environment, utilization, device issues, drift and lifecycle.
-   - Answer: **S1** in the [Answer key](#answer-key).
+   - → Answer **S1**
 2. **Room profile.** Pick one room and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
 3. **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
    - Device telemetry and room metrics disagree on temperature.
@@ -394,7 +395,7 @@ These have no single expected answer. Each one lists what a complete result incl
    - Lab Bench uses a meeting-room template.
    - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
 4. **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
-   - Answer: **S4** in the [Answer key](#answer-key).
+   - → Answer **S4**
 5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
 6. **Runbook per error code.** For each of the three error codes, write the tool sequence an on-call engineer should follow, from detection to fix. Success: each runbook names the tools in order and ends with the catalog's recommended action.
 7. **Design the next tool.** Name one question you couldn't answer in these labs, such as who booked a room or what the HVAC set point is. Specify the tool that would answer it: name, inputs, output fields, and which existing IDs it joins on.
@@ -529,7 +530,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 **4.A3 Same model, different rooms.**
 
-- One key, `Audio.DefaultVolume` (50 vs. 40). Discuss whether a bigger room justifies the louder default.
+- One key, `Audio.DefaultVolume` (50 vs. 40).
 
 **4.A4 Remediation plan.**
 
