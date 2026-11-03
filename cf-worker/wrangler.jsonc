@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "dev-spaces-mockup",
+  "main": "worker.py",
+  "compatibility_date": "2026-11-03",
+  "compatibility_flags": ["python_workers"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "dev-spaces-mockup.buildermate.ai",
+      "custom_domain": true,
+    },
+  ],
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+    },
+  },
+}

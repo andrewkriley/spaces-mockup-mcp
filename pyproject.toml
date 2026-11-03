@@ -9,7 +9,7 @@ readme = "README.md"
 target-version = "py312"
 line-length = 100
 src = ["."]
-exclude = [".venv", ".git"]
+exclude = [".venv", ".git", "node_modules", "dataset_embed.py", "cf-worker/dataset_embed.py", "cf-worker/python_modules", "cf-worker/.venv-workers"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

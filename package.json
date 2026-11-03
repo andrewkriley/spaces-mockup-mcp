@@ -1,0 +1,12 @@
+{
+  "name": "dev-spaces-mockup",
+  "private": true,
+  "scripts": {
+    "embed-dataset": "python3 scripts/embed_dataset.py",
+    "deploy": "python3 scripts/embed_dataset.py && uv run --directory cf-worker pywrangler deploy",
+    "dev": "python3 scripts/embed_dataset.py && uv run --directory cf-worker pywrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.157.0"
+  }
+}

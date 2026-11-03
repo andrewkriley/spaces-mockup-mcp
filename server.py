@@ -798,6 +798,47 @@ def rpc(body: dict) -> dict:
     }
 
 
+def handle_http(
+    method: str,
+    path: str,
+    authorization: str,
+    body: bytes | str | None = None,
+) -> tuple[int, dict]:
+    """Route GET /health and POST /mcp. Used by the stdlib server and the Worker."""
+    route = path.split("?", 1)[0]
+    if method == "GET":
+        if route in ("/health", "/healthz"):
+            return 200, {"status": "ok", "server": "spaces-mockup"}
+        return 404, {"error": "not found"}
+    if method == "POST":
+        if route.rstrip("/") != "/mcp":
+            return 404, {"error": "not found"}
+        if not TOKEN or authorization != f"Bearer {TOKEN}":
+            return 401, {"error": "bearer required"}
+        if body is None:
+            raw = b"{}"
+        elif isinstance(body, str):
+            raw = body.encode()
+        else:
+            raw = body
+        try:
+            parsed = json.loads(raw or b"{}")
+        except json.JSONDecodeError:
+            return 400, {
+                "jsonrpc": "2.0",
+                "id": None,
+                "error": {"code": -32700, "message": "parse error"},
+            }
+        if not isinstance(parsed, dict):
+            return 400, {
+                "jsonrpc": "2.0",
+                "id": None,
+                "error": {"code": -32600, "message": "invalid request"},
+            }
+        return 200, rpc(parsed)
+    return 404, {"error": "not found"}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "spaces-mockup-mcp/0.1"
 
@@ -812,44 +853,20 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def _authed(self) -> bool:
-        if not TOKEN:
-            return False
-        return self.headers.get("Authorization", "") == f"Bearer {TOKEN}"
-
     def do_GET(self) -> None:  # noqa: N802
-        if self.path.split("?", 1)[0] in ("/health", "/healthz"):
-            self._send(200, {"status": "ok", "server": "spaces-mockup"})
-            return
-        self._send(404, {"error": "not found"})
+        code, payload = handle_http("GET", self.path, self.headers.get("Authorization", ""))
+        self._send(code, payload)
 
     def do_POST(self) -> None:  # noqa: N802
-        if self.path.split("?", 1)[0].rstrip("/") != "/mcp":
-            self._send(404, {"error": "not found"})
-            return
-        if not self._authed():
-            self._send(401, {"error": "bearer required"})
-            return
         length = int(self.headers.get("Content-Length") or 0)
-        try:
-            body = json.loads(self.rfile.read(length) or b"{}")
-        except json.JSONDecodeError:
-            self._send(
-                400,
-                {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}},
-            )
-            return
-        if not isinstance(body, dict):
-            self._send(
-                400,
-                {
-                    "jsonrpc": "2.0",
-                    "id": None,
-                    "error": {"code": -32600, "message": "invalid request"},
-                },
-            )
-            return
-        self._send(200, rpc(body))
+        body = self.rfile.read(length) if length else b"{}"
+        code, payload = handle_http(
+            "POST",
+            self.path,
+            self.headers.get("Authorization", ""),
+            body,
+        )
+        self._send(code, payload)
 
 
 def stdio_write_message(payload: dict) -> bytes:

@@ -72,3 +72,16 @@ Desktop.ini
 *.log
 tmp/
 temp/
+
+# Cloudflare Worker local state
+node_modules/
+.wrangler/
+.dev.vars
+dataset_embed.py
+cf-worker/server.py
+cf-worker/dataset_embed.py
+cf-worker/.venv/
+cf-worker/.venv-workers/
+cf-worker/python_modules/
+cf-worker/src/vendor/
+cf-worker/pylock.toml

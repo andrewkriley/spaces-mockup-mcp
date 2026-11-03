@@ -288,6 +288,22 @@ class RpcAndHttpTest(unittest.TestCase):
             srv.HANDLERS["location_search"] = orig
         self.assertEqual(out["error"], "refusing to return credential-shaped fields")
 
+    def test_handle_http_health_and_auth(self):
+        code, payload = srv.handle_http("GET", "/health", "")
+        self.assertEqual(code, 200)
+        self.assertEqual(payload, {"status": "ok", "server": "spaces-mockup"})
+        code, payload = srv.handle_http("POST", "/mcp", "")
+        self.assertEqual(code, 401)
+        self.assertEqual(payload, {"error": "bearer required"})
+        code, payload = srv.handle_http(
+            "POST",
+            "/mcp",
+            "Bearer mcp-bearer",
+            json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}),
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(payload["result"]["serverInfo"]["name"], "spaces-mockup")
+
     def test_http_health_and_mcp_roundtrip(self):
         httpd = ThreadingHTTPServer(("127.0.0.1", 0), srv.Handler)
         thread = threading.Thread(target=httpd.serve_forever, daemon=True)
