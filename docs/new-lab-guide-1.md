@@ -4,9 +4,9 @@ Nov 3, 2026 · @Jason Churchill
 
 ## Overview
 
-This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow 45 minutes for the Easy track only, or about 2 hours for everything.
+This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Ghost Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 45 minutes for the Easy track only, or about 2 hours for everything.
 
-**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. No other connectors are used.
+**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. The labs don't use any other connectors.
 
 **How the tracks work**
 
@@ -18,7 +18,7 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 ## MCP server setup
 
-You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run anything locally.
+You'll connect your client to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run the server yourself. Follow the section for your client below.
 
 ### Claude Code CLI (Linux / macOS)
 
