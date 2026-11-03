@@ -33,6 +33,7 @@ Replace `Found-In-Box-Folder` with the token from the Box file. Claude only read
 {
   "mcpServers": {
     "spaces-mockup": {
+      "type": "http",
       "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
       "headers": {
         "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
