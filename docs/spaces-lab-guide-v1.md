@@ -1,6 +1,6 @@
 # Spaces Mockup MCP — Lab Guide: Easy to Advanced
 
-Nov 3, 2026 · @Jason Churchill
+Nov 4, 2026 · @Jason Churchill
 
 ## Overview
 
@@ -60,23 +60,15 @@ Then follow the section for your client.
    export MCP_BEARER_TOKEN=Found-In-Box-Folder
    ```
 
-3. **Add the MCP server.** Create `.mcp.json` in the lab folder. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. The single quotes keep `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
 
    ```bash
-   cat > .mcp.json <<'EOF'
-   {
-     "mcpServers": {
-       "spaces-mockup": {
-         "type": "http",
-         "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
-         "headers": {
-           "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
-         }
-       }
-     }
-   }
-   EOF
+   claude mcp add --transport http --scope project spaces-mockup \
+     https://spaces-mockup.mcp.buildermate.ai/mcp \
+     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
+
+   If it says `MCP server spaces-mockup already exists in .mcp.json`, you've added it before and can go on to the next step. To replace the old entry instead, run `claude mcp remove spaces-mockup -s project`, then run the command again.
 
 4. **Launch Claude** from the same shell. Claude may ask two questions: first whether to trust this folder (say yes), then whether to use the project MCP servers in `.mcp.json` (approve `spaces-mockup`):
 
@@ -105,23 +97,15 @@ Use PowerShell for every step.
    $env:MCP_BEARER_TOKEN = "Found-In-Box-Folder"
    ```
 
-3. **Add the MCP server.** Create `.mcp.json` in the lab folder. The single-quoted `@' … '@` block keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. The single quotes keep `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file:
 
    ```powershell
-   @'
-   {
-     "mcpServers": {
-       "spaces-mockup": {
-         "type": "http",
-         "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
-         "headers": {
-           "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
-         }
-       }
-     }
-   }
-   '@ | Set-Content -Path .mcp.json -Encoding ascii
+   claude mcp add --transport http --scope project spaces-mockup `
+     https://spaces-mockup.mcp.buildermate.ai/mcp `
+     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
+
+   If it says the server already exists, handle it as in the Linux / macOS steps.
 
 4. **Launch Claude** from the same PowerShell window, and answer the trust and MCP server questions as in the Linux / macOS steps:
 
