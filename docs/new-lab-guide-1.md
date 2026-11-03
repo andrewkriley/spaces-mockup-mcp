@@ -1,6 +1,6 @@
 # Spaces Mockup MCP — Lab Guide: Easy to Advanced
 
-Oct 14, 2026 · @Jason Churchill
+Nov 3, 2026 · @Jason Churchill
 
 ## Overview
 
