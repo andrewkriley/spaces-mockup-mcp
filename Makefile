@@ -7,7 +7,7 @@ ifeq ($(RUFF),)
 RUFF := ruff
 endif
 
-.PHONY: venv lint test ci
+.PHONY: venv lint test ci pdf
 
 venv:
 	bash scripts/setup-venv.sh
@@ -21,3 +21,7 @@ test:
 	$(PYTHON) test_repo.py
 
 ci: lint test
+
+# Rebuild docs/spaces-lab-guide-v1.pdf and -dark.pdf. Set CHROME to pick a browser.
+pdf:
+	$(PYTHON) scripts/build_pdfs.py

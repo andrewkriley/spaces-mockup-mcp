@@ -1,2 +1,5 @@
 # Dev-only. Runtime is the Python standard library.
 ruff==0.13.2
+# Lab guide PDFs (scripts/build_pdfs.py, `make pdf`). Also needs Chrome or Chromium.
+markdown-it-py==4.2.0
+mdit-py-plugins==0.6.1

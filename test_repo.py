@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import importlib.util
+import re
 import unittest
 from pathlib import Path
 
@@ -153,6 +155,30 @@ class SpacesLabGuideNamesTest(unittest.TestCase):
         self.assertNotIn("ghost", text.lower())
         for name in ("Mockup Campus", "loc-campus-mockup", "mockup-phone-01", "MOCKBRD004"):
             self.assertIn(name, text)
+
+
+class PdfBuildTest(unittest.TestCase):
+    def test_makefile_and_requirements_cover_pdf_build(self):
+        makefile = (HERE / "Makefile").read_text(encoding="utf-8")
+        self.assertIn("pdf:", makefile)
+        self.assertIn("scripts/build_pdfs.py", makefile)
+        reqs = (HERE / "requirements-dev.txt").read_text(encoding="utf-8")
+        self.assertIn("markdown-it-py==", reqs)
+        self.assertIn("mdit-py-plugins==", reqs)
+
+    @unittest.skipUnless(
+        importlib.util.find_spec("markdown_it"), "run make venv for the docs packages"
+    )
+    def test_every_guide_link_has_a_target(self):
+        spec = importlib.util.spec_from_file_location("build_pdfs", HERE / "scripts/build_pdfs.py")
+        build = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(build)
+        guide = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        body = build.render_body(guide)
+        ids = set(re.findall(r' id="([^"]+)"', body))
+        links = set(re.findall(r'href="#([^"]+)"', body))
+        self.assertTrue(links)
+        self.assertEqual(links - ids, set())
 
 
 class CiWorkflowTest(unittest.TestCase):
