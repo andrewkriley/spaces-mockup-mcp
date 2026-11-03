@@ -393,13 +393,14 @@ These have no single expected answer. Each one lists what a complete result incl
    - [ ] Focus Desk 12 and Phone Booth N2 under-used: 50 min, never booked
    - [ ] Lab Bench Board Pro: stale signage, oldest RoomOS, two drifted keys
    - [ ] Workshop Bay proximity failure ruled out as a config problem
-   - [ ] Room Kit Mini end-of-sale 31 Oct 2026, in the second-busiest room
-2. **Room profile.** Pick one room and build a one-page profile by joining every tool on its IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak.
+   - [ ] Room Kit Mini already past end-of-sale (31 Oct 2026), in the second-busiest room
+2. **Room profile.** Pick one room with a device and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
 3. **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
    - Device telemetry and room metrics disagree on temperature.
    - Phone Booth N2 has environment readings but no device.
    - Lab Bench uses a meeting-room template.
+   - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
 4. **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Expected: about 24.65 °C, 63% humidity and noise 58. Then propose a headcount limit that keeps the room under 24 °C (10 people or fewer, which is exactly its seat count).
-5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure.
+5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
 6. **Runbook per error code.** For each of the three error codes, write the tool sequence an on-call engineer should follow, from detection to fix. Success: each runbook names the tools in order and ends with the catalog's recommended action.
 7. **Design the next tool.** Name one question you couldn't answer in these labs, such as who booked a room or what the HVAC set point is. Specify the tool that would answer it: name, inputs, output fields, and which existing IDs it joins on.
