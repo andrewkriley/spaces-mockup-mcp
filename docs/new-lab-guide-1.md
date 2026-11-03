@@ -6,7 +6,7 @@ Oct 14, 2026 · @Jason Churchill
 
 This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow 45 minutes for the Easy track only, or about 2 hours for everything.
 
-**You need:** Claude Code with the `spaces-mockup` server connected. Run `/mcp` to confirm it's listed. No other connectors are used.
+**You need:** Claude Code and the bearer token from the lab's Box folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. No other connectors are used.
 
 **How the tracks work**
 
@@ -18,57 +18,49 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 ## MCP server setup
 
-### Linux CLI Setup
+You'll connect Claude Code to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run anything locally.
 
-Before you open Claude, set the bearer token in your shell. The token is in the `.txt` file in the lab's Box folder. Copy it, then from the command line export it and start Claude from that same shell:
+### Linux CLI setup
 
-```bash
-export MCP_BEARER_TOKEN=Found-In-Box-Folder
-curl -sS https://spaces-mockup.mcp.buildermate.ai/health
-```
+1. **Set your token.** Copy the token from the `.txt` file in the lab's Box folder and export it in your shell. Replace `Found-In-Box-Folder` with that token:
 
-Replace `Found-In-Box-Folder` with the token from the Box file. Claude only reads the variable when it starts, so if Claude is already open, exit and relaunch it from the shell where you ran `export`. Do not paste the token into git, tickets, or chat.
+   ```bash
+   export MCP_BEARER_TOKEN=Found-In-Box-Folder
+   ```
 
-When the health check responds, open Claude from the same shell:
+2. **Check the server.** The health endpoint doesn't need the token. The response should mention `spaces-mockup`:
 
-```bash
-claude
-```
+   ```bash
+   curl -sS https://spaces-mockup.mcp.buildermate.ai/health
+   ```
 
-Then add the MCP server using the configuration below.
+3. **Add the MCP server.** Create `.mcp.json` in the folder you'll run Claude from. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
 
-### Add MCP server
+   ```bash
+   cat > .mcp.json <<'EOF'
+   {
+     "mcpServers": {
+       "spaces-mockup": {
+         "type": "http",
+         "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
+         "headers": {
+           "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
+         }
+       }
+     }
+   }
+   EOF
+   ```
 
-Claude Code reads project MCP servers from a file named `.mcp.json` in the folder you launched it from. Paste the configuration below into Claude and ask it to save it as `.mcp.json` in the current folder:
+4. **Launch Claude** from the same shell. If Claude asks whether to use the project MCP servers in `.mcp.json`, approve `spaces-mockup`:
 
-```json
-{
-  "mcpServers": {
-    "spaces-mockup": {
-      "type": "http",
-      "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
-      "headers": {
-        "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
-      }
-    }
-  }
-}
-```
+   ```bash
+   claude
+   ```
 
-Claude only loads `.mcp.json` when it starts. Exit Claude (`/exit`), then relaunch it from the same shell so it picks up the file and your `MCP_BEARER_TOKEN`:
+5. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If you get a 401 error, exit Claude, re-export the token in this shell, and relaunch.
 
-```bash
-claude
-```
-
-If Claude asks whether to use the project MCP servers in `.mcp.json`, approve `spaces-mockup`. Then run `/mcp` and check that `spaces-mockup` is listed as connected. If it shows a 401 error, check that you exported the token in this shell before launching Claude.
-
-Do not run the server. Point the harness at
-`https://spaces-mockup.mcp.buildermate.ai`. `/health` is public.
-`/mcp` needs the bearer issued **for that host only**. It is not a token
-from another spaces-mockup and it is not the value in `.env.example`.
-
-Client URL: `https://spaces-mockup.mcp.buildermate.ai/mcp`.
+Do not paste the token into git, tickets, or chat.
 
 ## Data sources
 
