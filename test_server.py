@@ -216,6 +216,18 @@ class FirehoseTest(unittest.TestCase):
         blob = json.dumps(out)
         self.assertIn("mockup-phone-01", blob)
 
+    def test_events_device_filter_matches_user_device_ids(self):
+        out = srv.firehose_events({"deviceId": "mockup-phone-01"})
+        types = [row["eventType"] for row in out["events"]]
+        self.assertIn("USER_PRESENCE", types)
+        users = [
+            row["userPresence"]["user"]
+            for row in out["events"]
+            if row["eventType"] == "USER_PRESENCE"
+        ]
+        self.assertEqual([u["userId"] for u in users], ["mockup-user-01"])
+        self.assertEqual(out["count"], 8)
+
     def test_latest_snapshot(self):
         now = 1_800_000_000_000
         out = srv.firehose_latest({"now_ms": now})

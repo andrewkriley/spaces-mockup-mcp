@@ -619,8 +619,12 @@ def _event_matches(
     for key, value in _walk_values(row):
         if location_id and key in {"locationId", "floorId"} and str(value) == location_id:
             found_loc = True
-        if device_id and key in {"deviceId"} and str(value) == device_id:
+        if device_id and key == "deviceId" and str(value) == device_id:
             found_dev = True
+        # USER_PRESENCE lists the user's devices under user.deviceIds.
+        if device_id and key == "deviceIds" and isinstance(value, list):
+            if device_id in (str(v) for v in value):
+                found_dev = True
         if workspace_id and key in {"workspaceId", "id"} and str(value) == workspace_id:
             found_ws = True
     if location_id and not found_loc:

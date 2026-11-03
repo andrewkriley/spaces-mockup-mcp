@@ -147,6 +147,14 @@ class LabGuideContractTest(unittest.TestCase):
         self.assertNotIn("WEBEX_TOKEN", text)
 
 
+class SpacesLabGuideNamesTest(unittest.TestCase):
+    def test_guide_uses_dataset_names(self):
+        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        self.assertNotIn("ghost", text.lower())
+        for name in ("Mockup Campus", "loc-campus-mockup", "mockup-phone-01", "MOCKBRD004"):
+            self.assertIn(name, text)
+
+
 class CiWorkflowTest(unittest.TestCase):
     def test_ci_runs_lint_and_tests_in_venv(self):
         text = (HERE / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
