@@ -18,16 +18,21 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 ## MCP server setup
 
+Before you open Claude, set the bearer token in your shell. The token is in the `.txt` file in the lab's Box folder. Copy it, then from the command line export it and start Claude from that same shell:
+
+```bash
+export MCP_BEARER_TOKEN=XXXFound-In-Box-Folder
+claude
+```
+
+Replace `XXXFound-In-Box-Folder` with the token from the Box file. Claude only reads the variable when it starts, so if Claude is already open, exit and relaunch it from the shell where you ran `export`.
+
 Do not run the server. Point the harness at
 `https://spaces-mockup.mcp.buildermate.ai`. `/health` is public.
 `/mcp` needs the bearer issued **for that host only**. It is not a token
 from another spaces-mockup and it is not the value in `.env.example`.
 
 Client URL: `https://spaces-mockup.mcp.buildermate.ai/mcp`.
-
-Ask the person who shared the demo for the bearer. Put it in your shell
-environment as `MCP_BEARER_TOKEN`. Do not paste it into git, tickets, or
-chat.
 
 ## Data sources
 
