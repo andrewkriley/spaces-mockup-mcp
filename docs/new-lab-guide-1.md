@@ -143,7 +143,7 @@ Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs
 
 4. **Turn it on.** In **Settings → Extensions**, make sure **Spaces Mockup (Lab)** is enabled.
 
-5. **Verify.** Start a new chat and open the tools menu. It should list the `spaces-mockup` tools. As a quick check, ask *"Call firehose_health"*. The reply should mention Ghost Campus. If it doesn't:
+5. **Verify.** Start a new chat and open the tools menu. It should list the `spaces-mockup` tools. If it doesn't, or a tool call fails:
 
    - **"rejected the bearer token (HTTP 401)":** the token is wrong or missing. Go to **Settings → Extensions → Spaces Mockup (Lab) → Configure**, paste the token again, then turn the extension off and on.
    - **Tools don't appear:** quit Claude Desktop fully (on Windows, right-click the Claude icon in the system tray and choose **Quit**) and reopen it.
@@ -187,6 +187,16 @@ Cursor connects to the server directly and reads the token from an environment v
 3. **Verify.** Back in **Cursor Settings → MCP**, `spaces-mockup` should show a green dot and list its tools. If it's red or shows a 401, the variable wasn't set when Cursor started: on Windows, quit Cursor fully and reopen it; on Linux or macOS, relaunch it from the shell where you ran `export`.
 
 4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
+
+### Confirm it works
+
+Whichever client you use, send this prompt before you start Lab 1:
+
+> *"Call firehose_health."*
+
+If your client asks permission to run the tool, allow it. The reply should say the status is ok, name the tenant as Ghost Campus, and list 14 subscribed event types.
+
+If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client.
 
 ## Data sources
 
