@@ -18,7 +18,33 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 ## MCP server setup
 
-You'll connect your client to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run the server yourself. Follow the section for your client below.
+You'll connect your client to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run the server yourself.
+
+**Before you start**
+
+1. **Get your token.** It's in the `.txt` file in the lab's Box folder. The steps below use `Found-In-Box-Folder` as a placeholder; replace it with your token. Do not paste the token into git, tickets, or chat.
+
+2. **Check you can reach the server.** The health endpoint doesn't need the token.
+
+   - **Linux / macOS:**
+
+     ```bash
+     curl -sS https://spaces-mockup.mcp.buildermate.ai/health
+     ```
+
+   - **Windows (PowerShell):**
+
+     ```powershell
+     curl.exe -sS https://spaces-mockup.mcp.buildermate.ai/health
+     ```
+
+   You should see:
+
+   ```json
+   {"status":"ok","server":"spaces-mockup"}
+   ```
+
+Then follow the section for your client.
 
 ### Claude Code CLI (Linux / macOS)
 
@@ -28,25 +54,13 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
    mkdir spaces-lab && cd spaces-lab
    ```
 
-2. **Set your token.** Copy the token from the `.txt` file in the lab's Box folder and export it in your shell. Replace `Found-In-Box-Folder` with that token:
+2. **Set your token** in your shell:
 
    ```bash
    export MCP_BEARER_TOKEN=Found-In-Box-Folder
    ```
 
-3. **Check the server.** The health endpoint doesn't need the token:
-
-   ```bash
-   curl -sS https://spaces-mockup.mcp.buildermate.ai/health
-   ```
-
-   You should see:
-
-   ```json
-   {"status":"ok","server":"spaces-mockup"}
-   ```
-
-4. **Add the MCP server.** Create `.mcp.json` in the lab folder. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
+3. **Add the MCP server.** Create `.mcp.json` in the lab folder. The quoted `'EOF'` keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
 
    ```bash
    cat > .mcp.json <<'EOF'
@@ -64,16 +78,58 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
    EOF
    ```
 
-5. **Launch Claude** from the same shell. Claude may ask two questions: first whether to trust this folder (say yes), then whether to use the project MCP servers in `.mcp.json` (approve `spaces-mockup`):
+4. **Launch Claude** from the same shell. Claude may ask two questions: first whether to trust this folder (say yes), then whether to use the project MCP servers in `.mcp.json` (approve `spaces-mockup`):
 
    ```bash
    claude
    ```
 
-6. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If it doesn't:
+5. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If it doesn't:
 
    - **401 error or `Missing environment variables: MCP_BEARER_TOKEN`:** the token isn't set in the shell Claude was launched from. Exit Claude, run the `export` from step 2 in this shell, and relaunch.
    - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
+
+### Claude Code CLI (Windows)
+
+Use PowerShell for every step.
+
+1. **Create a lab folder:**
+
+   ```powershell
+   mkdir spaces-lab; cd spaces-lab
+   ```
+
+2. **Set your token** for this PowerShell window:
+
+   ```powershell
+   $env:MCP_BEARER_TOKEN = "Found-In-Box-Folder"
+   ```
+
+3. **Add the MCP server.** Create `.mcp.json` in the lab folder. The single-quoted `@' … '@` block keeps `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file:
+
+   ```powershell
+   @'
+   {
+     "mcpServers": {
+       "spaces-mockup": {
+         "type": "http",
+         "url": "https://spaces-mockup.mcp.buildermate.ai/mcp",
+         "headers": {
+           "Authorization": "Bearer ${MCP_BEARER_TOKEN}"
+         }
+       }
+     }
+   }
+   '@ | Set-Content -Path .mcp.json -Encoding ascii
+   ```
+
+4. **Launch Claude** from the same PowerShell window, and answer the trust and MCP server questions as in the Linux / macOS steps:
+
+   ```powershell
+   claude
+   ```
+
+5. **Verify.** Run `/mcp` and check that `spaces-mockup` shows as connected. The troubleshooting is the same as for Linux / macOS, except that you set the token again with the `$env:` command from step 2.
 
 ### Claude Desktop (Windows / macOS)
 
@@ -83,7 +139,7 @@ Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs
 
 2. **Install it.** Double-click `spaces-mockup.mcpb`, or drag it onto the Claude Desktop window. You can also go to **Settings → Extensions → Advanced settings → Install Extension…** and choose the file. Click **Install** when Claude Desktop shows the extension details.
 
-3. **Enter your token.** When asked for **Bearer token**, paste the token from the `.txt` file in the lab's Box folder and save.
+3. **Enter your token.** When asked for **Bearer token**, paste your token and save.
 
 4. **Turn it on.** In **Settings → Extensions**, make sure **Spaces Mockup (Lab)** is enabled.
 
@@ -98,7 +154,7 @@ Cursor connects to the server directly and reads the token from an environment v
 
 1. **Set your token.** Cursor only sees the variable if it's set before Cursor starts.
 
-   - **Windows (PowerShell):** this saves it for your user account. Quit Cursor completely, then reopen it afterwards:
+   - **Windows (PowerShell):** run this to save the token for your user account, then quit Cursor completely and reopen it:
 
      ```powershell
      setx MCP_BEARER_TOKEN "Found-In-Box-Folder"
@@ -111,9 +167,7 @@ Cursor connects to the server directly and reads the token from an environment v
      cursor .
      ```
 
-   Replace `Found-In-Box-Folder` with the token from the Box file.
-
-2. **Add the MCP server.** Open **Cursor Settings → MCP** (shown as **Tools & MCP** in some versions) and choose **Add Custom MCP**. This opens `mcp.json`. Add:
+2. **Add the MCP server.** Open **Cursor Settings → MCP** (shown as **Tools & MCP** in some versions) and choose **Add Custom MCP**. This opens `mcp.json`. Add the following. If the file already has an `mcpServers` block, add only the `spaces-mockup` entry inside it, so your existing servers are kept:
 
    ```json
    {
@@ -133,8 +187,6 @@ Cursor connects to the server directly and reads the token from an environment v
 3. **Verify.** Back in **Cursor Settings → MCP**, `spaces-mockup` should show a green dot and list its tools. If it's red or shows a 401, the variable wasn't set when Cursor started: on Windows, quit Cursor fully and reopen it; on Linux or macOS, relaunch it from the shell where you ran `export`.
 
 4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
-
-Do not paste the token into git, tickets, or chat.
 
 ## Data sources
 
