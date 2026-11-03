@@ -18,6 +18,8 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 
 ## MCP server setup
 
+### Linux CLI Setup
+
 Before you open Claude, set the bearer token in your shell. The token is in the `.txt` file in the lab's Box folder. Copy it, then from the command line export it and start Claude from that same shell:
 
 ```bash
