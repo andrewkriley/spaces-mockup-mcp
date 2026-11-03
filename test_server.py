@@ -7,6 +7,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -333,6 +334,18 @@ class RpcAndHttpTest(unittest.TestCase):
             httpd.shutdown()
             httpd.server_close()
             thread.join(timeout=2)
+
+
+class LabGuideToolsTest(unittest.TestCase):
+    def test_guide_tool_table_matches_server(self):
+        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        server_tools = {tool["name"] for tool in srv.TOOLS}
+        self.assertEqual(server_tools, set(srv.HANDLERS))
+        table_tools = set(re.findall(r"^\| `([a-z_]+)` \|", text, re.M))
+        self.assertEqual(table_tools, server_tools)
+        claimed = re.search(r"covers all (\d+) tools", text)
+        self.assertIsNotNone(claimed, "guide overview should state the tool count")
+        self.assertEqual(int(claimed.group(1)), len(server_tools))
 
 
 class StdioTest(unittest.TestCase):
