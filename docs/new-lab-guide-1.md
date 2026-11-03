@@ -24,7 +24,7 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
 
 1. **Get your token.** It's in the `.txt` file in the lab's Box folder. The steps below use `Found-In-Box-Folder` as a placeholder; replace it with your token. Do not paste the token into git, tickets, or chat.
 
-2. **Check you can reach the server.** The health endpoint doesn't need the token.
+2. **Check you can reach the server.** The health endpoint doesn't need the token. Open `https://spaces-mockup.mcp.buildermate.ai/health` in your browser, or run:
 
    - **Linux / macOS:**
 
