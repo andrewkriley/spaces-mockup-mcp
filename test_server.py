@@ -484,6 +484,20 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual(peak["ambientNoise"], 52)
         self.say("the metrics say 52 and the telemetry's `ambientNoise` says 38")
 
+        counts = {}
+        for row in telemetry:
+            info = row["webexTelemetryUpdate"]["deviceInfo"]
+            t = {k: v for d in row["webexTelemetryUpdate"]["telemetries"] for k, v in d.items()}
+            point = min(
+                self.metrics(info["workspaceId"]),
+                key=lambda x, ts=row["recordTimestamp"]: abs(x["timestamp"] - ts),
+            )
+            counts[info["workspaceId"]] = (t["peopleCount"], point["peopleCount"])
+        self.assertEqual({w for w, (a, b) in counts.items() if a != b}, {"ws-huddle"})
+        self.assertEqual(counts["ws-huddle"], (4, 3))
+        self.say("Huddle A's `WEBEX_TELEMETRY` counts 4 people while `workspace_metrics` says 3")
+        self.assertIn("disagree on headcount in one room", self.guide)
+
         (iot,) = self.events(eventType="IOT_TELEMETRY")
         sensor = iot["iotTelemetry"]
         self.assertEqual(sensor["device"]["deviceId"], "mockup-sensor-lab-01")

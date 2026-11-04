@@ -282,6 +282,7 @@ These have no single expected answer. Each one lists what a complete result incl
   - Phone Booth N2 has environment readings but no device.
   - Both open workspaces, Lab Bench and Workshop Bay, use a meeting-room template.
   - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
+  - Device telemetry and room metrics disagree on headcount in one room.
   - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
 - [ ] [**S4**](#s4-predict-and-flag) **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
 - [ ] **S5** **Repeatable report.** *No answer key.* Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
@@ -646,6 +647,7 @@ Any three of these, each with the tool output that shows it:
 - [ ] Phone Booth N2 has 3 environment readings in `workspace_metrics` but no device in `workspace_search` or `device_search`
 - [ ] Lab Bench and Workshop Bay are both `openWorkspace` but use `tpl-meeting-standard`
 - [ ] All 5 `WEBEX_TELEMETRY` events report 22.8 °C and 50% humidity, from 1 person to 12
+- [ ] Huddle A's `WEBEX_TELEMETRY` counts 4 people while `workspace_metrics` says 3 for the same hour; the other four rooms' counts agree
 - [ ] `mockup-sensor-lab-01` reports 23.4 °C while Lab Bench's metrics say 23.15 °C for the same hour, and its event is tagged only to South L1
 
 #### [S4](#stretch-goals) Predict and flag
