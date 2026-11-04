@@ -52,6 +52,7 @@ table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 9
 th, td { border: 1px solid #d1d9e0; padding: 4pt 6pt; text-align: left; vertical-align: top; }
 th { background: #f6f8fa; }
 tr { break-inside: avoid; }
+h4 + table { break-inside: avoid; }
 td code { word-break: break-word; }
 blockquote { margin: 12pt 0; padding: 8pt 14pt; border-left: 5pt solid #0969da;
   background: #ddf4ff; border-radius: 3pt; break-inside: avoid; }

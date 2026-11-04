@@ -378,7 +378,8 @@ These have no single expected answer. Each one lists what a complete result incl
    - Phone Booth N2 has environment readings but no device.
    - Lab Bench uses a meeting-room template.
    - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
-   - An IoT sensor at Lab Bench (`mockup-sensor-lab-01`) reports a different temperature from the room's metrics for the same hour.
+   - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
+   - → Answer [**S3**](#s3-anomaly-hunt)
 4. **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
    - → Answer [**S4**](#s4-predict-and-flag)
 5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
@@ -415,6 +416,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 1.A3 Two sources, one room
 
 - They disagree. The metrics say 24.2 °C at the 12-person peak, while device telemetry says 22.8 °C.
+- Noise disagrees too: the metrics say 52 and the telemetry's `ambientNoise` says 38. Both sources agree on the headcount of 12.
 
 #### 1.A4 Data freshness
 
@@ -468,7 +470,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### 3.A1 Open vs. resolved
 
-- 5 events (1 error, 2 warnings, 2 info).
+- 5 events (1 error, 2 warnings, 2 info). The `"none"` code in the totals is Boardroom North's `call.started` info event, not an error.
 - Huddle A's `CAM_HDMI_SIGNAL_LOST` is resolved, because a recovery event followed about an hour later.
 - Still open: Lab Bench `SIGNAGE_CONTENT_STALE` and Workshop Bay `PROXIMITY_PAIRING_FAIL`.
 
@@ -539,10 +541,11 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 5.E3 Who's on which floor
 
 - 3 phones, all on North L1, with x/y map positions.
+- The positions aren't equally fresh. `mockup-phone-03`'s is 8 hours older than `mockup-phone-02`'s, so treat it as where the phone was, not where it is.
 
 #### 5.A1 Event mix
 
-- 50 events per pull. `SPACE_OCCUPANCY` is the most common type, at roughly 20 of the 50.
+- 50 events per pull. `SPACE_OCCUPANCY` is the most common type, at 22 of the 50.
 - `IOT_TELEMETRY` and `KEEP_ALIVE` don't appear in the first pull even though they're subscribed. They come later in the replay: filter `firehose_events` by `eventType` to find 1 and 3 of them.
 
 #### 5.A2 Rebuild a meeting
@@ -557,6 +560,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 5.A4 Reconcile the counts
 
 - 18 associated plus 5 probing devices, a camera count of 14, and 12 users (8 identified, 4 anonymous).
+- `DEVICE_PRESENCE` adds a fourth count: 12 active plus 3 inactive devices, 15 in all, which is still short of the 18 associated.
 - A good answer explains that people carry several devices, cameras miss some people, and identified users depend on sign-in.
 
 #### 5.A5 Spot personal data
@@ -574,6 +578,16 @@ A complete report includes:
 - [ ] Lab Bench Board Pro: stale signage, oldest RoomOS, two drifted keys
 - [ ] Workshop Bay proximity failure ruled out as a config problem
 - [ ] Room Kit Mini already past end-of-sale (31 Oct 2026), in the second-busiest room
+
+#### S3 Anomaly hunt
+
+Any three of these, each with the tool output that shows it:
+
+- [ ] Telemetry vs. metrics: Boardroom North's `WEBEX_TELEMETRY` says 22.8 °C and noise 38 at the 12-person peak; `workspace_metrics` says 24.2 °C and noise 52
+- [ ] Phone Booth N2 has 3 environment readings in `workspace_metrics` but no device in `workspace_search` or `device_search`
+- [ ] Lab Bench is an `openWorkspace` but uses `tpl-meeting-standard`
+- [ ] All 5 `WEBEX_TELEMETRY` events report 22.8 °C and 50% humidity, from 1 person to 12
+- [ ] `mockup-sensor-lab-01` reports 23.4 °C while Lab Bench's metrics say 23.15 °C for the same hour, and its event is tagged only to South L1
 
 #### S4 Predict and flag
 

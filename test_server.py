@@ -348,6 +348,261 @@ class LabGuideToolsTest(unittest.TestCase):
         self.assertEqual(int(claimed.group(1)), len(server_tools))
 
 
+class LabGuideAnswerKeyTest(unittest.TestCase):
+    """Each answer-key number is computed from the server and must appear in the guide."""
+
+    NOW = 1_800_000_000_000
+
+    @classmethod
+    def setUpClass(cls):
+        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        cls.key = text[text.index("## Answer key") :]
+        cls.guide = text
+
+    def say(self, phrase):
+        self.assertTrue(phrase in self.key, f"answer key no longer says: {phrase}")
+
+    def metrics(self, workspace_id):
+        return srv.workspace_metrics({"workspace_id": workspace_id, "now_ms": self.NOW})["points"]
+
+    def events(self, **filters):
+        return srv.firehose_events({"now_ms": self.NOW, **filters})["events"]
+
+    def test_lab1_environment(self):
+        ids = [w["id"] for w in srv.workspace_search({})["workspaces"]]
+        points = {i: self.metrics(i) for i in ids}
+        latest = {i: p[-1]["temperatureC"] for i, p in points.items()}
+        self.assertEqual(round(min(latest.values()), 2), 22.4)
+        self.assertEqual(round(max(latest.values()), 2), 22.85)
+        self.assertEqual(max(latest, key=latest.get), "ws-workshop")
+        self.say("latest reading is 22.4–22.9 °C. Workshop Bay is the warmest (22.85 °C, 3 people)")
+
+        board = points["ws-board"]
+        self.assertEqual([board[0]["temperatureC"], board[-1]["temperatureC"]], [22.4, 22.4])
+        self.assertEqual(max(p["temperatureC"] for p in board), 24.2)
+        self.say("starts at 22.4 °C, peaks at 24.2 °C and ends back at 22.4 °C")
+
+        quiet = {i for i, p in points.items() if max(x["ambientNoise"] for x in p) <= 30}
+        self.assertEqual(quiet, {"ws-focus", "ws-phone"})
+
+        alerts = [
+            (i, x)
+            for i, p in points.items()
+            for x in p
+            if x["temperatureC"] > 24 or x["humidityPct"] >= 60
+        ]
+        self.assertEqual(len(alerts), 1)
+        self.assertEqual((alerts[0][0], alerts[0][1]["peopleCount"]), ("ws-board", 12))
+        self.say("One hour only. Boardroom North hit 24.2 °C and 60% with 12 people")
+
+        for p in points.values():
+            for x in p:
+                n = x["peopleCount"]
+                self.assertAlmostEqual(x["temperatureC"], 22.4 + 0.15 * n)
+                self.assertEqual(x["humidityPct"], 48 + n)
+                self.assertEqual(x["ambientNoise"], 28 + 2 * n)
+        self.say("22.4 °C + 0.15 °C per person, humidity is 48% + 1% per person")
+        self.say("predicts 23.45 °C, 55% and 42")
+
+        self.assertEqual((len(board), len(points["ws-phone"])), (11, 3))
+        gap = board[-1]["timestamp"] - points["ws-phone"][-1]["timestamp"]
+        self.assertAlmostEqual(gap / srv.DAY * 24, 2, delta=0.1)
+        self.say("Boardroom North has 11 hourly points and Phone Booth N2 has only 3")
+
+    def test_lab1_telemetry_and_s3(self):
+        telemetry = self.events(eventType="WEBEX_TELEMETRY")
+        self.assertEqual(len(telemetry), 5)
+        readings = []
+        for row in telemetry:
+            t = {k: v for d in row["webexTelemetryUpdate"]["telemetries"] for k, v in d.items()}
+            readings.append(t)
+            self.assertEqual((t["ambientTemp"], t["relativeHumidity"]), (22.8, 50))
+        board = next(t for t in readings if t["peopleCount"] == 12)
+        self.assertEqual(board["ambientNoise"], 38)
+        peak = max(self.metrics("ws-board"), key=lambda x: x["peopleCount"])
+        self.assertEqual(peak["ambientNoise"], 52)
+        self.say("the metrics say 52 and the telemetry's `ambientNoise` says 38")
+
+        (iot,) = self.events(eventType="IOT_TELEMETRY")
+        sensor = iot["iotTelemetry"]
+        self.assertEqual(sensor["device"]["deviceId"], "mockup-sensor-lab-01")
+        self.assertEqual(sensor["location"]["locationId"], "loc-floor-s1")
+        self.assertNotIn("workspaceId", json.dumps(sensor))
+        lab = min(
+            self.metrics("ws-lab"), key=lambda x: abs(x["timestamp"] - iot["recordTimestamp"])
+        )
+        self.assertEqual((sensor["temperatureC"], lab["temperatureC"]), (23.4, 23.15))
+        self.say("`mockup-sensor-lab-01` reports 23.4 °C while Lab Bench's metrics say 23.15 °C")
+        self.assertIn("Its event names only the floor, not a room", self.guide)
+
+    def test_lab2_utilization(self):
+        usage = {w["id"]: w for w in srv.workspace_aggregated_usage_metrics({})["workspaces"]}
+        ranked = [
+            w["useMinutes"] for w in srv.workspace_aggregated_popularity_metrics({})["workspaces"]
+        ]
+        self.assertEqual(ranked, [450, 400, 250, 200, 50, 50])
+        self.say("Boardroom North 450 min, Huddle A 400, Lab Bench 250, Workshop Bay 200")
+        ratios = {
+            i: round(w["useMinutes"] / w["bookedMinutes"], 2)
+            for i, w in usage.items()
+            if w["bookedMinutes"]
+        }
+        self.assertEqual(
+            ratios, {"ws-board": 1.07, "ws-huddle": 0.95, "ws-lab": 2.08, "ws-workshop": 1.67}
+        )
+        self.say("Boardroom 1.07, Huddle A 0.95, Lab Bench 2.08, Workshop Bay 1.67")
+
+        cap = srv.workspace_aggregated_capacity_utilization({})
+        self.assertEqual([w["id"] for w in cap["overcrowded"]], ["ws-board"])
+        self.assertEqual({w["id"] for w in cap["under_utilized"]}, {"ws-focus", "ws-phone"})
+
+        walk_ins = {}
+        for i in usage:
+            p = self.metrics(i)
+            self.assertFalse([x for x in p if x["booked"] and not x["presence"]])
+            walk_ins[i] = sum(1 for x in p if x["presence"] and not x["booked"])
+        self.assertEqual(
+            walk_ins,
+            {
+                "ws-lab": 3,
+                "ws-board": 2,
+                "ws-workshop": 2,
+                "ws-huddle": 1,
+                "ws-focus": 1,
+                "ws-phone": 1,
+            },
+        )
+        self.say("Lab Bench 3, Boardroom North 2, Workshop Bay 2, and 1 each")
+
+        latest = srv.firehose_latest({"now_ms": self.NOW})
+        live = {row["workspaceId"]: row for row in latest["occupancy"]}
+        self.assertEqual(
+            {i: r["peopleCount"] for i, r in live.items() if r["peopleCount"]},
+            {"ws-workshop": 3, "ws-huddle": 1, "ws-lab": 1},
+        )
+        self.assertFalse(any(r["bookingStatus"] for r in live.values()))
+        for i, row in live.items():
+            last = self.metrics(i)[-1]
+            self.assertEqual(row["peopleCount"], last["peopleCount"], i)
+            skew_min = (row["timestamp"] - last["timestamp"]) / 60_000
+            if i == "ws-board":
+                self.assertAlmostEqual(skew_min, 30, delta=1)
+            else:
+                self.assertLess(abs(skew_min), 0.2, i)
+        self.say("Most timestamps agree within a few seconds")
+
+    def test_lab3_devices(self):
+        devices = srv.device_search({})["devices"]
+        self.assertEqual(len(devices), 5)
+        self.assertEqual(
+            [d["id"] for d in devices if d["connectionStatus"] != "connected"],
+            ["dev-boardpro-lab"],
+        )
+        agg = srv.device_aggregated_event_history({})
+        self.assertEqual(agg["totals"]["events"], 5)
+        self.assertEqual(agg["by_severity"], {"error": 1, "warning": 2, "info": 2})
+        self.assertEqual(agg["by_code"]["none"], 1)
+        (call,) = srv.device_event_history({"device_id": "dev-roombar-board"})["events"]
+        self.assertEqual((call["type"], call["code"]), ("call.started", ""))
+        self.say('5 events (1 error, 2 warnings, 2 info). The `"none"` code')
+
+        huddle = srv.device_event_history({"device_id": "dev-kitmini-huddle"})["events"]
+        self.assertEqual([e["type"] for e in huddle], ["camera.error", "camera.recovered"])
+
+        life = {p["productType"]: p for p in srv.product_lifecycle({})["products"]}
+        self.assertEqual(life["roomkit-mini"]["endOfSale"], "2026-10-31")
+        self.assertEqual(life["roomkit-mini"]["softwareMaintenance"], "2029-10-31")
+        soonest = sorted(life.values(), key=lambda p: p["endOfSale"])
+        self.assertEqual([p["productType"] for p in soonest[:2]], ["roomkit-mini", "desk-pro"])
+        self.say("end-of-sale on 31 Oct 2026. Next is the Desk Pro on 30 Jun 2027")
+
+    def test_lab4_drift(self):
+        drift = {
+            d["id"]: {
+                x["key"]: (x["device"], x["template"])
+                for x in srv.device_configuration_template_diff({"device_id": d["id"]})["diffs"]
+            }
+            for d in srv.device_search({})["devices"]
+        }
+        self.assertEqual(
+            drift,
+            {
+                "dev-boardpro-lab": {
+                    "Audio.DefaultVolume": (45, 40),
+                    "Standby.Control": ("Off", "On"),
+                },
+                "dev-roombar-board": {"Audio.DefaultVolume": (50, 40)},
+                "dev-kitmini-huddle": {},
+                "dev-roombar-workshop": {},
+                "dev-deskpro-focus": {},
+            },
+        )
+        self.say("Volume 45 (template 40); Standby Off (template On)")
+        diff = srv.device_configuration_diff(
+            {"device_id_a": "dev-roombar-board", "device_id_b": "dev-roombar-workshop"}
+        )["diffs"]
+        self.assertEqual(
+            [(x["key"], x["a"], x["b"]) for x in diff], [("Audio.DefaultVolume", 50, 40)]
+        )
+
+    def test_lab5_firehose(self):
+        first = self.events()
+        self.assertEqual(len(first), 50)
+        types = [row["eventType"] for row in first]
+        most = max(set(types), key=types.count)
+        self.assertEqual((most, types.count(most)), ("SPACE_OCCUPANCY", 22))
+        self.assertNotIn("IOT_TELEMETRY", types)
+        self.assertNotIn("KEEP_ALIVE", types)
+        self.say("`SPACE_OCCUPANCY` is the most common type, at 22 of the 50")
+        self.assertEqual(len(self.events(eventType="IOT_TELEMETRY")), 1)
+        self.assertEqual(len(self.events(eventType="KEEP_ALIVE")), 3)
+        self.say("to find 1 and 3 of them")
+
+        def board_counts(rows):
+            return [
+                r["spaceOccupancyChange"]["peopleCount"]
+                for r in rows
+                if r["eventType"] == "SPACE_OCCUPANCY_CHANGE"
+            ]
+
+        self.assertEqual(
+            board_counts(self.events(eventType="SPACE_OCCUPANCY_CHANGE")),
+            [0, 2, 7, 12, 8, 1, 5, 9, 3, 1, 0],
+        )
+        self.say("0 → 2 → 7 → 12 → 8 → 1 → 5 → 9 → 3 → 1 → 0")
+        self.assertEqual(board_counts(first)[-1], 5)
+        self.say("If the answer stops at 5")
+
+        phones = {r["deviceId"]: r["timestamp"] for r in srv.firehose_latest({})["locations"]}
+        self.assertEqual(len(phones), 3)
+        gap_h = (phones["mockup-phone-02"] - phones["mockup-phone-03"]) / 3_600_000
+        self.assertAlmostEqual(gap_h, 8, delta=0.1)
+        self.say("`mockup-phone-03`'s is 8 hours older than `mockup-phone-02`'s")
+
+        by_type = {}
+        for row in first:
+            by_type.setdefault(row["eventType"], row)
+        counts = by_type["DEVICE_COUNT"]["deviceCount"]
+        self.assertEqual((counts["associatedCount"], counts["probingCount"]), (18, 5))
+        self.assertEqual(by_type["CAMERA_COUNT"]["cameraCounts"]["count"], 14)
+        users = by_type["USER_PRESENCE"]["userPresence"]["activeUsersCount"]
+        self.assertEqual((users["usersWithUserId"], users["usersWithoutUserId"]), (8, 4))
+        presence = by_type["DEVICE_PRESENCE"]["devicePresence"]
+        self.assertEqual(
+            (presence["activeDevicesCount"], presence["inActiveDevicesCount"]), (12, 3)
+        )
+        self.say("12 active plus 3 inactive devices, 15 in all")
+
+    def test_s4_prediction(self):
+        n = 15
+        self.assertAlmostEqual(22.4 + 0.15 * n, 24.65)
+        self.assertEqual((48 + n, 28 + 2 * n), (63, 58))
+        limit = max(k for k in range(30) if 22.4 + 0.15 * k < 24)
+        self.assertEqual(limit, 10)
+        self.say("About 24.65 °C, 63% humidity and noise 58 with 15 people")
+        self.say("keep it to 10 people or fewer")
+
+
 class StdioTest(unittest.TestCase):
     def test_stdio_initialize_and_tools_list(self):
         init = srv.rpc(
