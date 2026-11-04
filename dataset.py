@@ -543,8 +543,11 @@ def occupancy_curve() -> dict[str, list[tuple[int, int, bool, bool]]]:
 
 
 def hour_offset(hour: int) -> int:
-    """Map local hour 0-23 onto the last 24h window. Hour 17 is near now."""
-    return -((23 - hour) * HOUR)
+    """Map local hour 0-23 onto the last 24h window. Hour 17 starts an hour ago.
+
+    Events land up to 59 minutes after their hour, so hour 18 would reach the future.
+    """
+    return -((18 - hour) * HOUR)
 
 
 def build_firehose(workspaces: list[dict]) -> list[dict]:

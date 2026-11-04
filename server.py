@@ -28,8 +28,9 @@ TOOLS = [
     {
         "name": "location_search",
         "description": (
-            "Search Mockup Campus locations by name, city, address, "
-            "locationId, or floor count. Workspaces MCP location_search mockup."
+            "Search Mockup Campus locations (campus, buildings, floors) by name, city, "
+            "address, locationId or floor count. Each row names its parent, so an "
+            "unfiltered call returns the whole hierarchy."
         ),
         "inputSchema": {
             "type": "object",
@@ -44,7 +45,10 @@ TOOLS = [
     },
     {
         "name": "workspace_search",
-        "description": "Search workspaces by name, type, or locationId.",
+        "description": (
+            "Search workspaces (rooms, desks, booths) by name, type or locationId. Returns "
+            "type, capacity, floor, deviceIds and a capacity note."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -56,34 +60,45 @@ TOOLS = [
     },
     {
         "name": "workspace_metrics",
-        "description": "Historical utilization and environmental metrics for one workspace.",
+        "description": (
+            "Hourly history for one workspace over the last day: peopleCount, presence, "
+            "booked, temperatureC, humidityPct, ambientNoise, useMinutes and bookedMinutes."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
                 "workspace_id": {"type": "string"},
-                "now_ms": {"type": "integer"},
             },
             "required": ["workspace_id"],
         },
     },
     {
         "name": "workspace_aggregated_usage_metrics",
-        "description": "Aggregate workspace use and booking minutes over the live window.",
+        "description": (
+            "Per-workspace totals over the last day: used and booked minutes, peak people "
+            "count and peak ratio (peak / capacity), plus campus totals."
+        ),
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "workspace_aggregated_capacity_utilization",
-        "description": "Find overcrowded or under-utilized workspaces.",
+        "description": (
+            "Overcrowded workspaces (peak ratio above 1.0) and under-utilized ones "
+            "(under 80 used minutes in the last day)."
+        ),
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "workspace_aggregated_popularity_metrics",
-        "description": "Rank workspaces by actual use time.",
+        "description": "Workspaces ranked by used minutes over the last day, most used first.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "device_search",
-        "description": "Search Webex devices by name, product, workspace, location, or status.",
+        "description": (
+            "Search Webex RoomOS devices by name, product, workspaceId, locationId or "
+            "connectionStatus. Returns model, serial, RoomOS version and room."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -97,24 +112,32 @@ TOOLS = [
     },
     {
         "name": "device_event_history",
-        "description": "Recent history events for one device id.",
+        "description": (
+            "Events for one device over the last day, oldest first: type, code, severity "
+            "and message."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
                 "device_id": {"type": "string"},
-                "now_ms": {"type": "integer"},
             },
             "required": ["device_id"],
         },
     },
     {
         "name": "device_aggregated_event_history",
-        "description": "Organization-wide device event counts by severity and code.",
+        "description": (
+            "Device event counts across the organization, by severity and by code. Events "
+            'with no code are counted as "none".'
+        ),
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "device_error_code_detail_search",
-        "description": "Search device and workspace issue definitions.",
+        "description": (
+            "Issue code catalog: meaning, severity, what it applies to and the recommended "
+            "action. Pass code or query to search, or nothing to list all codes."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {"code": {"type": "string"}, "query": {"type": "string"}},
@@ -122,7 +145,10 @@ TOOLS = [
     },
     {
         "name": "product_lifecycle",
-        "description": "Lifecycle milestones for Cisco device product types in the mockup catalog.",
+        "description": (
+            "End-of-sale, software-maintenance and last-support dates per device model. "
+            "Filter by product name or productType."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {"product": {"type": "string"}, "productType": {"type": "string"}},
@@ -130,7 +156,7 @@ TOOLS = [
     },
     {
         "name": "device_configuration_list",
-        "description": "Current configuration keys and values for one device.",
+        "description": "Current configuration values on one device, and its templateId.",
         "inputSchema": {
             "type": "object",
             "properties": {"device_id": {"type": "string"}},
@@ -139,12 +165,12 @@ TOOLS = [
     },
     {
         "name": "device_configuration_template_list",
-        "description": "Configuration templates in the mockup organization.",
+        "description": "Configuration templates and the keys each one controls.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "device_configuration_diff",
-        "description": "Compare configuration values between two devices.",
+        "description": "Settings whose values differ between two devices.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -156,7 +182,10 @@ TOOLS = [
     },
     {
         "name": "device_configuration_template_diff",
-        "description": "Compare a device's actual configuration against its named template.",
+        "description": (
+            "Settings where a device differs from a template. Uses the device's own "
+            "template unless template_id is given."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -168,7 +197,10 @@ TOOLS = [
     },
     {
         "name": "device_configuration_schema",
-        "description": "Search possible configuration keys and allowed values.",
+        "description": (
+            "Configuration keys with their type, allowed values or range, and supported "
+            "product types. Filter with key_contains or productType."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -180,16 +212,18 @@ TOOLS = [
     {
         "name": "firehose_health",
         "description": (
-            "Mockup Firehose health: subscribed event types and tenant. "
-            "Mimics GET /api/partners/v1/firehose/health."
+            "Mockup Firehose health: stream status, channel, tenant and subscribed event "
+            "types. Mimics GET /api/partners/v1/firehose/health."
         ),
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "firehose_events",
         "description": (
-            "Pull Firehose EventRecords from the mockup replay. Filter by "
-            "eventType, locationId, deviceId, workspaceId, fromTimestamp."
+            "Pull Firehose EventRecords from the mockup replay, oldest first, at most 50 "
+            "per call. Filter by eventType, locationId, deviceId (also matches a user's "
+            "devices), workspaceId or fromTimestamp. When the reply says truncated, call "
+            "again with offset set to nextOffset to get the rest."
         ),
         "inputSchema": {
             "type": "object",
@@ -200,16 +234,19 @@ TOOLS = [
                 "workspaceId": {"type": "string"},
                 "fromTimestamp": {"type": "integer"},
                 "limit": {"type": "integer"},
-                "now_ms": {"type": "integer"},
+                "offset": {"type": "integer"},
             },
         },
     },
     {
         "name": "firehose_latest",
-        "description": "Latest device locations and space occupancy snapshot.",
+        "description": (
+            "Live snapshot: the latest position of each tracked phone and the latest "
+            "occupancy of each workspace, each with its own timestamp."
+        ),
         "inputSchema": {
             "type": "object",
-            "properties": {"now_ms": {"type": "integer"}},
+            "properties": {},
         },
     },
 ]
@@ -674,6 +711,10 @@ def firehose_events(args: dict) -> dict:
         from_ts_i = int(from_ts) if from_ts is not None else None
     except (TypeError, ValueError):
         return {"error": "fromTimestamp must be an integer"}
+    try:
+        offset = max(int(args.get("offset") or 0), 0)
+    except (TypeError, ValueError):
+        return {"error": "offset must be an integer"}
     clock = now_ms(args)
     events = []
     for row in data().get("firehose") or []:
@@ -683,9 +724,14 @@ def firehose_events(args: dict) -> dict:
         if from_ts_i is not None and live["recordTimestamp"] < from_ts_i:
             continue
         events.append(live)
-    events.sort(key=lambda e: e["recordTimestamp"])
-    events = events[:limit]
-    return {"events": events, "count": len(events)}
+    events.sort(key=lambda e: (e["recordTimestamp"], e.get("recordUid") or ""))
+    total = len(events)
+    page = events[offset : offset + limit]
+    out = {"events": page, "count": len(page), "total": total, "truncated": False}
+    if offset + len(page) < total:
+        out["truncated"] = True
+        out["nextOffset"] = offset + len(page)
+    return out
 
 
 def firehose_latest(args: dict) -> dict:

@@ -197,7 +197,7 @@ You don't call the tools directly. Ask a question and the assistant (Claude, or 
 | `workspace_aggregated_popularity_metrics` | Utilization | Rooms ranked by minutes used | — |
 | `workspace_aggregated_capacity_utilization` | Utilization | Overcrowded and under-utilized rooms with peak ratio | — |
 | `firehose_latest` | Live | Current headcount per room and positions of tracked phones | — |
-| `firehose_events` | Live | Raw `EventRecord` stream (up to 50 per pull) | optional `eventType`, `locationId`, `deviceId`, `workspaceId`, `fromTimestamp`, `limit` |
+| `firehose_events` | Live | Raw `EventRecord` stream, oldest first, up to 50 per pull; `truncated` and `nextOffset` say when there's more | optional `eventType`, `locationId`, `deviceId`, `workspaceId`, `fromTimestamp`, `limit`, `offset` |
 | `firehose_health` | Live | Stream status, tenant, subscribed event types | — |
 | `device_search` | Devices | Model, serial, RoomOS version, room, connection status | optional filter |
 | `device_event_history` | Devices | Recent events for one device | `device_id` |
@@ -291,6 +291,8 @@ Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggre
    - → Answer [**2.A3**](#2a3-live-vs-history)
 4. **Make the case.** *"Recommend one change to the room mix. Cite the numbers from at least two tools."*
    - → Answer [**2.A4**](#2a4-make-the-case)
+5. **Trust the snapshot.** *"How old is each room's entry in firehose\_latest? Would you use it to tell someone a room is free right now?"*
+   - → Answer [**2.A5**](#2a5-trust-the-snapshot)
 
 ## Lab 3 — Devices, errors and lifecycle
 
@@ -431,6 +433,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 2.E1 Who's in now
 
 - Workshop Bay 3, Huddle A 1, Lab Bench 1, all others 0. No room is booked right now.
+- These are each room's latest reading, which can be up to 3 hours old; see 2.A5.
 
 #### 2.E2 Most popular
 
@@ -461,6 +464,11 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - A strong answer uses the capacity tool (Boardroom at 1.2×) and the usage tool (Focus Desk and Phone Booth at 50 min, never booked).
 - No room can take the 12-person stand-up: Boardroom North is the biggest room, at 10 seats. Good recommendations split the stand-up or cap it at 10 (the S4 limit), and might repurpose Focus Desk 12 or Phone Booth N2.
+
+#### 2.A5 Trust the snapshot
+
+- Each room's entry has its own age: Boardroom North about 30 minutes, Lab Bench about 1 hour, Huddle A, Focus Desk 12 and Workshop Bay about 2 hours, and Phone Booth N2 about 3 hours.
+- Only Boardroom North's is recent enough to act on. Phone Booth N2 being empty 3 hours ago says little about now, and Huddle A's 1 person is 2 hours old. A good answer says how old a reading may be before you stop trusting it.
 
 ### Lab 3 — Devices, errors and lifecycle
 
@@ -555,13 +563,14 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### 5.A1 Event mix
 
-- 50 events per pull. `SPACE_OCCUPANCY` is the most common type, at 22 of the 50.
-- `IOT_TELEMETRY` and `KEEP_ALIVE` don't appear in the first pull even though they're subscribed. They come later in the replay: filter `firehose_events` by `eventType` to find 1 and 3 of them.
+- The first pull returns 50 of 77 events, with `truncated: true` and `nextOffset: 50`. `SPACE_OCCUPANCY` is the most common type, at 22 of the 50.
+- `IOT_TELEMETRY` and `KEEP_ALIVE` don't appear in the first pull even though they're subscribed. They're in the second page (`offset: 50`), or filter `firehose_events` by `eventType` to find 1 and 3 of them.
+- A complete count covers all 77. If the assistant counted only 50, ask it to follow `nextOffset`.
 
 #### 5.A2 Rebuild a meeting
 
 - 0 → 2 → 7 → 12 → 8 → 1 → 5 → 9 → 3 → 1 → 0. This matches the 12-person peak from Labs 1 and 2.
-- If the answer stops at 5, the assistant used an unfiltered pull, which only holds the first 7 changes. Ask it to filter `firehose_events` by `eventType`.
+- If the answer stops at 5, the assistant used one unfiltered pull, which only holds the first 7 changes, and didn't follow `nextOffset`. Ask it to filter `firehose_events` by `eventType`.
 
 #### 5.A3 Visitor journey
 

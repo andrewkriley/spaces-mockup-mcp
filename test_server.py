@@ -358,6 +358,57 @@ class LabGuideToolsTest(unittest.TestCase):
         self.assertEqual(int(claimed.group(1)), len(server_tools))
 
 
+class ClockAndPagingTest(unittest.TestCase):
+    NOW = 1_800_000_000_000
+
+    def test_nothing_is_dated_in_the_future(self):
+        d = srv.DATASET
+        offsets = [r["offset_ms"] for r in d["firehose"] + d["device_events"]]
+        offsets += [p["offset_ms"] for series in d["metrics"].values() for p in series]
+        self.assertLess(max(offsets), 0)
+
+    def test_latest_readings_are_recent(self):
+        newest = max(
+            p["timestamp"]
+            for ws in srv.DATASET["metrics"]
+            for p in srv.workspace_metrics({"workspace_id": ws, "now_ms": self.NOW})["points"]
+        )
+        self.assertLessEqual(self.NOW - newest, 3_600_000)
+        snap = srv.firehose_latest({"now_ms": self.NOW})["occupancy"]
+        self.assertLessEqual(min(self.NOW - r["timestamp"] for r in snap), 3_600_000)
+
+    def test_events_page_through_everything_once(self):
+        first = srv.firehose_events({"now_ms": self.NOW})
+        self.assertEqual((first["count"], first["truncated"], first["nextOffset"]), (50, True, 50))
+        second = srv.firehose_events({"now_ms": self.NOW, "offset": first["nextOffset"]})
+        self.assertFalse(second["truncated"])
+        self.assertNotIn("nextOffset", second)
+        uids = [e["recordUid"] for e in first["events"] + second["events"]]
+        self.assertEqual(len(uids), len(set(uids)))
+        self.assertEqual(len(uids), first["total"])
+        self.assertEqual(len(uids), len(srv.DATASET["firehose"]))
+        stamps = [e["recordTimestamp"] for e in first["events"] + second["events"]]
+        self.assertEqual(stamps, sorted(stamps))
+        self.assertIn("error", srv.firehose_events({"offset": "x"}))
+
+    def test_schemas_hide_the_test_clock(self):
+        for tool in srv.TOOLS:
+            self.assertNotIn("now_ms", tool["inputSchema"].get("properties", {}), tool["name"])
+        props = next(x for x in srv.TOOLS if x["name"] == "firehose_events")["inputSchema"]
+        self.assertIn("offset", props["properties"])
+
+    def test_descriptions_state_the_rules_the_code_uses(self):
+        desc = {tool["name"]: tool["description"] for tool in srv.TOOLS}
+        self.assertIn("at most 50", desc["firehose_events"])
+        self.assertIn("nextOffset", desc["firehose_events"])
+        self.assertEqual(srv.MAX_EVENTS, 50)
+        self.assertIn("above 1.0", desc["workspace_aggregated_capacity_utilization"])
+        self.assertIn("under 80", desc["workspace_aggregated_capacity_utilization"])
+        self.assertNotIn("Workspaces MCP location_search mockup", desc["location_search"])
+        for name, text in desc.items():
+            self.assertGreaterEqual(len(text), 40, name)
+
+
 class LabGuideAnswerKeyTest(unittest.TestCase):
     """Each answer-key number is computed from the server and must appear in the guide."""
 
@@ -641,6 +692,38 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
             (presence["activeDevicesCount"], presence["inActiveDevicesCount"]), (12, 3)
         )
         self.say("12 active plus 3 inactive devices, 15 in all")
+
+    def test_lab2_snapshot_ages(self):
+        snap = srv.firehose_latest({"now_ms": self.NOW})["occupancy"]
+        ages = {r["workspaceId"]: round((self.NOW - r["timestamp"]) / 60_000) for r in snap}
+        self.assertEqual(
+            ages,
+            {
+                "ws-board": 30,
+                "ws-lab": 60,
+                "ws-huddle": 120,
+                "ws-focus": 120,
+                "ws-workshop": 120,
+                "ws-phone": 180,
+            },
+        )
+        self.say("Boardroom North about 30 minutes, Lab Bench about 1 hour")
+        self.say("and Phone Booth N2 about 3 hours")
+        self.say("up to 3 hours old; see 2.A5")
+
+    def test_lab5_pages(self):
+        first = self.events_page()
+        self.assertEqual((first["count"], first["total"], first["nextOffset"]), (50, 77, 50))
+        self.say(
+            "The first pull returns 50 of 77 events, with `truncated: true` and `nextOffset: 50`"
+        )
+        rest = srv.firehose_events({"now_ms": self.NOW, "offset": 50})["events"]
+        types = {e["eventType"] for e in rest}
+        self.assertTrue({"IOT_TELEMETRY", "KEEP_ALIVE"} <= types)
+        self.say("They're in the second page (`offset: 50`)")
+
+    def events_page(self, **filters):
+        return srv.firehose_events({"now_ms": self.NOW, **filters})
 
     def test_s4_prediction(self):
         n = 15
