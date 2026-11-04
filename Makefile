@@ -22,6 +22,6 @@ test:
 
 ci: lint test
 
-# Rebuild docs/spaces-lab-guide-v1.pdf and -dark.pdf. Set CHROME to pick a browser.
+# Rebuild docs/spaces-lab-guide.pdf and -dark.pdf. Set CHROME to pick a browser.
 pdf:
 	$(PYTHON) scripts/build_pdfs.py

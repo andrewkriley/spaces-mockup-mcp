@@ -348,7 +348,7 @@ class RpcAndHttpTest(unittest.TestCase):
 
 class LabGuideToolsTest(unittest.TestCase):
     def test_guide_tool_table_matches_server(self):
-        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        text = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
         server_tools = {tool["name"] for tool in srv.TOOLS}
         self.assertEqual(server_tools, set(srv.HANDLERS))
         table_tools = set(re.findall(r"^\| `([a-z_]+)` \|", text, re.M))
@@ -365,7 +365,7 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        text = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
         cls.key = text[text.index("## Answer key") :]
         cls.guide = text
 

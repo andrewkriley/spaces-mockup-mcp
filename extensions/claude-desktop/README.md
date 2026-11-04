@@ -12,7 +12,7 @@ secret. The token is never in this folder.
   notifications.
 - `spaces-mockup.mcpb`: the packed extension that attendees install.
 
-Install steps for attendees are in `docs/spaces-lab-guide-v1.md`.
+Install steps for attendees are in `docs/spaces-lab-guide.md`.
 
 ## Rebuild
 

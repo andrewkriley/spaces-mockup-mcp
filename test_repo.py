@@ -87,9 +87,9 @@ class ReadmeContractTest(unittest.TestCase):
         self.assertIn("./run.sh", text)
         self.assertIn("--stdio", text)
         self.assertIn("does not use a bearer", text.lower())
-        self.assertIn("(docs/spaces-lab-guide-v1.md)", text)
+        self.assertIn("(docs/spaces-lab-guide.md)", text)
         self.assertIn("(docs/lab-guide.md)", text)
-        self.assertLess(text.index("spaces-lab-guide-v1.md"), text.index("docs/lab-guide.md"))
+        self.assertLess(text.index("spaces-lab-guide.md"), text.index("docs/lab-guide.md"))
 
 
 class LabGuideContractTest(unittest.TestCase):
@@ -153,7 +153,7 @@ class LabGuideContractTest(unittest.TestCase):
 
 class SpacesLabGuideNamesTest(unittest.TestCase):
     def test_guide_uses_dataset_names(self):
-        text = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        text = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
         self.assertNotIn("ghost", text.lower())
         for name in ("Mockup Campus", "loc-campus-mockup", "mockup-phone-01", "MOCKBRD004"):
             self.assertIn(name, text)
@@ -175,7 +175,7 @@ class PdfBuildTest(unittest.TestCase):
         spec = importlib.util.spec_from_file_location("build_pdfs", HERE / "scripts/build_pdfs.py")
         build = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(build)
-        guide = (HERE / "docs" / "spaces-lab-guide-v1.md").read_text(encoding="utf-8")
+        guide = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
         body = build.render_body(guide)
         ids = set(re.findall(r' id="([^"]+)"', body))
         links = set(re.findall(r'href="#([^"]+)"', body))
