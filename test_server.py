@@ -105,6 +105,15 @@ class DatasetContractTest(unittest.TestCase):
         self.assertTrue(REQUIRED_EVENT_TYPES.issubset(types), types)
         self.assertEqual(data["meta"]["spacesTenantName"], "Mockup Campus")
 
+    def test_dataset_json_matches_generator(self):
+        gen_spec = importlib.util.spec_from_file_location("dataset", HERE / "dataset.py")
+        gen = importlib.util.module_from_spec(gen_spec)
+        gen_spec.loader.exec_module(gen)
+        on_disk = json.loads((HERE / "dataset.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            gen.build_dataset(), on_disk, "dataset.json is stale: run python3 dataset.py"
+        )
+
     def test_dataset_is_synthetic(self):
         blob = json.dumps(srv.DATASET)
         self.assertIn("@mockup.example", blob)
@@ -329,6 +338,7 @@ class RpcAndHttpTest(unittest.TestCase):
             )
             with self.assertRaises(urllib.error.HTTPError) as exc:
                 urllib.request.urlopen(bad, timeout=5)
+            exc.exception.close()
             self.assertEqual(exc.exception.code, 401)
         finally:
             httpd.shutdown()
@@ -573,7 +583,10 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual(board_counts(first)[-1], 5)
         self.say("If the answer stops at 5")
 
-        phones = {r["deviceId"]: r["timestamp"] for r in srv.firehose_latest({})["locations"]}
+        phones = {
+            r["deviceId"]: r["timestamp"]
+            for r in srv.firehose_latest({"now_ms": self.NOW})["locations"]
+        }
         self.assertEqual(len(phones), 3)
         gap_h = (phones["mockup-phone-02"] - phones["mockup-phone-03"]) / 3_600_000
         self.assertAlmostEqual(gap_h, 8, delta=0.1)

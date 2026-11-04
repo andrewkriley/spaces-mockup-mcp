@@ -87,7 +87,9 @@ class ReadmeContractTest(unittest.TestCase):
         self.assertIn("./run.sh", text)
         self.assertIn("--stdio", text)
         self.assertIn("does not use a bearer", text.lower())
-        self.assertIn("docs/lab-guide.md", text)
+        self.assertIn("(docs/spaces-lab-guide-v1.md)", text)
+        self.assertIn("(docs/lab-guide.md)", text)
+        self.assertLess(text.index("spaces-lab-guide-v1.md"), text.index("docs/lab-guide.md"))
 
 
 class LabGuideContractTest(unittest.TestCase):
