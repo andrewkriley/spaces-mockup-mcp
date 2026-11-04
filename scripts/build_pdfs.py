@@ -64,6 +64,10 @@ blockquote { margin: 12pt 0; padding: 8pt 14pt; border-left: 5pt solid #0969da;
 blockquote h2 { border: none; margin: 0 0 4pt; color: #0550ae; }
 .contains-task-list, .task-list-item { list-style: none; }
 .task-list-item input { margin-right: 6pt; }
+/* Exercise IDs link to their answers; draw them as tags so they read as links */
+li > a:first-child > strong:only-child { display: inline-block; padding: 0 5pt;
+  border: 1px solid #0969da; border-radius: 3pt; background: #ddf4ff; color: #0550ae;
+  font-size: 9.5pt; line-height: 1.4; }
 /* Start the labs, the stretch goals, the setup appendix and the answer key on a new page.
    The labs themselves run on without breaks. */
 h2#lab-1--rooms-and-environment, h2#stretch-goals, h2#appendix-client-setup,
@@ -84,6 +88,8 @@ tr:nth-child(2n) td { background: #10151c; }
 blockquote { background: #0c2d6b; border-left-color: #4493f8; color: #e6edf3; }
 blockquote h2 { color: #79c0ff; }
 blockquote a { color: #79c0ff; }
+li > a:first-child > strong:only-child { background: #0c2d6b;
+  border-color: #4493f8; color: #79c0ff; }
 input[type=checkbox] { accent-color: #4493f8; filter: invert(0.85); }
 """
 
