@@ -491,7 +491,7 @@
   "metrics": {
     "ws-board": [
       {
-        "offset_ms": -57600000,
+        "offset_ms": -39600000,
         "peopleCount": 0,
         "presence": false,
         "booked": false,
@@ -502,7 +502,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -54000000,
+        "offset_ms": -36000000,
         "peopleCount": 3,
         "presence": true,
         "booked": true,
@@ -513,7 +513,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -50400000,
+        "offset_ms": -32400000,
         "peopleCount": 8,
         "presence": true,
         "booked": true,
@@ -524,7 +524,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -46800000,
+        "offset_ms": -28800000,
         "peopleCount": 12,
         "presence": true,
         "booked": true,
@@ -535,7 +535,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -43200000,
+        "offset_ms": -25200000,
         "peopleCount": 9,
         "presence": true,
         "booked": true,
@@ -546,7 +546,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -39600000,
+        "offset_ms": -21600000,
         "peopleCount": 2,
         "presence": true,
         "booked": false,
@@ -557,7 +557,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -36000000,
+        "offset_ms": -18000000,
         "peopleCount": 6,
         "presence": true,
         "booked": true,
@@ -568,7 +568,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -32400000,
+        "offset_ms": -14400000,
         "peopleCount": 10,
         "presence": true,
         "booked": true,
@@ -579,7 +579,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -28800000,
+        "offset_ms": -10800000,
         "peopleCount": 4,
         "presence": true,
         "booked": true,
@@ -590,7 +590,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -25200000,
+        "offset_ms": -7200000,
         "peopleCount": 2,
         "presence": true,
         "booked": false,
@@ -601,7 +601,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -21600000,
+        "offset_ms": -3600000,
         "peopleCount": 0,
         "presence": false,
         "booked": false,
@@ -614,68 +614,13 @@
     ],
     "ws-huddle": [
       {
-        "offset_ms": -54000000,
+        "offset_ms": -36000000,
         "peopleCount": 2,
         "presence": true,
         "booked": true,
         "temperatureC": 22.7,
         "humidityPct": 50,
         "ambientNoise": 32,
-        "useMinutes": 50,
-        "bookedMinutes": 60
-      },
-      {
-        "offset_ms": -50400000,
-        "peopleCount": 4,
-        "presence": true,
-        "booked": true,
-        "temperatureC": 23.0,
-        "humidityPct": 52,
-        "ambientNoise": 36,
-        "useMinutes": 50,
-        "bookedMinutes": 60
-      },
-      {
-        "offset_ms": -46800000,
-        "peopleCount": 4,
-        "presence": true,
-        "booked": true,
-        "temperatureC": 23.0,
-        "humidityPct": 52,
-        "ambientNoise": 36,
-        "useMinutes": 50,
-        "bookedMinutes": 60
-      },
-      {
-        "offset_ms": -43200000,
-        "peopleCount": 3,
-        "presence": true,
-        "booked": true,
-        "temperatureC": 22.849999999999998,
-        "humidityPct": 51,
-        "ambientNoise": 34,
-        "useMinutes": 50,
-        "bookedMinutes": 60
-      },
-      {
-        "offset_ms": -39600000,
-        "peopleCount": 0,
-        "presence": false,
-        "booked": false,
-        "temperatureC": 22.4,
-        "humidityPct": 48,
-        "ambientNoise": 28,
-        "useMinutes": 0,
-        "bookedMinutes": 0
-      },
-      {
-        "offset_ms": -36000000,
-        "peopleCount": 4,
-        "presence": true,
-        "booked": true,
-        "temperatureC": 23.0,
-        "humidityPct": 52,
-        "ambientNoise": 36,
         "useMinutes": 50,
         "bookedMinutes": 60
       },
@@ -692,6 +637,61 @@
       },
       {
         "offset_ms": -28800000,
+        "peopleCount": 4,
+        "presence": true,
+        "booked": true,
+        "temperatureC": 23.0,
+        "humidityPct": 52,
+        "ambientNoise": 36,
+        "useMinutes": 50,
+        "bookedMinutes": 60
+      },
+      {
+        "offset_ms": -25200000,
+        "peopleCount": 3,
+        "presence": true,
+        "booked": true,
+        "temperatureC": 22.849999999999998,
+        "humidityPct": 51,
+        "ambientNoise": 34,
+        "useMinutes": 50,
+        "bookedMinutes": 60
+      },
+      {
+        "offset_ms": -21600000,
+        "peopleCount": 0,
+        "presence": false,
+        "booked": true,
+        "temperatureC": 22.4,
+        "humidityPct": 48,
+        "ambientNoise": 28,
+        "useMinutes": 0,
+        "bookedMinutes": 60
+      },
+      {
+        "offset_ms": -18000000,
+        "peopleCount": 4,
+        "presence": true,
+        "booked": true,
+        "temperatureC": 23.0,
+        "humidityPct": 52,
+        "ambientNoise": 36,
+        "useMinutes": 50,
+        "bookedMinutes": 60
+      },
+      {
+        "offset_ms": -14400000,
+        "peopleCount": 4,
+        "presence": true,
+        "booked": true,
+        "temperatureC": 23.0,
+        "humidityPct": 52,
+        "ambientNoise": 36,
+        "useMinutes": 50,
+        "bookedMinutes": 60
+      },
+      {
+        "offset_ms": -10800000,
         "peopleCount": 2,
         "presence": true,
         "booked": true,
@@ -702,7 +702,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -25200000,
+        "offset_ms": -7200000,
         "peopleCount": 1,
         "presence": true,
         "booked": false,
@@ -715,29 +715,29 @@
     ],
     "ws-focus": [
       {
-        "offset_ms": -50400000,
-        "peopleCount": 0,
-        "presence": false,
-        "booked": false,
-        "temperatureC": 22.4,
-        "humidityPct": 48,
-        "ambientNoise": 28,
-        "useMinutes": 0,
-        "bookedMinutes": 0
-      },
-      {
-        "offset_ms": -43200000,
-        "peopleCount": 0,
-        "presence": false,
-        "booked": false,
-        "temperatureC": 22.4,
-        "humidityPct": 48,
-        "ambientNoise": 28,
-        "useMinutes": 0,
-        "bookedMinutes": 0
-      },
-      {
         "offset_ms": -32400000,
+        "peopleCount": 0,
+        "presence": false,
+        "booked": false,
+        "temperatureC": 22.4,
+        "humidityPct": 48,
+        "ambientNoise": 28,
+        "useMinutes": 0,
+        "bookedMinutes": 0
+      },
+      {
+        "offset_ms": -25200000,
+        "peopleCount": 0,
+        "presence": false,
+        "booked": false,
+        "temperatureC": 22.4,
+        "humidityPct": 48,
+        "ambientNoise": 28,
+        "useMinutes": 0,
+        "bookedMinutes": 0
+      },
+      {
+        "offset_ms": -14400000,
         "peopleCount": 1,
         "presence": true,
         "booked": false,
@@ -748,7 +748,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -25200000,
+        "offset_ms": -7200000,
         "peopleCount": 0,
         "presence": false,
         "booked": false,
@@ -761,7 +761,7 @@
     ],
     "ws-phone": [
       {
-        "offset_ms": -46800000,
+        "offset_ms": -28800000,
         "peopleCount": 0,
         "presence": false,
         "booked": false,
@@ -772,7 +772,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -36000000,
+        "offset_ms": -18000000,
         "peopleCount": 1,
         "presence": true,
         "booked": false,
@@ -783,7 +783,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -28800000,
+        "offset_ms": -10800000,
         "peopleCount": 0,
         "presence": false,
         "booked": false,
@@ -796,7 +796,7 @@
     ],
     "ws-lab": [
       {
-        "offset_ms": -54000000,
+        "offset_ms": -36000000,
         "peopleCount": 1,
         "presence": true,
         "booked": false,
@@ -807,7 +807,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -46800000,
+        "offset_ms": -28800000,
         "peopleCount": 2,
         "presence": true,
         "booked": false,
@@ -818,7 +818,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -36000000,
+        "offset_ms": -18000000,
         "peopleCount": 3,
         "presence": true,
         "booked": true,
@@ -829,7 +829,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -28800000,
+        "offset_ms": -10800000,
         "peopleCount": 5,
         "presence": true,
         "booked": true,
@@ -840,7 +840,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -21600000,
+        "offset_ms": -3600000,
         "peopleCount": 1,
         "presence": true,
         "booked": false,
@@ -853,7 +853,7 @@
     ],
     "ws-workshop": [
       {
-        "offset_ms": -54000000,
+        "offset_ms": -36000000,
         "peopleCount": 2,
         "presence": true,
         "booked": false,
@@ -864,7 +864,7 @@
         "bookedMinutes": 0
       },
       {
-        "offset_ms": -43200000,
+        "offset_ms": -25200000,
         "peopleCount": 5,
         "presence": true,
         "booked": true,
@@ -875,7 +875,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -32400000,
+        "offset_ms": -14400000,
         "peopleCount": 7,
         "presence": true,
         "booked": true,
@@ -886,7 +886,7 @@
         "bookedMinutes": 60
       },
       {
-        "offset_ms": -25200000,
+        "offset_ms": -7200000,
         "peopleCount": 3,
         "presence": true,
         "booked": false,
@@ -901,15 +901,15 @@
   "device_events": [
     {
       "deviceId": "dev-kitmini-huddle",
-      "offset_ms": -57600000,
+      "offset_ms": -39600000,
       "type": "camera.error",
       "code": "CAM_HDMI_SIGNAL_LOST",
       "severity": "error",
-      "message": "Camera HDMI input lost sync during morning boot."
+      "message": "Camera HDMI input lost sync after boot."
     },
     {
       "deviceId": "dev-kitmini-huddle",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "type": "camera.recovered",
       "code": "CAM_HDMI_SIGNAL_LOST",
       "severity": "info",
@@ -917,7 +917,7 @@
     },
     {
       "deviceId": "dev-boardpro-lab",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "type": "signage.stale",
       "code": "SIGNAGE_CONTENT_STALE",
       "severity": "warning",
@@ -925,7 +925,7 @@
     },
     {
       "deviceId": "dev-roombar-board",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "type": "call.started",
       "code": "",
       "severity": "info",
@@ -933,7 +933,7 @@
     },
     {
       "deviceId": "dev-roombar-workshop",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "type": "proximity.fail",
       "code": "PROXIMITY_PAIRING_FAIL",
       "severity": "warning",
@@ -961,7 +961,7 @@
     },
     {
       "recordUid": "evt-so-0002",
-      "offset_ms": -57600000,
+      "offset_ms": -39600000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -996,7 +996,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -58500000,
+        "windowStartOffset_ms": -40500000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 0,
         "peoplePresence": false,
@@ -1005,7 +1005,7 @@
     },
     {
       "recordUid": "evt-soc-0003",
-      "offset_ms": -55800000,
+      "offset_ms": -37800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1047,7 +1047,7 @@
     },
     {
       "recordUid": "evt-so-0004",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1082,7 +1082,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -54900000,
+        "windowStartOffset_ms": -36900000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 3,
         "peoplePresence": true,
@@ -1091,7 +1091,7 @@
     },
     {
       "recordUid": "evt-soc-0005",
-      "offset_ms": -52200000,
+      "offset_ms": -34200000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1133,7 +1133,7 @@
     },
     {
       "recordUid": "evt-so-0006",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1168,7 +1168,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -51300000,
+        "windowStartOffset_ms": -33300000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 8,
         "peoplePresence": true,
@@ -1177,7 +1177,7 @@
     },
     {
       "recordUid": "evt-soc-0007",
-      "offset_ms": -48600000,
+      "offset_ms": -30600000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1219,7 +1219,7 @@
     },
     {
       "recordUid": "evt-so-0008",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1254,7 +1254,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -47700000,
+        "windowStartOffset_ms": -29700000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 12,
         "peoplePresence": true,
@@ -1263,7 +1263,7 @@
     },
     {
       "recordUid": "evt-soc-0009",
-      "offset_ms": -45000000,
+      "offset_ms": -27000000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1305,7 +1305,7 @@
     },
     {
       "recordUid": "evt-so-0010",
-      "offset_ms": -43200000,
+      "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1340,7 +1340,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -44100000,
+        "windowStartOffset_ms": -26100000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 9,
         "peoplePresence": true,
@@ -1349,7 +1349,7 @@
     },
     {
       "recordUid": "evt-soc-0011",
-      "offset_ms": -41400000,
+      "offset_ms": -23400000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1391,7 +1391,7 @@
     },
     {
       "recordUid": "evt-so-0012",
-      "offset_ms": -39600000,
+      "offset_ms": -21600000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1426,7 +1426,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -40500000,
+        "windowStartOffset_ms": -22500000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 2,
         "peoplePresence": true,
@@ -1435,7 +1435,7 @@
     },
     {
       "recordUid": "evt-soc-0013",
-      "offset_ms": -37800000,
+      "offset_ms": -19800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1477,7 +1477,7 @@
     },
     {
       "recordUid": "evt-so-0014",
-      "offset_ms": -36000000,
+      "offset_ms": -18000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1512,7 +1512,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -36900000,
+        "windowStartOffset_ms": -18900000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 6,
         "peoplePresence": true,
@@ -1521,7 +1521,7 @@
     },
     {
       "recordUid": "evt-soc-0015",
-      "offset_ms": -34200000,
+      "offset_ms": -16200000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1563,7 +1563,7 @@
     },
     {
       "recordUid": "evt-so-0016",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1598,7 +1598,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -33300000,
+        "windowStartOffset_ms": -15300000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 10,
         "peoplePresence": true,
@@ -1607,7 +1607,7 @@
     },
     {
       "recordUid": "evt-soc-0017",
-      "offset_ms": -30600000,
+      "offset_ms": -12600000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1649,7 +1649,7 @@
     },
     {
       "recordUid": "evt-so-0018",
-      "offset_ms": -28800000,
+      "offset_ms": -10800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1684,7 +1684,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -29700000,
+        "windowStartOffset_ms": -11700000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 4,
         "peoplePresence": true,
@@ -1693,7 +1693,7 @@
     },
     {
       "recordUid": "evt-soc-0019",
-      "offset_ms": -27000000,
+      "offset_ms": -9000000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1735,7 +1735,7 @@
     },
     {
       "recordUid": "evt-so-0020",
-      "offset_ms": -25200000,
+      "offset_ms": -7200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1770,7 +1770,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -26100000,
+        "windowStartOffset_ms": -8100000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 2,
         "peoplePresence": true,
@@ -1779,7 +1779,7 @@
     },
     {
       "recordUid": "evt-soc-0021",
-      "offset_ms": -23400000,
+      "offset_ms": -5400000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1821,7 +1821,7 @@
     },
     {
       "recordUid": "evt-so-0022",
-      "offset_ms": -21600000,
+      "offset_ms": -3600000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1856,7 +1856,7 @@
           "capacity": 10,
           "occupancyType": "BOTH"
         },
-        "windowStartOffset_ms": -22500000,
+        "windowStartOffset_ms": -4500000,
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 0,
         "peoplePresence": false,
@@ -1865,7 +1865,7 @@
     },
     {
       "recordUid": "evt-soc-0023",
-      "offset_ms": -19800000,
+      "offset_ms": -1800000,
       "eventType": "SPACE_OCCUPANCY_CHANGE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1907,7 +1907,7 @@
     },
     {
       "recordUid": "evt-so-0024",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1943,7 +1943,7 @@
     },
     {
       "recordUid": "evt-so-0025",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -1979,7 +1979,7 @@
     },
     {
       "recordUid": "evt-so-0026",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2015,7 +2015,7 @@
     },
     {
       "recordUid": "evt-so-0027",
-      "offset_ms": -43200000,
+      "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2051,7 +2051,7 @@
     },
     {
       "recordUid": "evt-so-0028",
-      "offset_ms": -39600000,
+      "offset_ms": -21600000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2082,12 +2082,12 @@
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 0,
         "peoplePresence": false,
-        "bookingStatus": false
+        "bookingStatus": true
       }
     },
     {
       "recordUid": "evt-so-0029",
-      "offset_ms": -36000000,
+      "offset_ms": -18000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2123,7 +2123,7 @@
     },
     {
       "recordUid": "evt-so-0030",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2159,7 +2159,7 @@
     },
     {
       "recordUid": "evt-so-0031",
-      "offset_ms": -28800000,
+      "offset_ms": -10800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2195,7 +2195,7 @@
     },
     {
       "recordUid": "evt-so-0032",
-      "offset_ms": -25200000,
+      "offset_ms": -7200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2231,7 +2231,7 @@
     },
     {
       "recordUid": "evt-so-0033",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2267,78 +2267,6 @@
     },
     {
       "recordUid": "evt-so-0034",
-      "offset_ms": -43200000,
-      "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-mockup-001",
-      "spacesTenantName": "Mockup Campus",
-      "partnerTenantId": "partner-glam-mockup",
-      "spaceOccupancy": {
-        "location": {
-          "locationId": "loc-floor-n2",
-          "name": "North L2",
-          "inferredLocationTypes": [
-            "FLOOR"
-          ],
-          "parent": {
-            "locationId": "loc-bldg-north",
-            "name": "North Building",
-            "inferredLocationTypes": [
-              "BUILDING"
-            ]
-          }
-        },
-        "space": {
-          "id": "ws-focus",
-          "name": "Focus Desk 12",
-          "floorId": "loc-floor-n2",
-          "type": "ROOM",
-          "capacity": 1,
-          "occupancyType": "BOTH"
-        },
-        "timeZone": "Australia/Sydney",
-        "peakPeopleCount": 0,
-        "peoplePresence": false,
-        "bookingStatus": false
-      }
-    },
-    {
-      "recordUid": "evt-so-0035",
-      "offset_ms": -32400000,
-      "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-mockup-001",
-      "spacesTenantName": "Mockup Campus",
-      "partnerTenantId": "partner-glam-mockup",
-      "spaceOccupancy": {
-        "location": {
-          "locationId": "loc-floor-n2",
-          "name": "North L2",
-          "inferredLocationTypes": [
-            "FLOOR"
-          ],
-          "parent": {
-            "locationId": "loc-bldg-north",
-            "name": "North Building",
-            "inferredLocationTypes": [
-              "BUILDING"
-            ]
-          }
-        },
-        "space": {
-          "id": "ws-focus",
-          "name": "Focus Desk 12",
-          "floorId": "loc-floor-n2",
-          "type": "ROOM",
-          "capacity": 1,
-          "occupancyType": "BOTH"
-        },
-        "timeZone": "Australia/Sydney",
-        "peakPeopleCount": 1,
-        "peoplePresence": true,
-        "bookingStatus": false
-      }
-    },
-    {
-      "recordUid": "evt-so-0036",
       "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
@@ -2374,8 +2302,8 @@
       }
     },
     {
-      "recordUid": "evt-so-0037",
-      "offset_ms": -46800000,
+      "recordUid": "evt-so-0035",
+      "offset_ms": -14400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2396,44 +2324,8 @@
           }
         },
         "space": {
-          "id": "ws-phone",
-          "name": "Phone Booth N2",
-          "floorId": "loc-floor-n2",
-          "type": "ROOM",
-          "capacity": 1,
-          "occupancyType": "BOTH"
-        },
-        "timeZone": "Australia/Sydney",
-        "peakPeopleCount": 0,
-        "peoplePresence": false,
-        "bookingStatus": false
-      }
-    },
-    {
-      "recordUid": "evt-so-0038",
-      "offset_ms": -36000000,
-      "eventType": "SPACE_OCCUPANCY",
-      "spacesTenantId": "tenant-mockup-001",
-      "spacesTenantName": "Mockup Campus",
-      "partnerTenantId": "partner-glam-mockup",
-      "spaceOccupancy": {
-        "location": {
-          "locationId": "loc-floor-n2",
-          "name": "North L2",
-          "inferredLocationTypes": [
-            "FLOOR"
-          ],
-          "parent": {
-            "locationId": "loc-bldg-north",
-            "name": "North Building",
-            "inferredLocationTypes": [
-              "BUILDING"
-            ]
-          }
-        },
-        "space": {
-          "id": "ws-phone",
-          "name": "Phone Booth N2",
+          "id": "ws-focus",
+          "name": "Focus Desk 12",
           "floorId": "loc-floor-n2",
           "type": "ROOM",
           "capacity": 1,
@@ -2446,7 +2338,43 @@
       }
     },
     {
-      "recordUid": "evt-so-0039",
+      "recordUid": "evt-so-0036",
+      "offset_ms": -7200000,
+      "eventType": "SPACE_OCCUPANCY",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
+      "spaceOccupancy": {
+        "location": {
+          "locationId": "loc-floor-n2",
+          "name": "North L2",
+          "inferredLocationTypes": [
+            "FLOOR"
+          ],
+          "parent": {
+            "locationId": "loc-bldg-north",
+            "name": "North Building",
+            "inferredLocationTypes": [
+              "BUILDING"
+            ]
+          }
+        },
+        "space": {
+          "id": "ws-focus",
+          "name": "Focus Desk 12",
+          "floorId": "loc-floor-n2",
+          "type": "ROOM",
+          "capacity": 1,
+          "occupancyType": "BOTH"
+        },
+        "timeZone": "Australia/Sydney",
+        "peakPeopleCount": 0,
+        "peoplePresence": false,
+        "bookingStatus": false
+      }
+    },
+    {
+      "recordUid": "evt-so-0037",
       "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
@@ -2482,8 +2410,80 @@
       }
     },
     {
+      "recordUid": "evt-so-0038",
+      "offset_ms": -18000000,
+      "eventType": "SPACE_OCCUPANCY",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
+      "spaceOccupancy": {
+        "location": {
+          "locationId": "loc-floor-n2",
+          "name": "North L2",
+          "inferredLocationTypes": [
+            "FLOOR"
+          ],
+          "parent": {
+            "locationId": "loc-bldg-north",
+            "name": "North Building",
+            "inferredLocationTypes": [
+              "BUILDING"
+            ]
+          }
+        },
+        "space": {
+          "id": "ws-phone",
+          "name": "Phone Booth N2",
+          "floorId": "loc-floor-n2",
+          "type": "ROOM",
+          "capacity": 1,
+          "occupancyType": "BOTH"
+        },
+        "timeZone": "Australia/Sydney",
+        "peakPeopleCount": 1,
+        "peoplePresence": true,
+        "bookingStatus": false
+      }
+    },
+    {
+      "recordUid": "evt-so-0039",
+      "offset_ms": -10800000,
+      "eventType": "SPACE_OCCUPANCY",
+      "spacesTenantId": "tenant-mockup-001",
+      "spacesTenantName": "Mockup Campus",
+      "partnerTenantId": "partner-glam-mockup",
+      "spaceOccupancy": {
+        "location": {
+          "locationId": "loc-floor-n2",
+          "name": "North L2",
+          "inferredLocationTypes": [
+            "FLOOR"
+          ],
+          "parent": {
+            "locationId": "loc-bldg-north",
+            "name": "North Building",
+            "inferredLocationTypes": [
+              "BUILDING"
+            ]
+          }
+        },
+        "space": {
+          "id": "ws-phone",
+          "name": "Phone Booth N2",
+          "floorId": "loc-floor-n2",
+          "type": "ROOM",
+          "capacity": 1,
+          "occupancyType": "BOTH"
+        },
+        "timeZone": "Australia/Sydney",
+        "peakPeopleCount": 0,
+        "peoplePresence": false,
+        "bookingStatus": false
+      }
+    },
+    {
       "recordUid": "evt-so-0040",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2521,7 +2521,7 @@
     },
     {
       "recordUid": "evt-so-0041",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2559,7 +2559,7 @@
     },
     {
       "recordUid": "evt-so-0042",
-      "offset_ms": -36000000,
+      "offset_ms": -18000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2597,7 +2597,7 @@
     },
     {
       "recordUid": "evt-so-0043",
-      "offset_ms": -28800000,
+      "offset_ms": -10800000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2635,7 +2635,7 @@
     },
     {
       "recordUid": "evt-so-0044",
-      "offset_ms": -21600000,
+      "offset_ms": -3600000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2673,7 +2673,7 @@
     },
     {
       "recordUid": "evt-so-0045",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2711,7 +2711,7 @@
     },
     {
       "recordUid": "evt-so-0046",
-      "offset_ms": -43200000,
+      "offset_ms": -25200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2749,7 +2749,7 @@
     },
     {
       "recordUid": "evt-so-0047",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2787,7 +2787,7 @@
     },
     {
       "recordUid": "evt-so-0048",
-      "offset_ms": -25200000,
+      "offset_ms": -7200000,
       "eventType": "SPACE_OCCUPANCY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2825,7 +2825,7 @@
     },
     {
       "recordUid": "evt-dp-0049",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2870,7 +2870,7 @@
     },
     {
       "recordUid": "evt-dlu-0050",
-      "offset_ms": -53700000,
+      "offset_ms": -35700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2921,7 +2921,7 @@
     },
     {
       "recordUid": "evt-up-0051",
-      "offset_ms": -53940000,
+      "offset_ms": -35940000,
       "eventType": "USER_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -2965,7 +2965,7 @@
     },
     {
       "recordUid": "evt-dp-0052",
-      "offset_ms": -54000000,
+      "offset_ms": -36000000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3010,7 +3010,7 @@
     },
     {
       "recordUid": "evt-dlu-0053",
-      "offset_ms": -53700000,
+      "offset_ms": -35700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3061,7 +3061,7 @@
     },
     {
       "recordUid": "evt-up-0054",
-      "offset_ms": -53940000,
+      "offset_ms": -35940000,
       "eventType": "USER_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3105,7 +3105,7 @@
     },
     {
       "recordUid": "evt-dp-0055",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3150,7 +3150,7 @@
     },
     {
       "recordUid": "evt-dlu-0056",
-      "offset_ms": -50100000,
+      "offset_ms": -32100000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3201,7 +3201,7 @@
     },
     {
       "recordUid": "evt-up-0057",
-      "offset_ms": -50340000,
+      "offset_ms": -32340000,
       "eventType": "USER_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3245,7 +3245,7 @@
     },
     {
       "recordUid": "evt-dp-0058",
-      "offset_ms": -39600000,
+      "offset_ms": -21600000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3290,7 +3290,7 @@
     },
     {
       "recordUid": "evt-dlu-0059",
-      "offset_ms": -39300000,
+      "offset_ms": -21300000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3341,7 +3341,7 @@
     },
     {
       "recordUid": "evt-dp-0060",
-      "offset_ms": -36000000,
+      "offset_ms": -18000000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3386,7 +3386,7 @@
     },
     {
       "recordUid": "evt-dlu-0061",
-      "offset_ms": -35700000,
+      "offset_ms": -17700000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3437,7 +3437,7 @@
     },
     {
       "recordUid": "evt-dp-0062",
-      "offset_ms": -21600000,
+      "offset_ms": -3600000,
       "eventType": "DEVICE_PRESENCE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3482,7 +3482,7 @@
     },
     {
       "recordUid": "evt-dlu-0063",
-      "offset_ms": -21300000,
+      "offset_ms": -3300000,
       "eventType": "DEVICE_LOCATION_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3533,7 +3533,7 @@
     },
     {
       "recordUid": "evt-dc-0064",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "DEVICE_COUNT",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3562,7 +3562,7 @@
     },
     {
       "recordUid": "evt-da-0065",
-      "offset_ms": -53880000,
+      "offset_ms": -35880000,
       "eventType": "DEVICE_ASSOCIATION",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3603,7 +3603,7 @@
     },
     {
       "recordUid": "evt-pu-0066",
-      "offset_ms": -50400000,
+      "offset_ms": -32400000,
       "eventType": "PROFILE_UPDATE",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3645,7 +3645,7 @@
     },
     {
       "recordUid": "evt-cc-0067",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "CAMERA_COUNT",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3673,7 +3673,7 @@
     },
     {
       "recordUid": "evt-rcc-0068",
-      "offset_ms": -46740000,
+      "offset_ms": -28740000,
       "eventType": "RAW_CAMERA_COUNT",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3702,7 +3702,7 @@
     },
     {
       "recordUid": "evt-iot-0069",
-      "offset_ms": -28800000,
+      "offset_ms": -10800000,
       "eventType": "IOT_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3737,7 +3737,7 @@
     },
     {
       "recordUid": "evt-wt-0070",
-      "offset_ms": -46800000,
+      "offset_ms": -28800000,
       "eventType": "WEBEX_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3794,7 +3794,7 @@
     },
     {
       "recordUid": "evt-wt-0071",
-      "offset_ms": -43200000,
+      "offset_ms": -25200000,
       "eventType": "WEBEX_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3851,7 +3851,7 @@
     },
     {
       "recordUid": "evt-wt-0072",
-      "offset_ms": -28800000,
+      "offset_ms": -10800000,
       "eventType": "WEBEX_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3908,7 +3908,7 @@
     },
     {
       "recordUid": "evt-wt-0073",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "eventType": "WEBEX_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",
@@ -3965,7 +3965,7 @@
     },
     {
       "recordUid": "evt-wt-0074",
-      "offset_ms": -32400000,
+      "offset_ms": -14400000,
       "eventType": "WEBEX_TELEMETRY",
       "spacesTenantId": "tenant-mockup-001",
       "spacesTenantName": "Mockup Campus",

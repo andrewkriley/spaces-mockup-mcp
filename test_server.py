@@ -374,6 +374,57 @@ class LabGuideToolsTest(unittest.TestCase):
         self.assertEqual(int(claimed.group(1)), len(server_tools))
 
 
+class ClockAndPagingTest(unittest.TestCase):
+    NOW = 1_800_000_000_000
+
+    def test_nothing_is_dated_in_the_future(self):
+        d = srv.DATASET
+        offsets = [r["offset_ms"] for r in d["firehose"] + d["device_events"]]
+        offsets += [p["offset_ms"] for series in d["metrics"].values() for p in series]
+        self.assertLess(max(offsets), 0)
+
+    def test_latest_readings_are_recent(self):
+        newest = max(
+            p["timestamp"]
+            for ws in srv.DATASET["metrics"]
+            for p in srv.workspace_metrics({"workspace_id": ws, "now_ms": self.NOW})["points"]
+        )
+        self.assertLessEqual(self.NOW - newest, 3_600_000)
+        snap = srv.firehose_latest({"now_ms": self.NOW})["occupancy"]
+        self.assertLessEqual(min(self.NOW - r["timestamp"] for r in snap), 3_600_000)
+
+    def test_events_page_through_everything_once(self):
+        first = srv.firehose_events({"now_ms": self.NOW})
+        self.assertEqual((first["count"], first["truncated"], first["nextOffset"]), (50, True, 50))
+        second = srv.firehose_events({"now_ms": self.NOW, "offset": first["nextOffset"]})
+        self.assertFalse(second["truncated"])
+        self.assertNotIn("nextOffset", second)
+        uids = [e["recordUid"] for e in first["events"] + second["events"]]
+        self.assertEqual(len(uids), len(set(uids)))
+        self.assertEqual(len(uids), first["total"])
+        self.assertEqual(len(uids), len(srv.DATASET["firehose"]))
+        stamps = [e["recordTimestamp"] for e in first["events"] + second["events"]]
+        self.assertEqual(stamps, sorted(stamps))
+        self.assertIn("error", srv.firehose_events({"offset": "x"}))
+
+    def test_schemas_hide_the_test_clock(self):
+        for tool in srv.TOOLS:
+            self.assertNotIn("now_ms", tool["inputSchema"].get("properties", {}), tool["name"])
+        props = next(x for x in srv.TOOLS if x["name"] == "firehose_events")["inputSchema"]
+        self.assertIn("offset", props["properties"])
+
+    def test_descriptions_state_the_rules_the_code_uses(self):
+        desc = {tool["name"]: tool["description"] for tool in srv.TOOLS}
+        self.assertIn("at most 50", desc["firehose_events"])
+        self.assertIn("nextOffset", desc["firehose_events"])
+        self.assertEqual(srv.MAX_EVENTS, 50)
+        self.assertIn("above 1.0", desc["workspace_aggregated_capacity_utilization"])
+        self.assertIn("under 80", desc["workspace_aggregated_capacity_utilization"])
+        self.assertNotIn("Workspaces MCP location_search mockup", desc["location_search"])
+        for name, text in desc.items():
+            self.assertGreaterEqual(len(text), 40, name)
+
+
 class LabGuideAnswerKeyTest(unittest.TestCase):
     """Each answer-key number is computed from the server and must appear in the guide."""
 
@@ -433,7 +484,32 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual((len(board), len(points["ws-phone"])), (11, 3))
         gap = board[-1]["timestamp"] - points["ws-phone"][-1]["timestamp"]
         self.assertAlmostEqual(gap / srv.DAY * 24, 2, delta=0.1)
-        self.say("Boardroom North has 11 hourly points and Phone Booth N2 has only 3")
+        self.say("Boardroom North has 11 hourly points, Huddle A 9, Lab Bench 5")
+        counts = {i: len(p) for i, p in points.items()}
+        self.assertEqual(
+            counts,
+            {
+                "ws-board": 11,
+                "ws-huddle": 9,
+                "ws-lab": 5,
+                "ws-focus": 4,
+                "ws-workshop": 4,
+                "ws-phone": 3,
+            },
+        )
+        ages = {i: round((self.NOW - p[-1]["timestamp"]) / srv.DAY * 24) for i, p in points.items()}
+        self.assertEqual(
+            ages,
+            {
+                "ws-board": 1,
+                "ws-lab": 1,
+                "ws-huddle": 2,
+                "ws-focus": 2,
+                "ws-workshop": 2,
+                "ws-phone": 3,
+            },
+        )
+        self.say("about 1 hour old for Boardroom North and Lab Bench, about 2 hours for Huddle A")
 
     def test_lab1_telemetry_and_s3(self):
         telemetry = self.events(eventType="WEBEX_TELEMETRY")
@@ -448,6 +524,20 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         peak = max(self.metrics("ws-board"), key=lambda x: x["peopleCount"])
         self.assertEqual(peak["ambientNoise"], 52)
         self.say("the metrics say 52 and the telemetry's `ambientNoise` says 38")
+
+        counts = {}
+        for row in telemetry:
+            info = row["webexTelemetryUpdate"]["deviceInfo"]
+            t = {k: v for d in row["webexTelemetryUpdate"]["telemetries"] for k, v in d.items()}
+            point = min(
+                self.metrics(info["workspaceId"]),
+                key=lambda x, ts=row["recordTimestamp"]: abs(x["timestamp"] - ts),
+            )
+            counts[info["workspaceId"]] = (t["peopleCount"], point["peopleCount"])
+        self.assertEqual({w for w, (a, b) in counts.items() if a != b}, {"ws-huddle"})
+        self.assertEqual(counts["ws-huddle"], (4, 3))
+        self.say("Huddle A's `WEBEX_TELEMETRY` counts 4 people while `workspace_metrics` says 3")
+        self.assertIn("disagree on headcount in one room", self.guide)
 
         (iot,) = self.events(eventType="IOT_TELEMETRY")
         sensor = iot["iotTelemetry"]
@@ -474,19 +564,46 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
             if w["bookedMinutes"]
         }
         self.assertEqual(
-            ratios, {"ws-board": 1.07, "ws-huddle": 0.95, "ws-lab": 2.08, "ws-workshop": 1.67}
+            ratios, {"ws-board": 1.07, "ws-huddle": 0.83, "ws-lab": 2.08, "ws-workshop": 1.67}
         )
-        self.say("Boardroom 1.07, Huddle A 0.95, Lab Bench 2.08, Workshop Bay 1.67")
+        self.say("Boardroom 1.07, Huddle A 0.83, Lab Bench 2.08, Workshop Bay 1.67")
+        self.assertEqual(round(50 / 60, 2), 0.83)
+        self.say("scores 0.83, not 1")
 
         cap = srv.workspace_aggregated_capacity_utilization({})
         self.assertEqual([w["id"] for w in cap["overcrowded"]], ["ws-board"])
         self.assertEqual({w["id"] for w in cap["under_utilized"]}, {"ws-focus", "ws-phone"})
+        for w in cap["under_utilized"]:
+            self.assertEqual((w["useMinutes"], w["peakRatio"]), (50, 1.0))
+        self.say("flagged on minutes used (50 each, under the tool's 80-minute line)")
 
-        walk_ins = {}
+        walk_ins, no_shows, used = {}, {}, {}
         for i in usage:
             p = self.metrics(i)
-            self.assertFalse([x for x in p if x["booked"] and not x["presence"]])
+            no_shows[i] = sum(1 for x in p if x["booked"] and not x["presence"])
             walk_ins[i] = sum(1 for x in p if x["presence"] and not x["booked"])
+            used[i] = sum(1 for x in p if x["presence"])
+        self.assertEqual({i: n for i, n in no_shows.items() if n}, {"ws-huddle": 1})
+        huddle = self.metrics("ws-huddle")
+        gap = next(k for k, x in enumerate(huddle) if x["booked"] and not x["presence"])
+        self.assertTrue(huddle[gap - 1]["booked"] and huddle[gap + 1]["booked"])
+        self.assertEqual(round((self.NOW - huddle[gap]["timestamp"]) / srv.DAY * 24), 6)
+        self.say(
+            "One booked-but-empty hour: Huddle A, about 6 hours ago, between two runs of bookings"
+        )
+        self.assertEqual((walk_ins["ws-lab"], used["ws-lab"]), (3, 5))
+        self.assertEqual((walk_ins["ws-workshop"], used["ws-workshop"]), (2, 4))
+        self.say("Lab Bench is the only room where most use is unbooked, 3 of its 5 hours")
+        self.say("Huddle A no-show: one booked hour with nobody there")
+        biggest = max(w["capacity"] for w in srv.workspace_search({})["workspaces"])
+        self.assertEqual(biggest, usage["ws-board"]["capacity"])
+        self.assertLess(biggest, usage["ws-board"]["peakPeopleCount"])
+        self.say("No room can take the 12-person stand-up: Boardroom North is the biggest room")
+        self.assertNotIn("moving large meetings to Workshop Bay", self.key)
+        self.assertEqual(
+            [i for i in used if walk_ins[i] * 2 > used[i] and usage[i]["bookedMinutes"]],
+            ["ws-lab"],
+        )
         self.assertEqual(
             walk_ins,
             {
@@ -541,6 +658,18 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         soonest = sorted(life.values(), key=lambda p: p["endOfSale"])
         self.assertEqual([p["productType"] for p in soonest[:2]], ["roomkit-mini", "desk-pro"])
         self.say("end-of-sale on 31 Oct 2026. Next is the Desk Pro on 30 Jun 2027")
+
+    def test_lab4_open_workspace_templates(self):
+        open_rooms = {
+            w["id"] for w in srv.workspace_search({"type": "openWorkspace"})["workspaces"]
+        }
+        self.assertEqual(open_rooms, {"ws-lab", "ws-workshop"})
+        for d in srv.device_search({})["devices"]:
+            if d["workspaceId"] in open_rooms:
+                cfg = srv.device_configuration_list({"device_id": d["id"]})
+                self.assertEqual(cfg["templateId"], "tpl-meeting-standard")
+        self.assertIn("Lab Bench and Workshop Bay are open workspaces", self.guide)
+        self.say("Workshop Bay matches the template exactly")
 
     def test_lab4_drift(self):
         drift = {
@@ -621,6 +750,38 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
             (presence["activeDevicesCount"], presence["inActiveDevicesCount"]), (12, 3)
         )
         self.say("12 active plus 3 inactive devices, 15 in all")
+
+    def test_lab2_snapshot_ages(self):
+        snap = srv.firehose_latest({"now_ms": self.NOW})["occupancy"]
+        ages = {r["workspaceId"]: round((self.NOW - r["timestamp"]) / 60_000) for r in snap}
+        self.assertEqual(
+            ages,
+            {
+                "ws-board": 30,
+                "ws-lab": 60,
+                "ws-huddle": 120,
+                "ws-focus": 120,
+                "ws-workshop": 120,
+                "ws-phone": 180,
+            },
+        )
+        self.say("Boardroom North about 30 minutes, Lab Bench about 1 hour")
+        self.say("and Phone Booth N2 about 3 hours")
+        self.say("up to 3 hours old; see 2.A5")
+
+    def test_lab5_pages(self):
+        first = self.events_page()
+        self.assertEqual((first["count"], first["total"], first["nextOffset"]), (50, 77, 50))
+        self.say(
+            "The first pull returns 50 of 77 events, with `truncated: true` and `nextOffset: 50`"
+        )
+        rest = srv.firehose_events({"now_ms": self.NOW, "offset": 50})["events"]
+        types = {e["eventType"] for e in rest}
+        self.assertTrue({"IOT_TELEMETRY", "KEEP_ALIVE"} <= types)
+        self.say("They're in the second page (`offset: 50`)")
+
+    def events_page(self, **filters):
+        return srv.firehose_events({"now_ms": self.NOW, **filters})
 
     def test_s4_prediction(self):
         n = 15

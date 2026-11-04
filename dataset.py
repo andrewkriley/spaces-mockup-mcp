@@ -509,7 +509,7 @@ def occupancy_curve() -> dict[str, list[tuple[int, int, bool, bool]]]:
             (9, 4, True, True),
             (10, 4, True, True),
             (11, 3, True, True),
-            (12, 0, False, False),
+            (12, 0, False, True),  # booked, nobody came: the 2.A2 no-show
             (13, 4, True, True),
             (14, 4, True, True),
             (15, 2, True, True),
@@ -543,8 +543,11 @@ def occupancy_curve() -> dict[str, list[tuple[int, int, bool, bool]]]:
 
 
 def hour_offset(hour: int) -> int:
-    """Map local hour 0-23 onto the last 24h window. Hour 17 is near now."""
-    return -((23 - hour) * HOUR)
+    """Map local hour 0-23 onto the last 24h window. Hour 17 starts an hour ago.
+
+    Events land up to 59 minutes after their hour, so hour 18 would reach the future.
+    """
+    return -((18 - hour) * HOUR)
 
 
 def build_firehose(workspaces: list[dict]) -> list[dict]:
@@ -891,7 +894,7 @@ def build_device_events() -> list[dict]:
             "type": "camera.error",
             "code": "CAM_HDMI_SIGNAL_LOST",
             "severity": "error",
-            "message": "Camera HDMI input lost sync during morning boot.",
+            "message": "Camera HDMI input lost sync after boot.",
         },
         {
             "deviceId": "dev-kitmini-huddle",
