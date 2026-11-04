@@ -378,6 +378,7 @@ These have no single expected answer. Each one lists what a complete result incl
    - Phone Booth N2 has environment readings but no device.
    - Lab Bench uses a meeting-room template.
    - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
+   - An IoT sensor at Lab Bench (`mockup-sensor-lab-01`) reports a different temperature from the room's metrics for the same hour.
 4. **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
    - → Answer [**S4**](#s4-predict-and-flag)
 5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
@@ -392,7 +393,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### 1.E1 Temperature everywhere
 
-- Every room reads 22.4–22.9 °C. Workshop Bay is the warmest (22.85 °C, 3 people).
+- Every room's latest reading is 22.4–22.9 °C. Workshop Bay is the warmest (22.85 °C, 3 people). Earlier readings run higher; see 1.E2.
 
 #### 1.E2 One room over the day
 
@@ -445,7 +446,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### 2.A3 Live vs. history
 
-- Yes for headcount (for example Workshop Bay 3, Boardroom 0). Most timestamps match exactly; Boardroom North's snapshot is about 30 minutes newer than its last metrics point.
+- Yes for headcount (for example Workshop Bay 3, Boardroom 0). Most timestamps agree within a few seconds; Boardroom North's snapshot is about 30 minutes newer than its last metrics point.
 
 #### 2.A4 Make the case
 
@@ -542,6 +543,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 5.A1 Event mix
 
 - 50 events per pull. `SPACE_OCCUPANCY` is the most common type, at roughly 20 of the 50.
+- `IOT_TELEMETRY` and `KEEP_ALIVE` don't appear in the first pull even though they're subscribed. They come later in the replay: filter `firehose_events` by `eventType` to find 1 and 3 of them.
 
 #### 5.A2 Rebuild a meeting
 
