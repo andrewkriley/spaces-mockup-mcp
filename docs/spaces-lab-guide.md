@@ -70,6 +70,8 @@ If your client asks permission to run the tool, allow it. The reply should say t
 
 If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client in the [appendix](#appendix-client-setup).
 
+**Start a new chat for each lab.** Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
+
 ## Data sources
 
 You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
