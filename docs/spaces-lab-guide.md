@@ -257,6 +257,8 @@ Tools: `device_configuration_schema`, `device_configuration_template_list`, `dev
 
 Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events`.
 
+**Tip:** `firehose_events` returns at most 50 events per pull. Before you count or trace anything, check whether the reply says `truncated: true`. If it does, ask the assistant to follow `nextOffset`, or to filter by `eventType`.
+
 **Answers:** click an exercise ID, such as **5.E1**, to jump to its answer in the Answer key. Try the exercise first.
 
 ### Easy
@@ -457,6 +459,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - They disagree. The metrics say 24.2 °C at the 12-person peak, while device telemetry says 22.8 °C.
 - Noise disagrees too: the metrics say 52 and the telemetry's `ambientNoise` says 38. Both sources agree on the headcount of 12.
+- Discussion: good answers notice that the telemetry reads a flat 22.8 °C and 50% in every room, from 1 person to 12 (see S3), while the metrics rise with headcount. For a comfort complaint, trust the source that moves with conditions, here the room metrics, and treat the device sensor as suspect until someone checks it.
 
 #### [1.A4](#advanced) Data freshness
 
@@ -576,6 +579,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### [4.A3](#advanced-3) Same model, different rooms
 
 - One key, `Audio.DefaultVolume` (50 vs. 40).
+- Discussion: the size argument is weak. Workshop Bay seats 8 to Boardroom North's 10, yet it works at the template's 40. Good answers either bring Boardroom back to 40 (see 4.A4) or propose changing the template for every room, rather than leaving one device's drift in place.
 
 #### [4.A4](#advanced-3) Remediation plan
 

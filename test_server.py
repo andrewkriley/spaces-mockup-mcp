@@ -856,6 +856,31 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
     def events_page(self, **filters):
         return srv.firehose_events({"now_ms": self.NOW, **filters})
 
+    def test_discussion_guidance(self):
+        caps = {w["id"]: w["capacity"] for w in srv.workspace_search({})["workspaces"]}
+        self.assertEqual((caps["ws-workshop"], caps["ws-board"]), (8, 10))
+        diff = srv.device_configuration_diff(
+            {"device_id_a": "dev-roombar-board", "device_id_b": "dev-roombar-workshop"}
+        )["diffs"]
+        self.assertEqual([(d["a"], d["b"]) for d in diff], [(50, 40)])
+        self.say("Workshop Bay seats 8 to Boardroom North's 10, yet it works at the template's 40")
+
+        people = []
+        for row in self.events(eventType="WEBEX_TELEMETRY"):
+            t = {k: v for d in row["webexTelemetryUpdate"]["telemetries"] for k, v in d.items()}
+            self.assertEqual((t["ambientTemp"], t["relativeHumidity"]), (22.8, 50))
+            people.append(t["peopleCount"])
+        self.assertEqual((min(people), max(people)), (1, 12))
+        self.say("the telemetry reads a flat 22.8 °C and 50% in every room, from 1 person to 12")
+
+        self.assertEqual(srv.MAX_EVENTS, 50)
+        lab5 = self.guide[
+            self.guide.index("## Lab 5") : self.guide.index(
+                "### Easy", self.guide.index("## Lab 5")
+            )
+        ]
+        self.assertIn("`firehose_events` returns at most 50 events per pull", lab5)
+
     def test_s4_prediction(self):
         n = 15
         self.assertAlmostEqual(22.4 + 0.15 * n, 24.65)
