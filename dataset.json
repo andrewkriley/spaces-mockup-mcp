@@ -661,12 +661,12 @@
         "offset_ms": -39600000,
         "peopleCount": 0,
         "presence": false,
-        "booked": false,
+        "booked": true,
         "temperatureC": 22.4,
         "humidityPct": 48,
         "ambientNoise": 28,
         "useMinutes": 0,
-        "bookedMinutes": 0
+        "bookedMinutes": 60
       },
       {
         "offset_ms": -36000000,
@@ -2082,7 +2082,7 @@
         "timeZone": "Australia/Sydney",
         "peakPeopleCount": 0,
         "peoplePresence": false,
-        "bookingStatus": false
+        "bookingStatus": true
       }
     },
     {

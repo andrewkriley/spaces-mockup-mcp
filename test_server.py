@@ -458,19 +458,43 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
             if w["bookedMinutes"]
         }
         self.assertEqual(
-            ratios, {"ws-board": 1.07, "ws-huddle": 0.95, "ws-lab": 2.08, "ws-workshop": 1.67}
+            ratios, {"ws-board": 1.07, "ws-huddle": 0.83, "ws-lab": 2.08, "ws-workshop": 1.67}
         )
-        self.say("Boardroom 1.07, Huddle A 0.95, Lab Bench 2.08, Workshop Bay 1.67")
+        self.say("Boardroom 1.07, Huddle A 0.83, Lab Bench 2.08, Workshop Bay 1.67")
+        self.assertEqual(round(50 / 60, 2), 0.83)
+        self.say("scores 0.83, not 1")
 
         cap = srv.workspace_aggregated_capacity_utilization({})
         self.assertEqual([w["id"] for w in cap["overcrowded"]], ["ws-board"])
         self.assertEqual({w["id"] for w in cap["under_utilized"]}, {"ws-focus", "ws-phone"})
+        for w in cap["under_utilized"]:
+            self.assertEqual((w["useMinutes"], w["peakRatio"]), (50, 1.0))
+        self.say("flagged on minutes used (50 each, under the tool's 80-minute line)")
 
-        walk_ins = {}
+        walk_ins, no_shows, used = {}, {}, {}
         for i in usage:
             p = self.metrics(i)
-            self.assertFalse([x for x in p if x["booked"] and not x["presence"]])
+            no_shows[i] = sum(1 for x in p if x["booked"] and not x["presence"])
             walk_ins[i] = sum(1 for x in p if x["presence"] and not x["booked"])
+            used[i] = sum(1 for x in p if x["presence"])
+        self.assertEqual({i: n for i, n in no_shows.items() if n}, {"ws-huddle": 1})
+        huddle = self.metrics("ws-huddle")
+        gap = next(k for k, x in enumerate(huddle) if x["booked"] and not x["presence"])
+        self.assertTrue(huddle[gap - 1]["booked"] and huddle[gap + 1]["booked"])
+        self.say("One booked-but-empty hour: Huddle A, between its morning and afternoon bookings")
+        self.assertEqual((walk_ins["ws-lab"], used["ws-lab"]), (3, 5))
+        self.assertEqual((walk_ins["ws-workshop"], used["ws-workshop"]), (2, 4))
+        self.say("Lab Bench is the only room where most use is unbooked, 3 of its 5 hours")
+        self.say("Huddle A no-show: one booked hour with nobody there")
+        biggest = max(w["capacity"] for w in srv.workspace_search({})["workspaces"])
+        self.assertEqual(biggest, usage["ws-board"]["capacity"])
+        self.assertLess(biggest, usage["ws-board"]["peakPeopleCount"])
+        self.say("No room can take the 12-person stand-up: Boardroom North is the biggest room")
+        self.assertNotIn("moving large meetings to Workshop Bay", self.key)
+        self.assertEqual(
+            [i for i in used if walk_ins[i] * 2 > used[i] and usage[i]["bookedMinutes"]],
+            ["ws-lab"],
+        )
         self.assertEqual(
             walk_ins,
             {
@@ -525,6 +549,18 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         soonest = sorted(life.values(), key=lambda p: p["endOfSale"])
         self.assertEqual([p["productType"] for p in soonest[:2]], ["roomkit-mini", "desk-pro"])
         self.say("end-of-sale on 31 Oct 2026. Next is the Desk Pro on 30 Jun 2027")
+
+    def test_lab4_open_workspace_templates(self):
+        open_rooms = {
+            w["id"] for w in srv.workspace_search({"type": "openWorkspace"})["workspaces"]
+        }
+        self.assertEqual(open_rooms, {"ws-lab", "ws-workshop"})
+        for d in srv.device_search({})["devices"]:
+            if d["workspaceId"] in open_rooms:
+                cfg = srv.device_configuration_list({"device_id": d["id"]})
+                self.assertEqual(cfg["templateId"], "tpl-meeting-standard")
+        self.assertIn("Lab Bench and Workshop Bay are open workspaces", self.guide)
+        self.say("Workshop Bay matches the template exactly")
 
     def test_lab4_drift(self):
         drift = {

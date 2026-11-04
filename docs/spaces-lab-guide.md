@@ -244,9 +244,11 @@ To join data across tools, use the shared IDs: `locationId`, workspace `id` / `w
 
 Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
 
+The campus, building and floor layout is in [Locations](#locations) above. Lab 5 starts with the tool that returns it.
+
 ### Easy
 
-1. **Temperature everywhere.** *"Show me the temperature in all the rooms."*
+1. **Temperature everywhere.** *"Show me the temperature in every room right now."*
    - → Answer [**1.E1**](#1e1-temperature-everywhere)
 2. **One room over the day.** *"Show Boardroom North's temperature history."*
    - → Answer [**1.E2**](#1e2-one-room-over-the-day)
@@ -258,6 +260,7 @@ Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
 1. **Comfort alerts.** *"Flag any hour in any room where temperature went over 24 °C or humidity reached 60%."*
    - → Answer [**1.A1**](#1a1-comfort-alerts)
 2. **Build a model.** *"Across all rooms, how do temperature, humidity and noise change with headcount?"*
+   - Discuss: the same rule fits a 1-seat booth and a 10-seat boardroom. Is that realistic, and what does it mean for your S4 prediction?
    - → Answer [**1.A2**](#1a2-build-a-model)
 3. **Two sources, one room.** *"Compare Boardroom North's temperature in workspace\_metrics with the WEBEX\_TELEMETRY ambientTemp for the same hour."*
    - Discuss: which source would you trust for a comfort complaint, and why?
@@ -291,7 +294,7 @@ Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggre
 
 ## Lab 3 — Devices, errors and lifecycle
 
-Tools: `device_search`, `device_event_history`, `device_aggregated_event_history`, `device_error_code_detail_search`, `product_lifecycle`.
+Tools: `device_search`, `device_event_history`, `device_aggregated_event_history`, `device_error_code_detail_search`, `product_lifecycle`, and `workspace_aggregated_popularity_metrics` for 3.A3.
 
 ### Easy
 
@@ -337,7 +340,7 @@ Tools: `device_configuration_schema`, `device_configuration_template_list`, `dev
    - → Answer [**4.A3**](#4a3-same-model-different-rooms)
 4. **Remediation plan.** *"Write the exact changes needed to bring every device back to template, and validate each value against the schema."*
    - → Answer [**4.A4**](#4a4-remediation-plan)
-5. **Question the template.** *"Lab Bench is an open workspace but uses the meeting-room template. Is that the right template?"*
+5. **Question the template.** *"Lab Bench and Workshop Bay are open workspaces, but both use the meeting-room template. Is that the right template?"*
    - → Answer [**4.A5**](#4a5-question-the-template)
 
 ## Lab 5 — Locations and the Firehose replay
@@ -376,7 +379,7 @@ These have no single expected answer. Each one lists what a complete result incl
 3. **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
    - Device telemetry and room metrics disagree on temperature.
    - Phone Booth N2 has environment readings but no device.
-   - Lab Bench uses a meeting-room template.
+   - Both open workspaces, Lab Bench and Workshop Bay, use a meeting-room template.
    - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
    - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
    - → Answer [**S3**](#s3-anomaly-hunt)
@@ -412,6 +415,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - The same rule fits every room. Temperature is 22.4 °C + 0.15 °C per person, humidity is 48% + 1% per person, and noise is 28 + 2 per person.
 - To check it: 7 people in Workshop Bay predicts 23.45 °C, 55% and 42, which matches the data.
+- Real rooms wouldn't behave like this: one extra person warms a phone booth far more than a boardroom. The rule is a property of the sample data, so S4's prediction only holds inside this dataset.
 
 #### 1.A3 Two sources, one room
 
@@ -435,15 +439,18 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### 2.E3 Wrong-sized rooms
 
 - Boardroom North is overcrowded (peak 12 people in 10 seats, ratio 1.2). Focus Desk 12 and Phone Booth N2 are under-utilized.
+- They're flagged on minutes used (50 each, under the tool's 80-minute line), not on crowding. Each one's peak is 1 person in 1 seat, a ratio of 1.0.
 
 #### 2.A1 Booking accuracy
 
-- Boardroom 1.07, Huddle A 0.95, Lab Bench 2.08, Workshop Bay 1.67. Focus Desk and Phone Booth are never booked.
-- A ratio well above 1 means most use comes from walk-ins. That's true for the South Building rooms.
+- Boardroom 1.07, Huddle A 0.83, Lab Bench 2.08, Workshop Bay 1.67. Focus Desk and Phone Booth are never booked.
+- Read the ratio with care. Each used hour counts 50 minutes and each booked hour 60, so a room that is booked and used every hour scores 0.83, not 1. Above 0.83 means walk-ins; below it means no-shows.
+- Huddle A scores exactly 0.83, but not because every booking was used: one walk-in hour and one no-show cancel out (see 2.A2).
+- Lab Bench is the only room where most use is unbooked, 3 of its 5 hours. Workshop Bay is half, 2 of 4.
 
 #### 2.A2 No-shows and walk-ins, hour by hour
 
-- No booked-but-empty hours.
+- One booked-but-empty hour: Huddle A, between its morning and afternoon bookings. The metrics show `booked: true` with 0 people.
 - Hours used without a booking: Lab Bench 3, Boardroom North 2, Workshop Bay 2, and 1 each for Huddle A, Focus Desk 12 and Phone Booth N2.
 
 #### 2.A3 Live vs. history
@@ -452,7 +459,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### 2.A4 Make the case
 
-- A strong answer uses the capacity tool (Boardroom at 1.2×) and the usage tool (Focus Desk and Phone Booth at 50 min, never booked). It might suggest moving large meetings to Workshop Bay (8 seats, peak 7).
+- A strong answer uses the capacity tool (Boardroom at 1.2×) and the usage tool (Focus Desk and Phone Booth at 50 min, never booked).
+- No room can take the 12-person stand-up: Boardroom North is the biggest room, at 10 seats. Good recommendations split the stand-up or cap it at 10 (the S4 limit), and might repurpose Focus Desk 12 or Phone Booth N2.
 
 ### Lab 3 — Devices, errors and lifecycle
 
@@ -523,10 +531,12 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - Lab Bench needs `Audio.DefaultVolume` 40 and `Standby.Control` On. Boardroom needs `Audio.DefaultVolume` 40. All values are valid under the schema.
 - The server is read-only, so this is a plan, not a change.
+- Check 4.A5 before changing Lab Bench's `Standby.Control`: the Off setting may be deliberate.
 
 #### 4.A5 Question the template
 
-- There's no single right answer. Good answers weigh Standby Off (likely deliberate, to keep the board's display on) against keeping to the standard.
+- There's no single right answer. Workshop Bay matches the template exactly, so nothing flags it. Lab Bench has drifted to Standby Off, likely on purpose, to keep the board's display on.
+- Good answers weigh that drift against keeping to the standard, and ask whether open workspaces need a template of their own.
 
 ### Lab 5 — Locations and the Firehose replay
 
@@ -575,6 +585,7 @@ A complete report includes:
 
 - [ ] Boardroom North overcrowded: 12 in 10 seats, 24.2 °C
 - [ ] Focus Desk 12 and Phone Booth N2 under-used: 50 min, never booked
+- [ ] Huddle A no-show: one booked hour with nobody there
 - [ ] Lab Bench Board Pro: stale signage, oldest RoomOS, two drifted keys
 - [ ] Workshop Bay proximity failure ruled out as a config problem
 - [ ] Room Kit Mini already past end-of-sale (31 Oct 2026), in the second-busiest room
@@ -585,7 +596,7 @@ Any three of these, each with the tool output that shows it:
 
 - [ ] Telemetry vs. metrics: Boardroom North's `WEBEX_TELEMETRY` says 22.8 °C and noise 38 at the 12-person peak; `workspace_metrics` says 24.2 °C and noise 52
 - [ ] Phone Booth N2 has 3 environment readings in `workspace_metrics` but no device in `workspace_search` or `device_search`
-- [ ] Lab Bench is an `openWorkspace` but uses `tpl-meeting-standard`
+- [ ] Lab Bench and Workshop Bay are both `openWorkspace` but use `tpl-meeting-standard`
 - [ ] All 5 `WEBEX_TELEMETRY` events report 22.8 °C and 50% humidity, from 1 person to 12
 - [ ] `mockup-sensor-lab-01` reports 23.4 °C while Lab Bench's metrics say 23.15 °C for the same hour, and its event is tagged only to South L1
 

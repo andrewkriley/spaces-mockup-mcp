@@ -509,7 +509,7 @@ def occupancy_curve() -> dict[str, list[tuple[int, int, bool, bool]]]:
             (9, 4, True, True),
             (10, 4, True, True),
             (11, 3, True, True),
-            (12, 0, False, False),
+            (12, 0, False, True),  # booked, nobody came: the 2.A2 no-show
             (13, 4, True, True),
             (14, 4, True, True),
             (15, 2, True, True),
