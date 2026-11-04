@@ -183,7 +183,9 @@ class SpacesLabGuideStructureTest(unittest.TestCase):
             self.assertTrue(anchor.startswith(ident.lower().replace(".", "")), ident)
         self.assertNotIn("→ Answer", labs)
         self.assertEqual(len(re.findall(r"^\*\*Goal:\*\*", labs, re.M)), 5)
-        self.assertEqual(len(re.findall(r"^\*\*Answers:\*\* click an exercise ID", labs, re.M)), 5)
+        # The Overview explains the answer links once; the labs don't repeat it.
+        self.assertIn("**Checking your answers:**", text[: text.index("## Lab 1 — ")])
+        self.assertNotIn("**Answers:** click an exercise ID", labs)
         self.assertIn("## Contents", text)
         self.assertLess(text.index("## Answer key"), len(text))
         self.assertLess(text.index("## Appendix: client setup"), text.index("## Answer key"))

@@ -42,12 +42,20 @@ h3 { font-size: 12.5pt; margin: 14pt 0 6pt; }
 h4 { font-size: 11pt; margin: 12pt 0 4pt; }
 h1, h2, h3, h4 { break-after: avoid; }
 p, li { orphans: 3; widows: 3; }
+/* Numbered setup steps are loose lists; keep their paragraphs close so steps stay compact */
+li > p { margin: 3pt 0; }
 a { color: #0969da; text-decoration: none; }
 code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "DejaVu Sans Mono",
   monospace; font-size: 9pt; background: #eff1f3; padding: 1pt 3pt; border-radius: 3pt; }
 pre { background: #f6f8fa; border: 1px solid #d1d9e0; border-radius: 4pt; padding: 8pt 10pt;
   white-space: pre-wrap; word-break: break-word; break-inside: avoid; }
 pre code { background: none; padding: 0; font-size: 10.5pt; }
+/* Keep IDs, URLs and commands in running text on one line, so a hyphenated ID like
+   mockup-phone-02 never splits and can be retyped from print. Table cells still wrap. */
+:not(pre) > code { white-space: nowrap; }
+td code { white-space: normal; }
+/* Keep each answer-key section heading with its back link and first answer */
+p.back { break-after: avoid; margin: 0 0 6pt; }
 table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 9pt; }
 th, td { border: 1px solid #d1d9e0; padding: 4pt 6pt; text-align: left; vertical-align: top; }
 th { background: #f6f8fa; }
@@ -76,10 +84,9 @@ blockquote h2 { border: none; margin: 0 0 4pt; color: #0550ae; }
 h4 .xid { font-size: 10pt; margin-right: 3pt; }
 .task-list-item-checkbox { width: 10pt; height: 10pt; }
 h1 + p { color: #59636e; }
-/* Start the labs, the stretch goals, the setup appendix and the answer key on a new page.
-   The labs themselves run on without breaks. */
-h2#lab-1--rooms-and-environment, h2#stretch-goals, h2#appendix-client-setup,
-h2#answer-key { break-before: page; margin-top: 0; }
+/* Start the labs and the answer key on a new page, so answers stay out of sight. The labs,
+   stretch goals and setup appendix run on without breaks, which avoids half-empty pages. */
+h2#lab-1--rooms-and-environment, h2#answer-key { break-before: page; margin-top: 0; }
 """.replace("TITLE", TITLE)
 
 DARK_CSS = """
@@ -137,7 +144,10 @@ def render_body(markdown: str) -> str:
     )
     if tool_tables != 5:
         raise SystemExit(f"build_pdfs: expected 5 tool tables, found {tool_tables}")
-    for anchor in ("lab-1--rooms-and-environment", "stretch-goals", "appendix-client-setup"):
+    body, back_links = re.subn(r"<p>(<a href=\"#[^\"]+\">↩)", r'<p class="back">\1', body)
+    if back_links != 6:
+        raise SystemExit(f"build_pdfs: expected 6 answer-key back links, found {back_links}")
+    for anchor in ("lab-1--rooms-and-environment", "answer-key"):
         if f'id="{anchor}"' not in body:
             raise SystemExit(f"build_pdfs: heading #{anchor} not found; update the page-break CSS")
     return body

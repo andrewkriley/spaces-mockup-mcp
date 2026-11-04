@@ -158,8 +158,6 @@ Each device's RoomOS version and connection status are yours to find in Lab 3.
 
 Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
 
-**Answers:** click an exercise ID, such as **1.E1**, to jump to its answer in the Answer key. Try the exercise first.
-
 The campus, building and floor layout is in [Locations](#locations) above. Lab 5 starts with the tool that returns it.
 
 ### Easy
@@ -185,8 +183,6 @@ The campus, building and floor layout is in [Locations](#locations) above. Lab 5
 
 Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggregated_popularity_metrics`, `workspace_aggregated_capacity_utilization`, `workspace_metrics`.
 
-**Answers:** click an exercise ID, such as **2.E1**, to jump to its answer in the Answer key. Try the exercise first.
-
 ### Easy
 
 - [ ] [**2.E1**](#2e1-whos-in-now) **Who's in now.** *"How many people are in each room right now?"*
@@ -209,8 +205,6 @@ Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggre
 
 Tools: `device_search`, `device_event_history`, `device_aggregated_event_history`, `device_error_code_detail_search`, `product_lifecycle`, and `workspace_aggregated_popularity_metrics` for 3.A3.
 
-**Answers:** click an exercise ID, such as **3.E1**, to jump to its answer in the Answer key. Try the exercise first.
-
 ### Easy
 
 - [ ] [**3.E1**](#3e1-fleet-status) **Fleet status.** *"List all devices with status and RoomOS version."*
@@ -231,8 +225,6 @@ Tools: `device_search`, `device_event_history`, `device_aggregated_event_history
 **Time:** Easy about 10 min · Advanced about 15 min.
 
 Tools: `device_configuration_schema`, `device_configuration_template_list`, `device_configuration_list`, `device_configuration_diff`, `device_configuration_template_diff`.
-
-**Answers:** click an exercise ID, such as **4.E1**, to jump to its answer in the Answer key. Try the exercise first.
 
 ### Easy
 
@@ -258,8 +250,6 @@ Tools: `device_configuration_schema`, `device_configuration_template_list`, `dev
 Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events`.
 
 **Tip:** `firehose_events` returns at most 50 events per pull. Before you count or trace anything, check whether the reply says `truncated: true`. If it does, ask the assistant to follow `nextOffset`, or to filter by `eventType`.
-
-**Answers:** click an exercise ID, such as **5.E1**, to jump to its answer in the Answer key. Try the exercise first.
 
 ### Easy
 
