@@ -25,7 +25,7 @@ from markdown_it import MarkdownIt
 from mdit_py_plugins.tasklists import tasklists_plugin
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_GUIDE = ROOT / "docs" / "spaces-lab-guide-v1.md"
+DEFAULT_GUIDE = ROOT / "docs" / "spaces-lab-guide.md"
 TITLE = "Spaces Mockup MCP Lab Guide"
 
 BASE_CSS = """

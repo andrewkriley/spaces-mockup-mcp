@@ -21,7 +21,7 @@ Nineteen reads.
 Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 (12 in a 10-seat room). Lab guide, with setup for Claude Code, Claude
 Desktop and Cursor, five labs and an answer key:
-[docs/spaces-lab-guide-v1.md](docs/spaces-lab-guide-v1.md). Data map and
+[docs/spaces-lab-guide.md](docs/spaces-lab-guide.md). Data map and
 other-app ideas: [docs/lab-guide.md](docs/lab-guide.md).
 
 ## Self-host
