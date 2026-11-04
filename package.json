@@ -4,6 +4,7 @@
   "scripts": {
     "embed-dataset": "python3 scripts/embed_dataset.py",
     "deploy": "python3 scripts/embed_dataset.py && uv run --directory cf-worker pywrangler deploy",
+    "deploy:prod": "python3 scripts/embed_dataset.py && uv run --directory cf-worker pywrangler deploy -c wrangler.prod.jsonc",
     "dev": "python3 scripts/embed_dataset.py && uv run --directory cf-worker pywrangler dev"
   },
   "devDependencies": {
