@@ -468,7 +468,32 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual((len(board), len(points["ws-phone"])), (11, 3))
         gap = board[-1]["timestamp"] - points["ws-phone"][-1]["timestamp"]
         self.assertAlmostEqual(gap / srv.DAY * 24, 2, delta=0.1)
-        self.say("Boardroom North has 11 hourly points and Phone Booth N2 has only 3")
+        self.say("Boardroom North has 11 hourly points, Huddle A 9, Lab Bench 5")
+        counts = {i: len(p) for i, p in points.items()}
+        self.assertEqual(
+            counts,
+            {
+                "ws-board": 11,
+                "ws-huddle": 9,
+                "ws-lab": 5,
+                "ws-focus": 4,
+                "ws-workshop": 4,
+                "ws-phone": 3,
+            },
+        )
+        ages = {i: round((self.NOW - p[-1]["timestamp"]) / srv.DAY * 24) for i, p in points.items()}
+        self.assertEqual(
+            ages,
+            {
+                "ws-board": 1,
+                "ws-lab": 1,
+                "ws-huddle": 2,
+                "ws-focus": 2,
+                "ws-workshop": 2,
+                "ws-phone": 3,
+            },
+        )
+        self.say("about 1 hour old for Boardroom North and Lab Bench, about 2 hours for Huddle A")
 
     def test_lab1_telemetry_and_s3(self):
         telemetry = self.events(eventType="WEBEX_TELEMETRY")
@@ -546,7 +571,10 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         huddle = self.metrics("ws-huddle")
         gap = next(k for k, x in enumerate(huddle) if x["booked"] and not x["presence"])
         self.assertTrue(huddle[gap - 1]["booked"] and huddle[gap + 1]["booked"])
-        self.say("One booked-but-empty hour: Huddle A, between its morning and afternoon bookings")
+        self.assertEqual(round((self.NOW - huddle[gap]["timestamp"]) / srv.DAY * 24), 6)
+        self.say(
+            "One booked-but-empty hour: Huddle A, about 6 hours ago, between two runs of bookings"
+        )
         self.assertEqual((walk_ins["ws-lab"], used["ws-lab"]), (3, 5))
         self.assertEqual((walk_ins["ws-workshop"], used["ws-workshop"]), (2, 4))
         self.say("Lab Bench is the only room where most use is unbooked, 3 of its 5 hours")

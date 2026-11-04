@@ -456,7 +456,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### [1.A4](#advanced) Data freshness
 
-- Boardroom North has 11 hourly points and Phone Booth N2 has only 3. Phone Booth's latest reading is about 2 hours older than Boardroom's.
+- Boardroom North has 11 hourly points, Huddle A 9, Lab Bench 5, Focus Desk 12 and Workshop Bay 4 each, and Phone Booth N2 only 3.
+- The latest readings are about 1 hour old for Boardroom North and Lab Bench, about 2 hours for Huddle A, Focus Desk 12 and Workshop Bay, and about 3 hours for Phone Booth N2.
 
 ### Lab 2 — Utilization and occupancy
 
@@ -485,7 +486,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### [2.A2](#advanced-1) No-shows and walk-ins, hour by hour
 
-- One booked-but-empty hour: Huddle A, between its morning and afternoon bookings. The metrics show `booked: true` with 0 people.
+- One booked-but-empty hour: Huddle A, about 6 hours ago, between two runs of bookings. The metrics show `booked: true` with 0 people.
 - Hours used without a booking: Lab Bench 3, Boardroom North 2, Workshop Bay 2, and 1 each for Huddle A, Focus Desk 12 and Phone Booth N2.
 
 #### [2.A3](#advanced-1) Live vs. history

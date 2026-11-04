@@ -894,7 +894,7 @@ def build_device_events() -> list[dict]:
             "type": "camera.error",
             "code": "CAM_HDMI_SIGNAL_LOST",
             "severity": "error",
-            "message": "Camera HDMI input lost sync during morning boot.",
+            "message": "Camera HDMI input lost sync after boot.",
         },
         {
             "deviceId": "dev-kitmini-huddle",
