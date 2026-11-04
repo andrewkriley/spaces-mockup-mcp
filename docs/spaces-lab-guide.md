@@ -13,7 +13,7 @@
 
 ## Overview
 
-This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Mockup Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 50 minutes for the Easy track only, or about 2 hours for everything.
+This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Mockup Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 50 minutes for the Easy track only, or about 2 hours for both tracks, plus time for any stretch goals.
 
 **You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
 
@@ -48,7 +48,7 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
    You should see:
 
    ```json
-   {"status":"ok","server":"spaces-mockup"}
+   {"status": "ok", "server": "spaces-mockup"}
    ```
 
 3. **Connect your client.** Follow the steps for the client you use, in the appendix:
@@ -433,6 +433,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### [1.E1](#easy) Temperature everywhere
 
 - Every room's latest reading is 22.4–22.85 °C. Workshop Bay is the warmest (22.85 °C, 3 people). Earlier readings run higher; see 1.E2.
+- "Right now" means each room's latest reading, which is 1 to 3 hours old depending on the room; see 1.A4.
 
 #### [1.E2](#easy) One room over the day
 
@@ -610,6 +611,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 - The first pull returns 50 of 77 events, with `truncated: true` and `nextOffset: 50`. `SPACE_OCCUPANCY` is the most common type, at 22 of the 50.
 - `IOT_TELEMETRY` and `KEEP_ALIVE` don't appear in the first pull even though they're subscribed. They're in the second page (`offset: 50`), or filter `firehose_events` by `eventType` to find 1 and 3 of them.
 - A complete count covers all 77. If the assistant counted only 50, ask it to follow `nextOffset`.
+- The full count is `SPACE_OCCUPANCY` 36, `SPACE_OCCUPANCY_CHANGE` 11, `DEVICE_PRESENCE` 6, `DEVICE_LOCATION_UPDATE` 6, `WEBEX_TELEMETRY` 5, `USER_PRESENCE` 3, `KEEP_ALIVE` 3, and 1 each of the other seven types.
 
 #### [5.A2](#advanced-4) Rebuild a meeting
 

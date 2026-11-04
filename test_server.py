@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import collections
 import importlib.util
 import io
 import json
@@ -301,6 +302,8 @@ class RpcAndHttpTest(unittest.TestCase):
         code, payload = srv.handle_http("GET", "/health", "")
         self.assertEqual(code, 200)
         self.assertEqual(payload, {"status": "ok", "server": "spaces-mockup"})
+        guide = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
+        self.assertIn(json.dumps(payload), guide, "guide's /health sample must match the reply")
         code, payload = srv.handle_http("POST", "/mcp", "")
         self.assertEqual(code, 401)
         self.assertEqual(payload, {"error": "bearer required"})
@@ -454,6 +457,9 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual(max(latest, key=latest.get), "ws-workshop")
         self.say("latest reading is 22.4–22.85 °C.")
         self.say("Workshop Bay is the warmest (22.85 °C, 3 people)")
+        ages_h = {round((self.NOW - p[-1]["timestamp"]) / 3_600_000) for p in points.values()}
+        self.assertEqual((min(ages_h), max(ages_h)), (1, 3))
+        self.say("which is 1 to 3 hours old depending on the room; see 1.A4")
 
         board = points["ws-board"]
         self.assertEqual([board[0]["temperatureC"], board[-1]["temperatureC"]], [22.4, 22.4])
@@ -825,6 +831,27 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         types = {e["eventType"] for e in rest}
         self.assertTrue({"IOT_TELEMETRY", "KEEP_ALIVE"} <= types)
         self.say("They're in the second page (`offset: 50`)")
+
+        everything = self.events() + rest
+        tally = collections.Counter(e["eventType"] for e in everything)
+        self.assertEqual(sum(tally.values()), 77)
+        top = {
+            "SPACE_OCCUPANCY": 36,
+            "SPACE_OCCUPANCY_CHANGE": 11,
+            "DEVICE_PRESENCE": 6,
+            "DEVICE_LOCATION_UPDATE": 6,
+            "WEBEX_TELEMETRY": 5,
+            "USER_PRESENCE": 3,
+            "KEEP_ALIVE": 3,
+        }
+        self.assertEqual({k: tally[k] for k in top}, top)
+        others = {k: v for k, v in tally.items() if k not in top}
+        self.assertEqual((len(others), set(others.values())), (7, {1}))
+        self.say(
+            "`SPACE_OCCUPANCY` 36, `SPACE_OCCUPANCY_CHANGE` 11, `DEVICE_PRESENCE` 6, "
+            "`DEVICE_LOCATION_UPDATE` 6, `WEBEX_TELEMETRY` 5, `USER_PRESENCE` 3, "
+            "`KEEP_ALIVE` 3, and 1 each of the other seven types"
+        )
 
     def events_page(self, **filters):
         return srv.firehose_events({"now_ms": self.NOW, **filters})
