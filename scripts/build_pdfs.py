@@ -63,11 +63,19 @@ blockquote { margin: 12pt 0; padding: 8pt 14pt; border-left: 5pt solid #0969da;
   background: #ddf4ff; border-radius: 3pt; break-inside: avoid; }
 blockquote h2 { border: none; margin: 0 0 4pt; color: #0550ae; }
 .contains-task-list, .task-list-item { list-style: none; }
-.task-list-item input { margin-right: 6pt; }
-/* Exercise IDs link to their answers; draw them as tags so they read as links */
-li > a:first-child > strong:only-child { display: inline-block; padding: 0 5pt;
-  border: 1px solid #0969da; border-radius: 3pt; background: #ddf4ff; color: #0550ae;
-  font-size: 9.5pt; line-height: 1.4; }
+.contains-task-list { padding-left: 18pt; }
+/* Hang the tick box in the margin so wrapped lines line up with the text */
+.task-list-item { position: relative; }
+.task-list-item > input { position: absolute; left: -16pt; top: 3pt; margin: 0; }
+/* Exercise IDs link to their answers and back; draw them as tags coloured by track */
+.xid { display: inline-block; padding: 0 5pt; border: 1px solid #0969da; border-radius: 3pt;
+  background: #ddf4ff; color: #0550ae; font-weight: 600; font-size: 9.5pt; line-height: 1.4; }
+.xid.easy { border-color: #1a7f37; background: #dafbe1; color: #116329; }
+.xid.adv { border-color: #bf8700; background: #fff8c5; color: #7d4e00; }
+.xid.none { border-color: #d1d9e0; background: #f6f8fa; color: #59636e; }
+h4 .xid { font-size: 10pt; margin-right: 3pt; }
+.task-list-item-checkbox { width: 10pt; height: 10pt; }
+h1 + p { color: #59636e; }
 /* Start the labs, the stretch goals, the setup appendix and the answer key on a new page.
    The labs themselves run on without breaks. */
 h2#lab-1--rooms-and-environment, h2#stretch-goals, h2#appendix-client-setup,
@@ -88,8 +96,11 @@ tr:nth-child(2n) td { background: #10151c; }
 blockquote { background: #0c2d6b; border-left-color: #4493f8; color: #e6edf3; }
 blockquote h2 { color: #79c0ff; }
 blockquote a { color: #79c0ff; }
-li > a:first-child > strong:only-child { background: #0c2d6b;
-  border-color: #4493f8; color: #79c0ff; }
+.xid { background: #0c2d6b; border-color: #4493f8; color: #79c0ff; }
+.xid.easy { background: #04260f; border-color: #3fb950; color: #7ee787; }
+.xid.adv { background: #2e2104; border-color: #d29922; color: #e3b341; }
+.xid.none { background: #151b23; border-color: #3d444d; color: #9198a1; }
+h1 + p { color: #9198a1; }
 input[type=checkbox] { accent-color: #4493f8; filter: invert(0.85); }
 """
 
@@ -120,6 +131,7 @@ def render_body(markdown: str) -> str:
         lambda m: m.group(1) + m.group(2).replace("_", "_<wbr>") + m.group(3),
         body,
     )
+    body = link_exercise_ids(body)
     body, tool_tables = re.subn(
         r"<table>(\s*<thead>\s*<tr>\s*<th>Tool</th>)", r'<table class="tools">\1', body
     )
@@ -128,6 +140,47 @@ def render_body(markdown: str) -> str:
     for anchor in ("lab-1--rooms-and-environment", "stretch-goals", "appendix-client-setup"):
         if f'id="{anchor}"' not in body:
             raise SystemExit(f"build_pdfs: heading #{anchor} not found; update the page-break CSS")
+    return body
+
+
+TRACK = {"e": "xid easy", "a": "xid adv"}
+
+
+def link_exercise_ids(body: str) -> str:
+    """Tag each exercise ID by track, and point each answer's ID back at its own exercise.
+
+    The Markdown links an answer back to its track heading, the closest target GitHub can
+    reach. The PDF can do better, so give each exercise an id and link the answer to that.
+    """
+
+    def exercise(m: re.Match) -> str:
+        ident = m.group(4).replace(".", "").lower()
+        track = TRACK.get(ident[1:2], "xid")
+        return (
+            f'{m.group(1)} id="ex-{ident}">{m.group(2)}'
+            f'<a class="{track}" href="#{m.group(3)}">{m.group(4)}</a>'
+        )
+
+    body, exercises = re.subn(
+        r'(<li class="task-list-item")>(\s*<input[^>]*>\s*)'
+        r'<a href="#([^"]+)"><strong>(\d\.[EA]\d|S\d)</strong></a>',
+        exercise,
+        body,
+    )
+    body = re.sub(
+        r'(<li class="task-list-item">\s*<input[^>]*>\s*)<strong>(S\d)</strong>',
+        r'\1<span class="xid none">\2</span>',
+        body,
+    )
+
+    def answer(m: re.Match) -> str:
+        ident = m.group(2).replace(".", "").lower()
+        track = TRACK.get(ident[1:2], "xid")
+        return f'{m.group(1)}<a class="{track}" href="#ex-{ident}">{m.group(2)}</a>'
+
+    body, answers = re.subn(r'(<h4 id="[^"]+">)<a href="#[^"]+">(\d\.[EA]\d|S\d)</a>', answer, body)
+    if exercises != answers:
+        raise SystemExit(f"build_pdfs: {exercises} linked exercises but {answers} answers")
     return body
 
 
