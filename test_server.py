@@ -452,7 +452,8 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         self.assertEqual(round(min(latest.values()), 2), 22.4)
         self.assertEqual(round(max(latest.values()), 2), 22.85)
         self.assertEqual(max(latest, key=latest.get), "ws-workshop")
-        self.say("latest reading is 22.4–22.9 °C. Workshop Bay is the warmest (22.85 °C, 3 people)")
+        self.say("latest reading is 22.4–22.85 °C.")
+        self.say("Workshop Bay is the warmest (22.85 °C, 3 people)")
 
         board = points["ws-board"]
         self.assertEqual([board[0]["temperatureC"], board[-1]["temperatureC"]], [22.4, 22.4])
@@ -524,6 +525,22 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         peak = max(self.metrics("ws-board"), key=lambda x: x["peopleCount"])
         self.assertEqual(peak["ambientNoise"], 52)
         self.say("the metrics say 52 and the telemetry's `ambientNoise` says 38")
+
+        noise = {}
+        for row in telemetry:
+            info = row["webexTelemetryUpdate"]["deviceInfo"]
+            t = {k: v for d in row["webexTelemetryUpdate"]["telemetries"] for k, v in d.items()}
+            point = min(
+                self.metrics(info["workspaceId"]),
+                key=lambda x, ts=row["recordTimestamp"]: abs(x["timestamp"] - ts),
+            )
+            noise[info["workspaceId"]] = (t["ambientNoise"], point["ambientNoise"])
+        self.assertTrue(all(a != b for a, b in noise.values()))
+        self.assertEqual((noise["ws-workshop"], noise["ws-lab"]), ((44, 42), (41, 38)))
+        gaps = {w: abs(a - b) for w, (a, b) in noise.items()}
+        self.assertEqual(max(gaps, key=gaps.get), "ws-board")
+        self.say("Noise disagrees in every room")
+        self.say("Workshop Bay 44 vs. 42 and Lab Bench 41 vs. 38")
 
         counts = {}
         for row in telemetry:
@@ -651,6 +668,12 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
 
         huddle = srv.device_event_history({"device_id": "dev-kitmini-huddle"})["events"]
         self.assertEqual([e["type"] for e in huddle], ["camera.error", "camera.recovered"])
+        self.assertEqual(agg["by_code"]["CAM_HDMI_SIGNAL_LOST"], 2)
+        self.assertEqual(
+            [(e["code"], e["severity"]) for e in huddle],
+            [("CAM_HDMI_SIGNAL_LOST", "error"), ("CAM_HDMI_SIGNAL_LOST", "info")],
+        )
+        self.say("`CAM_HDMI_SIGNAL_LOST` counts 2 in the totals, but only one is an error")
 
         life = {p["productType"]: p for p in srv.product_lifecycle({})["products"]}
         self.assertEqual(life["roomkit-mini"]["endOfSale"], "2026-10-31")
@@ -736,6 +759,29 @@ class LabGuideAnswerKeyTest(unittest.TestCase):
         gap_h = (phones["mockup-phone-02"] - phones["mockup-phone-03"]) / 3_600_000
         self.assertAlmostEqual(gap_h, 8, delta=0.1)
         self.say("`mockup-phone-03`'s is 8 hours older than `mockup-phone-02`'s")
+
+        presence_rows = self.events(eventType="DEVICE_PRESENCE")
+        (exit_row,) = [
+            r
+            for r in presence_rows
+            if r["devicePresence"]["presenceEventType"] == "DEVICE_EXIT_EVENT"
+        ]
+        self.assertEqual(exit_row["devicePresence"]["device"]["deviceId"], "mockup-phone-02")
+        after_min = (phones["mockup-phone-02"] - exit_row["recordTimestamp"]) / 60_000
+        self.assertAlmostEqual(after_min, 5, delta=0.5)
+        self.say("shows it left North L1 about 5 minutes before that position was recorded")
+        self.say("exit event is followed about 5 minutes later by a `DEVICE_LOCATION_UPDATE`")
+        self.assertIn("A phone's latest position comes after its exit event", self.guide)
+
+        last = presence_rows[-1]["devicePresence"]
+        self.assertIs(presence_rows[-1], exit_row)
+        self.assertEqual((last["activeDevicesCount"], last["inActiveDevicesCount"]), (9, 3))
+        self.say("drops to 9 active plus 3 inactive")
+
+        (raw,) = self.events(eventType="RAW_CAMERA_COUNT")
+        raw = raw["rawCameraCounts"]
+        self.assertEqual((raw["cameraZoneId"], raw["count"]), ("zone-lobby", 6))
+        self.say("A `RAW_CAMERA_COUNT` of 6 may also turn up. It's one camera zone (`zone-lobby`)")
 
         by_type = {}
         for row in first:

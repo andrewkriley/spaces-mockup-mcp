@@ -286,6 +286,7 @@ These have no single expected answer. Each one lists what a complete result incl
   - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
   - Device telemetry and room metrics disagree on headcount in one room.
   - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
+  - A phone's latest position comes after its exit event.
 - [ ] [**S4**](#s4-predict-and-flag) **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
 - [ ] **S5** **Repeatable report.** *No answer key.* Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
 - [ ] **S6** **Runbook per error code.** *No answer key.* For each of the three error codes, write the tool sequence an on-call engineer should follow, from detection to fix. Success: each runbook names the tools in order and ends with the catalog's recommended action.
@@ -431,7 +432,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 #### [1.E1](#easy) Temperature everywhere
 
-- Every room's latest reading is 22.4–22.9 °C. Workshop Bay is the warmest (22.85 °C, 3 people). Earlier readings run higher; see 1.E2.
+- Every room's latest reading is 22.4–22.85 °C. Workshop Bay is the warmest (22.85 °C, 3 people). Earlier readings run higher; see 1.E2.
 
 #### [1.E2](#easy) One room over the day
 
@@ -524,6 +525,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 #### [3.A1](#advanced-2) Open vs. resolved
 
 - 5 events (1 error, 2 warnings, 2 info). The `"none"` code in the totals is Boardroom North's `call.started` info event, not an error.
+- `CAM_HDMI_SIGNAL_LOST` counts 2 in the totals, but only one is an error. The other is Huddle A's info-level `camera.recovered` event, which carries the same code.
 - Huddle A's `CAM_HDMI_SIGNAL_LOST` is resolved, because a recovery event followed about an hour later.
 - Still open: Lab Bench `SIGNAGE_CONTENT_STALE` and Workshop Bay `PROXIMITY_PAIRING_FAIL`.
 
@@ -601,6 +603,7 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - 3 phones, all on North L1, with x/y map positions.
 - The positions aren't equally fresh. `mockup-phone-03`'s is 8 hours older than `mockup-phone-02`'s, so treat it as where the phone was, not where it is.
+- Fresh isn't the same as present. `mockup-phone-02` has the newest position, but a `DEVICE_PRESENCE` exit event shows it left North L1 about 5 minutes before that position was recorded. Check `firehose_events` for exits before saying a phone is still on the floor.
 
 #### [5.A1](#advanced-4) Event mix
 
@@ -621,6 +624,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 - 18 associated plus 5 probing devices, a camera count of 14, and 12 users (8 identified, 4 anonymous).
 - `DEVICE_PRESENCE` adds a fourth count: 12 active plus 3 inactive devices, 15 in all, which is still short of the 18 associated.
+- The last `DEVICE_PRESENCE` event, `mockup-phone-02`'s exit, drops to 9 active plus 3 inactive. If the assistant quotes 9, it read the latest event rather than the one at the time of the other counts.
+- A `RAW_CAMERA_COUNT` of 6 may also turn up. It's one camera zone (`zone-lobby`), not the whole floor, so don't compare it with the floor's camera count of 14.
 - A good answer explains that people carry several devices, cameras miss some people, and identified users depend on sign-in.
 
 #### [5.A5](#advanced-4) Spot personal data
@@ -646,12 +651,13 @@ A complete report includes:
 
 Any three of these, each with the tool output that shows it:
 
-- [ ] Telemetry vs. metrics: Boardroom North's `WEBEX_TELEMETRY` says 22.8 °C and noise 38 at the 12-person peak; `workspace_metrics` says 24.2 °C and noise 52
+- [ ] Telemetry vs. metrics: Boardroom North's `WEBEX_TELEMETRY` says 22.8 °C and noise 38 at the 12-person peak; `workspace_metrics` says 24.2 °C and noise 52. Noise disagrees in every room, for example Workshop Bay 44 vs. 42 and Lab Bench 41 vs. 38, but Boardroom North's gap is by far the widest
 - [ ] Phone Booth N2 has 3 environment readings in `workspace_metrics` but no device in `workspace_search` or `device_search`
 - [ ] Lab Bench and Workshop Bay are both `openWorkspace` but use `tpl-meeting-standard`
 - [ ] All 5 `WEBEX_TELEMETRY` events report 22.8 °C and 50% humidity, from 1 person to 12
 - [ ] Huddle A's `WEBEX_TELEMETRY` counts 4 people while `workspace_metrics` says 3 for the same hour; the other four rooms' counts agree
 - [ ] `mockup-sensor-lab-01` reports 23.4 °C while Lab Bench's metrics say 23.15 °C for the same hour, and its event is tagged only to South L1
+- [ ] `mockup-phone-02`'s `DEVICE_PRESENCE` exit event is followed about 5 minutes later by a `DEVICE_LOCATION_UPDATE` on North L1, which `firehose_latest` shows as its current position
 
 #### [S4](#stretch-goals) Predict and flag
 
