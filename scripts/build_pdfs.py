@@ -53,16 +53,21 @@ th, td { border: 1px solid #d1d9e0; padding: 4pt 6pt; text-align: left; vertical
 th { background: #f6f8fa; }
 tr { break-inside: avoid; }
 h4 + table { break-inside: avoid; }
+/* The Data sources tool tables share one set of column widths, so tool names stay readable */
+table.tools { table-layout: fixed; }
+table.tools th:nth-child(1) { width: 40%; }
+table.tools th:nth-child(2) { width: 38%; }
+table.tools th:nth-child(3) { width: 22%; }
 td code { word-break: break-word; }
 blockquote { margin: 12pt 0; padding: 8pt 14pt; border-left: 5pt solid #0969da;
   background: #ddf4ff; border-radius: 3pt; break-inside: avoid; }
 blockquote h2 { border: none; margin: 0 0 4pt; color: #0550ae; }
 .contains-task-list, .task-list-item { list-style: none; }
 .task-list-item input { margin-right: 6pt; }
-/* Start setup, each lab after the first, the stretch goals and the answer key on a new page */
-h2#mcp-server-setup, h2[id^="lab-"]:not(#lab-1--rooms-and-environment), h2#stretch-goals,
-h2#answer-key, blockquote.lab-note { break-before: page; }
-h2[id^="lab-"] { margin-top: 0; }
+/* Start the labs, the stretch goals, the setup appendix and the answer key on a new page.
+   The labs themselves run on without breaks. */
+h2#lab-1--rooms-and-environment, h2#stretch-goals, h2#appendix-client-setup,
+h2#answer-key { break-before: page; margin-top: 0; }
 """.replace("TITLE", TITLE)
 
 DARK_CSS = """
@@ -109,14 +114,14 @@ def render_body(markdown: str) -> str:
         lambda m: m.group(1) + m.group(2).replace("_", "_<wbr>") + m.group(3),
         body,
     )
-    # The "answers are at the back" note starts the Lab 1 page.
-    body, found = re.subn(
-        r'<blockquote>(\s*<h2 id="answers-are-at-the-back)',
-        r'<blockquote class="lab-note">\1',
-        body,
+    body, tool_tables = re.subn(
+        r"<table>(\s*<thead>\s*<tr>\s*<th>Tool</th>)", r'<table class="tools">\1', body
     )
-    if found != 1:
-        raise SystemExit("build_pdfs: 'Answers are at the back' note not found in the guide")
+    if tool_tables != 5:
+        raise SystemExit(f"build_pdfs: expected 5 tool tables, found {tool_tables}")
+    for anchor in ("lab-1--rooms-and-environment", "stretch-goals", "appendix-client-setup"):
+        if f'id="{anchor}"' not in body:
+            raise SystemExit(f"build_pdfs: heading #{anchor} not found; update the page-break CSS")
     return body
 
 

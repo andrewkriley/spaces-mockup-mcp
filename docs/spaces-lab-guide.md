@@ -2,11 +2,20 @@
 
 Nov 4, 2026 · @Jason Churchill
 
+## Contents
+
+- [Overview](#overview) and [Before you start](#before-you-start)
+- [Data sources](#data-sources): the tools, locations, rooms and reference data
+- Labs: [1 Rooms and environment](#lab-1--rooms-and-environment) · [2 Utilization and occupancy](#lab-2--utilization-and-occupancy) · [3 Devices, errors and lifecycle](#lab-3--devices-errors-and-lifecycle) · [4 Configuration and drift](#lab-4--configuration-and-drift) · [5 Locations and the Firehose replay](#lab-5--locations-and-the-firehose-replay)
+- [Stretch goals](#stretch-goals)
+- [Appendix: client setup](#appendix-client-setup)
+- [Answer key](#answer-key)
+
 ## Overview
 
 This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Mockup Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 45 minutes for the Easy track only, or about 2 hours for everything.
 
-**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. Follow [MCP server setup](#mcp-server-setup) to connect the `spaces-mockup` server. The labs don't use any other connectors.
+**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
 
 **How the tracks work**
 
@@ -14,13 +23,11 @@ This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing els
 - **Advanced:** several tools chained together, joins on IDs, or reasoning across time. You learn to combine data sources to explain something.
 - **Stretch goals:** open-ended challenges with success criteria instead of a single expected answer.
 
-**Checking your answers:** expected results from the sample data are in the [Answer key](#answer-key) at the back. If yours differs, ask *"Which tool did you call, and with what arguments?"* Metric timestamps move with the clock, so read times relative to now, for example "about an hour ago".
+**Checking your answers:** every exercise starts with its ID, for example **1.E1** for Lab 1, Easy track, exercise 1. The ID links to its expected answer in the [Answer key](#answer-key) at the back, so try the exercise first. If your answer differs, ask *"Which tool did you call, and with what arguments?"* Metric timestamps move with the clock, so read times relative to now, for example "about an hour ago".
 
-## MCP server setup
+## Before you start
 
 You'll connect your client to the hosted lab server at `https://spaces-mockup.mcp.buildermate.ai/mcp`. You don't need to run the server yourself.
-
-**Before you start**
 
 1. **Get your token.** It's in the `.txt` file in the lab's Box folder. The steps below use `Found-In-Box-Folder` as a placeholder; replace it with your token. Do not paste the token into git, tickets, or chat.
 
@@ -44,7 +51,226 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
    {"status":"ok","server":"spaces-mockup"}
    ```
 
-Then follow the section for your client.
+3. **Connect your client.** Follow the steps for the client you use, in the appendix:
+
+   | Client | Setup steps |
+   | --- | --- |
+   | Claude Code on Linux or macOS | [Claude Code CLI (Linux / macOS)](#claude-code-cli-linux--macos) |
+   | Claude Code on Windows | [Claude Code CLI (Windows)](#claude-code-cli-windows) |
+   | Claude Desktop | [Claude Desktop (Windows / macOS)](#claude-desktop-windows--macos) |
+   | Cursor | [Cursor](#cursor) |
+
+### Confirm it works
+
+Whichever client you use, send this prompt before you start Lab 1:
+
+> *"Call firehose_health."*
+
+If your client asks permission to run the tool, allow it. The reply should say the status is ok, name the tenant as Mockup Campus, and list 14 subscribed event types.
+
+If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client in the [appendix](#appendix-client-setup).
+
+## Data sources
+
+You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
+
+### Tools
+
+#### Sites and rooms
+
+| Tool | What it returns | Input |
+| --- | --- | --- |
+| `location_search` | Campus → building → floor tree, with address and floor count | optional filter |
+| `workspace_search` | Rooms: type, capacity, floor, devices, capacity note | optional filter |
+| `workspace_metrics` | Hourly series for one room: people, presence, booked, temperature °C, humidity %, noise, used and booked minutes | `workspace_id` |
+
+#### Utilization
+
+| Tool | What it returns | Input |
+| --- | --- | --- |
+| `workspace_aggregated_usage_metrics` | Used and booked minutes and peak headcount per room, plus campus totals | — |
+| `workspace_aggregated_popularity_metrics` | Rooms ranked by minutes used | — |
+| `workspace_aggregated_capacity_utilization` | Overcrowded and under-utilized rooms with peak ratio | — |
+
+#### Live Firehose
+
+| Tool | What it returns | Input |
+| --- | --- | --- |
+| `firehose_latest` | Current headcount per room and positions of tracked phones | — |
+| `firehose_events` | Raw `EventRecord` stream, oldest first, up to 50 per pull; `truncated` and `nextOffset` say when there's more | optional `eventType`, `locationId`, `deviceId`, `workspaceId`, `fromTimestamp`, `limit`, `offset` |
+| `firehose_health` | Stream status, tenant, subscribed event types | — |
+
+#### Devices
+
+| Tool | What it returns | Input |
+| --- | --- | --- |
+| `device_search` | Model, serial, RoomOS version, room, connection status | optional filter |
+| `device_event_history` | Recent events for one device | `device_id` |
+| `device_aggregated_event_history` | Event counts by severity and by code across the organization | — |
+| `device_error_code_detail_search` | Error code meaning, severity and recommended action | optional code |
+| `product_lifecycle` | End-of-sale, software-maintenance and last-support dates per model | — |
+
+#### Configuration
+
+| Tool | What it returns | Input |
+| --- | --- | --- |
+| `device_configuration_schema` | Setting keys, types, allowed values, supported models | — |
+| `device_configuration_template_list` | Templates and the keys each one controls | — |
+| `device_configuration_list` | Current settings on one device, and its template | `device_id` |
+| `device_configuration_diff` | Settings that differ between two devices | `device_id_a`, `device_id_b` |
+| `device_configuration_template_diff` | Settings where a device differs from a template | `device_id`, `template_id` |
+
+To join data across tools, use the shared IDs: `locationId`, workspace `id` / `workspaceId`, and `deviceId`.
+
+### Locations
+
+- Mockup Campus (`loc-campus-mockup`), 1 Mockup Lane, Pyrmont NSW 2009
+  - North Building (`loc-bldg-north`): North L1 (`loc-floor-n1`) and North L2 (`loc-floor-n2`)
+  - South Building (`loc-bldg-south`): South L1 (`loc-floor-s1`)
+
+### Rooms and devices
+
+| Room | Room ID | Floor | Seats | Device | Device ID |
+| --- | --- | --- | --- | --- | --- |
+| Boardroom North | `ws-board` | North L1 | 10 | Room Bar Pro | `dev-roombar-board` |
+| Huddle A | `ws-huddle` | North L1 | 4 | Room Kit Mini | `dev-kitmini-huddle` |
+| Focus Desk 12 | `ws-focus` | North L2 | 1 | Desk Pro | `dev-deskpro-focus` |
+| Phone Booth N2 | `ws-phone` | North L2 | 1 | none | — |
+| Lab Bench | `ws-lab` | South L1 | 6 | Board Pro 55 | `dev-boardpro-lab` |
+| Workshop Bay | `ws-workshop` | South L1 | 8 | Room Bar | `dev-roombar-workshop` |
+
+Each device's RoomOS version and connection status are yours to find in Lab 3.
+
+### Reference data
+
+- **Templates:** Meeting Room Standard (`tpl-meeting-standard`) and Personal Desk Standard (`tpl-desk-standard`).
+- **Config keys:** `Audio.DefaultVolume`, `Video.Selfview.Default`, `Bookings.Enabled`, `Standby.Control`, `Proximity.Mode`.
+- **Error codes:** `CAM_HDMI_SIGNAL_LOST` (error), `SIGNAGE_CONTENT_STALE` (warning), `PROXIMITY_PAIRING_FAIL` (warning).
+- **Firehose event types (14):** `SPACE_OCCUPANCY`, `SPACE_OCCUPANCY_CHANGE`, `DEVICE_PRESENCE`, `USER_PRESENCE`, `DEVICE_LOCATION_UPDATE`, `DEVICE_ASSOCIATION`, `DEVICE_COUNT`, `CAMERA_COUNT`, `RAW_CAMERA_COUNT`, `WEBEX_TELEMETRY`, `IOT_TELEMETRY`, `PROFILE_UPDATE`, `KEEP_ALIVE`, `APP_ACTIVATION`.
+
+## Lab 1 — Rooms and environment
+
+**Goal:** You'll learn to read a room's environment over time, and to compare two sources for the same reading.
+
+Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
+
+The campus, building and floor layout is in [Locations](#locations) above. Lab 5 starts with the tool that returns it.
+
+### Easy
+
+- [**1.E1**](#1e1-temperature-everywhere) **Temperature everywhere.** *"Show me the temperature in every room right now."*
+- [**1.E2**](#1e2-one-room-over-the-day) **One room over the day.** *"Show Boardroom North's temperature history."*
+- [**1.E3**](#1e3-quietest-rooms) **Quietest rooms.** *"Which rooms are quietest?"*
+
+### Advanced
+
+- [**1.A1**](#1a1-comfort-alerts) **Comfort alerts.** *"Flag any hour in any room where temperature went over 24 °C or humidity reached 60%."*
+- [**1.A2**](#1a2-build-a-model) **Build a model.** *"Across all rooms, how do temperature, humidity and noise change with headcount?"*
+  - Discuss: the same rule fits a 1-seat booth and a 10-seat boardroom. Is that realistic, and what does it mean for your S4 prediction?
+- [**1.A3**](#1a3-two-sources-one-room) **Two sources, one room.** *"Compare Boardroom North's temperature in workspace\_metrics with the WEBEX\_TELEMETRY ambientTemp for the same hour."*
+  - Discuss: which source would you trust for a comfort complaint, and why?
+- [**1.A4**](#1a4-data-freshness) **Data freshness.** *"How many readings does each room have, and how old is each room's latest one?"*
+
+## Lab 2 — Utilization and occupancy
+
+**Goal:** You'll learn to tell use from bookings, and live data from history.
+
+Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggregated_popularity_metrics`, `workspace_aggregated_capacity_utilization`, `workspace_metrics`.
+
+### Easy
+
+- [**2.E1**](#2e1-whos-in-now) **Who's in now.** *"How many people are in each room right now?"*
+- [**2.E2**](#2e2-most-popular) **Most popular.** *"Rank rooms by actual use."*
+- [**2.E3**](#2e3-wrong-sized-rooms) **Wrong-sized rooms.** *"Which rooms are overcrowded or under-utilized?"*
+
+### Advanced
+
+- [**2.A1**](#2a1-booking-accuracy) **Booking accuracy.** *"For each room, divide used minutes by booked minutes and explain what the ratio means."*
+- [**2.A2**](#2a2-no-shows-and-walk-ins-hour-by-hour) **No-shows and walk-ins, hour by hour.** *"Using workspace\_metrics, find hours that were booked but empty, and hours that were used without a booking."*
+- [**2.A3**](#2a3-live-vs-history) **Live vs. history.** *"Does firehose\_latest agree with the latest workspace\_metrics point for each room?"*
+- [**2.A4**](#2a4-make-the-case) **Make the case.** *"Recommend one change to the room mix. Cite the numbers from at least two tools."*
+- [**2.A5**](#2a5-trust-the-snapshot) **Trust the snapshot.** *"How old is each room's entry in firehose\_latest? Would you use it to tell someone a room is free right now?"*
+
+## Lab 3 — Devices, errors and lifecycle
+
+**Goal:** You'll learn to turn device events and lifecycle dates into a prioritized fix list.
+
+Tools: `device_search`, `device_event_history`, `device_aggregated_event_history`, `device_error_code_detail_search`, `product_lifecycle`, and `workspace_aggregated_popularity_metrics` for 3.A3.
+
+### Easy
+
+- [**3.E1**](#3e1-fleet-status) **Fleet status.** *"List all devices with status and RoomOS version."*
+- [**3.E2**](#3e2-explain-an-error) **Explain an error.** *"What does SIGNAGE\_CONTENT\_STALE mean and how do I fix it?"*
+- [**3.E3**](#3e3-end-of-sale) **End of sale.** *"Which device models reach end-of-sale soonest?"*
+
+### Advanced
+
+- [**3.A1**](#3a1-open-vs-resolved) **Open vs. resolved.** *"Summarize events across the organization, then check each device's history and tell me which issues are still open."*
+- [**3.A2**](#3a2-triage-table) **Triage table.** *"Build a triage table: device, serial, room, open issue, severity and recommended action."*
+- [**3.A3**](#3a3-risk-by-usage) **Risk by usage.** *"Combine lifecycle dates with room popularity. Which replacement matters most?"*
+- [**3.A4**](#3a4-software-currency) **Software currency.** *"Which devices are behind on RoomOS, and does that line up with any device issues?"*
+
+## Lab 4 — Configuration and drift
+
+**Goal:** You'll learn to find configuration drift and decide what to change.
+
+Tools: `device_configuration_schema`, `device_configuration_template_list`, `device_configuration_list`, `device_configuration_diff`, `device_configuration_template_diff`.
+
+### Easy
+
+- [**4.E1**](#4e1-what-can-be-set) **What can be set.** *"List the configuration keys and their allowed values."*
+- [**4.E2**](#4e2-templates) **Templates.** *"What configuration templates exist?"*
+- [**4.E3**](#4e3-one-device) **One device.** *"Show the Boardroom Room Bar Pro's settings."*
+
+### Advanced
+
+- [**4.A1**](#4a1-fleet-drift-report) **Fleet drift report.** *"Check every device against its template and tabulate the drift."*
+- [**4.A2**](#4a2-rule-out-config) **Rule out config.** *"Workshop Bay reported PROXIMITY\_PAIRING\_FAIL. Is its configuration the cause?"*
+- [**4.A3**](#4a3-same-model-different-rooms) **Same model, different rooms.** *"Diff the two Room Bars (Boardroom and Workshop)."*
+  - Discuss: does a bigger room justify the louder default?
+- [**4.A4**](#4a4-remediation-plan) **Remediation plan.** *"Write the exact changes needed to bring every device back to template, and validate each value against the schema."*
+- [**4.A5**](#4a5-question-the-template) **Question the template.** *"Lab Bench and Workshop Bay are open workspaces, but both use the meeting-room template. Is that the right template?"*
+
+## Lab 5 — Locations and the Firehose replay
+
+**Goal:** You'll learn to read the raw event stream and reconcile what its counts say.
+
+Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events`.
+
+### Easy
+
+- [**5.E1**](#5e1-site-map) **Site map.** *"Show me the location hierarchy."*
+- [**5.E2**](#5e2-stream-health) **Stream health.** *"Is the Firehose healthy, and what does it subscribe to?"*
+- [**5.E3**](#5e3-whos-on-which-floor) **Who's on which floor.** *"Where are the tracked phones right now?"*
+
+### Advanced
+
+- [**5.A1**](#5a1-event-mix) **Event mix.** *"Pull Firehose events and count them by type."*
+- [**5.A2**](#5a2-rebuild-a-meeting) **Rebuild a meeting.** *"Using SPACE\_OCCUPANCY\_CHANGE events only, trace Boardroom North's headcount."*
+- [**5.A3**](#5a3-visitor-journey) **Visitor journey.** *"Follow mockup-phone-01 across all event types in time order."*
+- [**5.A4**](#5a4-reconcile-the-counts) **Reconcile the counts.** *"North L1 reports DEVICE\_COUNT, CAMERA\_COUNT and USER\_PRESENCE totals. Why don't they agree?"*
+- [**5.A5**](#5a5-spot-personal-data) **Spot personal data.** *"Which Firehose fields would be personal data in a real tenant?"*
+
+## Stretch goals
+
+These have no single expected answer. Each one lists what a complete result includes. S1, S3 and S4 link to checklists and worked numbers in the Answer key.
+
+- [**S1**](#s1-campus-health-report) **Campus health report in one prompt.** Ask for a full report covering environment, utilization, device issues, drift and lifecycle.
+- **S2** **Room profile.** Pick one room and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
+- [**S3**](#s3-anomaly-hunt) **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
+  - Device telemetry and room metrics disagree on temperature.
+  - Phone Booth N2 has environment readings but no device.
+  - Both open workspaces, Lab Bench and Workshop Bay, use a meeting-room template.
+  - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
+  - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
+- [**S4**](#s4-predict-and-flag) **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
+- **S5** **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
+- **S6** **Runbook per error code.** For each of the three error codes, write the tool sequence an on-call engineer should follow, from detection to fix. Success: each runbook names the tools in order and ends with the catalog's recommended action.
+- **S7** **Design the next tool.** Name one question you couldn't answer in these labs, such as who booked a room or what the HVAC set point is. Specify the tool that would answer it: name, inputs, output fields, and which existing IDs it joins on.
+
+## Appendix: client setup
+
+Set up one client, then go back to [Confirm it works](#confirm-it-works).
 
 ### Claude Code CLI (Linux / macOS)
 
@@ -172,230 +398,13 @@ Cursor connects to the server directly and reads the token from an environment v
 
 4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
 
-### Confirm it works
-
-Whichever client you use, send this prompt before you start Lab 1:
-
-> *"Call firehose_health."*
-
-If your client asks permission to run the tool, allow it. The reply should say the status is ok, name the tenant as Mockup Campus, and list 14 subscribed event types.
-
-If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client.
-
-## Data sources
-
-You don't call the tools directly. Ask a question and the assistant (Claude, or Cursor's Agent) picks the tool.
-
-### Tools
-
-| Tool | Area | What it returns | Input |
-| --- | --- | --- | --- |
-| `location_search` | Sites | Campus → building → floor tree, with address and floor count | optional filter |
-| `workspace_search` | Rooms | Rooms: type, capacity, floor, devices, capacity note | optional filter |
-| `workspace_metrics` | Rooms | Hourly series for one room: people, presence, booked, temperature °C, humidity %, noise, used and booked minutes | `workspace_id` |
-| `workspace_aggregated_usage_metrics` | Utilization | Used and booked minutes and peak headcount per room, plus campus totals | — |
-| `workspace_aggregated_popularity_metrics` | Utilization | Rooms ranked by minutes used | — |
-| `workspace_aggregated_capacity_utilization` | Utilization | Overcrowded and under-utilized rooms with peak ratio | — |
-| `firehose_latest` | Live | Current headcount per room and positions of tracked phones | — |
-| `firehose_events` | Live | Raw `EventRecord` stream, oldest first, up to 50 per pull; `truncated` and `nextOffset` say when there's more | optional `eventType`, `locationId`, `deviceId`, `workspaceId`, `fromTimestamp`, `limit`, `offset` |
-| `firehose_health` | Live | Stream status, tenant, subscribed event types | — |
-| `device_search` | Devices | Model, serial, RoomOS version, room, connection status | optional filter |
-| `device_event_history` | Devices | Recent events for one device | `device_id` |
-| `device_aggregated_event_history` | Devices | Event counts by severity and by code across the organization | — |
-| `device_error_code_detail_search` | Devices | Error code meaning, severity and recommended action | optional code |
-| `product_lifecycle` | Devices | End-of-sale, software-maintenance and last-support dates per model | — |
-| `device_configuration_schema` | Config | Setting keys, types, allowed values, supported models | — |
-| `device_configuration_template_list` | Config | Templates and the keys each one controls | — |
-| `device_configuration_list` | Config | Current settings on one device, and its template | `device_id` |
-| `device_configuration_diff` | Config | Settings that differ between two devices | `device_id_a`, `device_id_b` |
-| `device_configuration_template_diff` | Config | Settings where a device differs from a template | `device_id`, `template_id` |
-
-To join data across tools, use the shared IDs: `locationId`, workspace `id` / `workspaceId`, and `deviceId`.
-
-### Locations
-
-- Mockup Campus (`loc-campus-mockup`), 1 Mockup Lane, Pyrmont NSW 2009
-  - North Building (`loc-bldg-north`): North L1 (`loc-floor-n1`) and North L2 (`loc-floor-n2`)
-  - South Building (`loc-bldg-south`): South L1 (`loc-floor-s1`)
-
-### Rooms and devices
-
-| Room | Room ID | Floor | Seats | Device | Device ID | RoomOS | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Boardroom North | `ws-board` | North L1 | 10 | Room Bar Pro | `dev-roombar-board` | 11.32.1.5 | connected |
-| Huddle A | `ws-huddle` | North L1 | 4 | Room Kit Mini | `dev-kitmini-huddle` | 11.28.1.3 | connected |
-| Focus Desk 12 | `ws-focus` | North L2 | 1 | Desk Pro | `dev-deskpro-focus` | 11.32.1.5 | connected |
-| Phone Booth N2 | `ws-phone` | North L2 | 1 | none | — | — | — |
-| Lab Bench | `ws-lab` | South L1 | 6 | Board Pro 55 | `dev-boardpro-lab` | 11.26.1.1 | warning |
-| Workshop Bay | `ws-workshop` | South L1 | 8 | Room Bar | `dev-roombar-workshop` | 11.32.1.5 | connected |
-
-### Reference data
-
-- **Templates:** Meeting Room Standard (`tpl-meeting-standard`) and Personal Desk Standard (`tpl-desk-standard`).
-- **Config keys:** `Audio.DefaultVolume`, `Video.Selfview.Default`, `Bookings.Enabled`, `Standby.Control`, `Proximity.Mode`.
-- **Error codes:** `CAM_HDMI_SIGNAL_LOST` (error), `SIGNAGE_CONTENT_STALE` (warning), `PROXIMITY_PAIRING_FAIL` (warning).
-- **Firehose event types (14):** `SPACE_OCCUPANCY`, `SPACE_OCCUPANCY_CHANGE`, `DEVICE_PRESENCE`, `USER_PRESENCE`, `DEVICE_LOCATION_UPDATE`, `DEVICE_ASSOCIATION`, `DEVICE_COUNT`, `CAMERA_COUNT`, `RAW_CAMERA_COUNT`, `WEBEX_TELEMETRY`, `IOT_TELEMETRY`, `PROFILE_UPDATE`, `KEEP_ALIVE`, `APP_ACTIVATION`.
-
-> ## Answers are at the back of this guide
->
-> Expected answers for every exercise are in the **[Answer key](#answer-key)** at the end of this guide. Each exercise shows its answer number, for example **1.E1** for Lab 1, Easy, exercise 1. Try each exercise first, then check your result.
-
-## Lab 1 — Rooms and environment
-
-Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
-
-The campus, building and floor layout is in [Locations](#locations) above. Lab 5 starts with the tool that returns it.
-
-### Easy
-
-1. **Temperature everywhere.** *"Show me the temperature in every room right now."*
-   - → Answer [**1.E1**](#1e1-temperature-everywhere)
-2. **One room over the day.** *"Show Boardroom North's temperature history."*
-   - → Answer [**1.E2**](#1e2-one-room-over-the-day)
-3. **Quietest rooms.** *"Which rooms are quietest?"*
-   - → Answer [**1.E3**](#1e3-quietest-rooms)
-
-### Advanced
-
-1. **Comfort alerts.** *"Flag any hour in any room where temperature went over 24 °C or humidity reached 60%."*
-   - → Answer [**1.A1**](#1a1-comfort-alerts)
-2. **Build a model.** *"Across all rooms, how do temperature, humidity and noise change with headcount?"*
-   - Discuss: the same rule fits a 1-seat booth and a 10-seat boardroom. Is that realistic, and what does it mean for your S4 prediction?
-   - → Answer [**1.A2**](#1a2-build-a-model)
-3. **Two sources, one room.** *"Compare Boardroom North's temperature in workspace\_metrics with the WEBEX\_TELEMETRY ambientTemp for the same hour."*
-   - Discuss: which source would you trust for a comfort complaint, and why?
-   - → Answer [**1.A3**](#1a3-two-sources-one-room)
-4. **Data freshness.** *"How many readings does each room have, and how old is each room's latest one?"*
-   - → Answer [**1.A4**](#1a4-data-freshness)
-
-## Lab 2 — Utilization and occupancy
-
-Tools: `firehose_latest`, `workspace_aggregated_usage_metrics`, `workspace_aggregated_popularity_metrics`, `workspace_aggregated_capacity_utilization`, `workspace_metrics`.
-
-### Easy
-
-1. **Who's in now.** *"How many people are in each room right now?"*
-   - → Answer [**2.E1**](#2e1-whos-in-now)
-2. **Most popular.** *"Rank rooms by actual use."*
-   - → Answer [**2.E2**](#2e2-most-popular)
-3. **Wrong-sized rooms.** *"Which rooms are overcrowded or under-utilized?"*
-   - → Answer [**2.E3**](#2e3-wrong-sized-rooms)
-
-### Advanced
-
-1. **Booking accuracy.** *"For each room, divide used minutes by booked minutes and explain what the ratio means."*
-   - → Answer [**2.A1**](#2a1-booking-accuracy)
-2. **No-shows and walk-ins, hour by hour.** *"Using workspace\_metrics, find hours that were booked but empty, and hours that were used without a booking."*
-   - → Answer [**2.A2**](#2a2-no-shows-and-walk-ins-hour-by-hour)
-3. **Live vs. history.** *"Does firehose\_latest agree with the latest workspace\_metrics point for each room?"*
-   - → Answer [**2.A3**](#2a3-live-vs-history)
-4. **Make the case.** *"Recommend one change to the room mix. Cite the numbers from at least two tools."*
-   - → Answer [**2.A4**](#2a4-make-the-case)
-5. **Trust the snapshot.** *"How old is each room's entry in firehose\_latest? Would you use it to tell someone a room is free right now?"*
-   - → Answer [**2.A5**](#2a5-trust-the-snapshot)
-
-## Lab 3 — Devices, errors and lifecycle
-
-Tools: `device_search`, `device_event_history`, `device_aggregated_event_history`, `device_error_code_detail_search`, `product_lifecycle`, and `workspace_aggregated_popularity_metrics` for 3.A3.
-
-### Easy
-
-1. **Fleet status.** *"List all devices with status and RoomOS version."*
-   - → Answer [**3.E1**](#3e1-fleet-status)
-2. **Explain an error.** *"What does SIGNAGE\_CONTENT\_STALE mean and how do I fix it?"*
-   - → Answer [**3.E2**](#3e2-explain-an-error)
-3. **End of sale.** *"Which device models reach end-of-sale soonest?"*
-   - → Answer [**3.E3**](#3e3-end-of-sale)
-
-### Advanced
-
-1. **Open vs. resolved.** *"Summarize events across the organization, then check each device's history and tell me which issues are still open."*
-   - → Answer [**3.A1**](#3a1-open-vs-resolved)
-2. **Triage table.** *"Build a triage table: device, serial, room, open issue, severity and recommended action."*
-   - → Answer [**3.A2**](#3a2-triage-table)
-3. **Risk by usage.** *"Combine lifecycle dates with room popularity. Which replacement matters most?"*
-   - → Answer [**3.A3**](#3a3-risk-by-usage)
-4. **Software currency.** *"Which devices are behind on RoomOS, and does that line up with any device issues?"*
-   - → Answer [**3.A4**](#3a4-software-currency)
-
-## Lab 4 — Configuration and drift
-
-Tools: `device_configuration_schema`, `device_configuration_template_list`, `device_configuration_list`, `device_configuration_diff`, `device_configuration_template_diff`.
-
-### Easy
-
-1. **What can be set.** *"List the configuration keys and their allowed values."*
-   - → Answer [**4.E1**](#4e1-what-can-be-set)
-2. **Templates.** *"What configuration templates exist?"*
-   - → Answer [**4.E2**](#4e2-templates)
-3. **One device.** *"Show the Boardroom Room Bar Pro's settings."*
-   - → Answer [**4.E3**](#4e3-one-device)
-
-### Advanced
-
-1. **Fleet drift report.** *"Check every device against its template and tabulate the drift."*
-   - → Answer [**4.A1**](#4a1-fleet-drift-report)
-2. **Rule out config.** *"Workshop Bay reported PROXIMITY\_PAIRING\_FAIL. Is its configuration the cause?"*
-   - → Answer [**4.A2**](#4a2-rule-out-config)
-3. **Same model, different rooms.** *"Diff the two Room Bars (Boardroom and Workshop)."*
-   - Discuss: does a bigger room justify the louder default?
-   - → Answer [**4.A3**](#4a3-same-model-different-rooms)
-4. **Remediation plan.** *"Write the exact changes needed to bring every device back to template, and validate each value against the schema."*
-   - → Answer [**4.A4**](#4a4-remediation-plan)
-5. **Question the template.** *"Lab Bench and Workshop Bay are open workspaces, but both use the meeting-room template. Is that the right template?"*
-   - → Answer [**4.A5**](#4a5-question-the-template)
-
-## Lab 5 — Locations and the Firehose replay
-
-Tools: `location_search`, `firehose_health`, `firehose_latest`, `firehose_events`.
-
-### Easy
-
-1. **Site map.** *"Show me the location hierarchy."*
-   - → Answer [**5.E1**](#5e1-site-map)
-2. **Stream health.** *"Is the Firehose healthy, and what does it subscribe to?"*
-   - → Answer [**5.E2**](#5e2-stream-health)
-3. **Who's on which floor.** *"Where are the tracked phones right now?"*
-   - → Answer [**5.E3**](#5e3-whos-on-which-floor)
-
-### Advanced
-
-1. **Event mix.** *"Pull Firehose events and count them by type."*
-   - → Answer [**5.A1**](#5a1-event-mix)
-2. **Rebuild a meeting.** *"Using SPACE\_OCCUPANCY\_CHANGE events only, trace Boardroom North's headcount."*
-   - → Answer [**5.A2**](#5a2-rebuild-a-meeting)
-3. **Visitor journey.** *"Follow mockup-phone-01 across all event types in time order."*
-   - → Answer [**5.A3**](#5a3-visitor-journey)
-4. **Reconcile the counts.** *"North L1 reports DEVICE\_COUNT, CAMERA\_COUNT and USER\_PRESENCE totals. Why don't they agree?"*
-   - → Answer [**5.A4**](#5a4-reconcile-the-counts)
-5. **Spot personal data.** *"Which Firehose fields would be personal data in a real tenant?"*
-   - → Answer [**5.A5**](#5a5-spot-personal-data)
-
-## Stretch goals
-
-These have no single expected answer. Each one lists what a complete result includes; checklists and worked numbers are in the Answer key.
-
-1. **Campus health report in one prompt.** Ask for a full report covering environment, utilization, device issues, drift and lifecycle.
-   - → Answer [**S1**](#s1-campus-health-report)
-2. **Room profile.** Pick one room and build a one-page profile by joining the tools on their shared IDs. A complete profile has 8 parts: location path, device, RoomOS, config drift, open issues, lifecycle dates, utilization and environment peak. If you pick Phone Booth N2, which has no device, say which parts don't apply.
-3. **Anomaly hunt.** Find at least three things in the data that don't add up, with the tool output that shows each one. Starting points:
-   - Device telemetry and room metrics disagree on temperature.
-   - Phone Booth N2 has environment readings but no device.
-   - Both open workspaces, Lab Bench and Workshop Bay, use a meeting-room template.
-   - Every device's telemetry reports exactly 22.8 °C and 50% humidity, whatever the headcount.
-   - An IoT sensor on South L1 (`mockup-sensor-lab-01`) reports a different temperature from Lab Bench's metrics for the same hour. Its event names only the floor, not a room, so tying it to Lab Bench rests on the sensor's name.
-   - → Answer [**S3**](#s3-anomaly-hunt)
-4. **Predict and flag.** Use your Lab 1 model to predict Boardroom North's conditions with 15 people. Then propose a headcount limit that keeps the room under 24 °C.
-   - → Answer [**S4**](#s4-predict-and-flag)
-5. **Repeatable report.** Write one prompt that produces the same weekly report every time. Success: run it twice in fresh sessions and get the same numbers and the same structure. Timestamps will differ, because the sample data moves with the clock.
-6. **Runbook per error code.** For each of the three error codes, write the tool sequence an on-call engineer should follow, from detection to fix. Success: each runbook names the tools in order and ends with the catalog's recommended action.
-7. **Design the next tool.** Name one question you couldn't answer in these labs, such as who booked a room or what the HVAC set point is. Specify the tool that would answer it: name, inputs, output fields, and which existing IDs it joins on.
-
 ## Answer key
 
 Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are stretch goals.
 
 ### Lab 1 — Rooms and environment
+
+[↩ Back to Lab 1](#lab-1--rooms-and-environment)
 
 #### 1.E1 Temperature everywhere
 
@@ -429,6 +438,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 - Boardroom North has 11 hourly points and Phone Booth N2 has only 3. Phone Booth's latest reading is about 2 hours older than Boardroom's.
 
 ### Lab 2 — Utilization and occupancy
+
+[↩ Back to Lab 2](#lab-2--utilization-and-occupancy)
 
 #### 2.E1 Who's in now
 
@@ -472,6 +483,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 ### Lab 3 — Devices, errors and lifecycle
 
+[↩ Back to Lab 3](#lab-3--devices-errors-and-lifecycle)
+
 #### 3.E1 Fleet status
 
 - 5 devices. Four are connected, and the Lab Bench Board Pro 55 shows warning.
@@ -504,6 +517,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 - Both have had events, and the Board Pro 55 is the only device in warning. That's a correlation worth checking, not proof of a cause.
 
 ### Lab 4 — Configuration and drift
+
+[↩ Back to Lab 4](#lab-4--configuration-and-drift)
 
 #### 4.E1 What can be set
 
@@ -548,6 +563,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 
 ### Lab 5 — Locations and the Firehose replay
 
+[↩ Back to Lab 5](#lab-5--locations-and-the-firehose-replay)
+
 #### 5.E1 Site map
 
 - Mockup Campus contains North Building (L1, L2) and South Building (L1).
@@ -587,6 +604,8 @@ Numbers like **2.A3** mean Lab 2, Advanced track, exercise 3. **S** numbers are 
 - Email, first and last name, user ID, MAC address, IPv4, and latitude/longitude.
 
 ### Stretch goals
+
+[↩ Back to the stretch goals](#stretch-goals)
 
 #### S1 Campus health report
 

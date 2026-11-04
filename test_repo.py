@@ -159,6 +159,23 @@ class SpacesLabGuideNamesTest(unittest.TestCase):
             self.assertIn(name, text)
 
 
+class SpacesLabGuideStructureTest(unittest.TestCase):
+    def test_exercise_ids_match_answers(self):
+        text = (HERE / "docs" / "spaces-lab-guide.md").read_text(encoding="utf-8")
+        labs = text[text.index("## Lab 1 — ") : text.index("## Answer key")]
+        key = text[text.index("## Answer key") :]
+        exercises = re.findall(r"^- \[\*\*(\d\.[EA]\d|S\d)\*\*\]\(#([^)]+)\)", labs, re.M)
+        answers = re.findall(r"^#### (\d\.[EA]\d|S\d) ", key, re.M)
+        self.assertEqual(sorted(e for e, _ in exercises), sorted(answers))
+        for ident, anchor in exercises:
+            self.assertTrue(anchor.startswith(ident.lower().replace(".", "")), ident)
+        self.assertNotIn("→ Answer", labs)
+        self.assertEqual(len(re.findall(r"^\*\*Goal:\*\*", labs, re.M)), 5)
+        self.assertIn("## Contents", text)
+        self.assertLess(text.index("## Answer key"), len(text))
+        self.assertLess(text.index("## Appendix: client setup"), text.index("## Answer key"))
+
+
 class PdfBuildTest(unittest.TestCase):
     def test_makefile_and_requirements_cover_pdf_build(self):
         makefile = (HERE / "Makefile").read_text(encoding="utf-8")
