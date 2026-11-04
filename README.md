@@ -19,8 +19,10 @@ Nineteen reads.
 | Firehose | `firehose_health`, `firehose_events`, `firehose_latest` |
 
 Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
-(12 in a 10-seat room). Data map, other-app ideas, and a Claude/Cursor
-setup prompt: [docs/lab-guide.md](docs/lab-guide.md).
+(12 in a 10-seat room). Lab guide, with setup for Claude Code, Claude
+Desktop and Cursor, five labs and an answer key:
+[docs/spaces-lab-guide-v1.md](docs/spaces-lab-guide-v1.md). Data map and
+other-app ideas: [docs/lab-guide.md](docs/lab-guide.md).
 
 ## Self-host
 
