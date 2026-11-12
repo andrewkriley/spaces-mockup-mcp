@@ -111,6 +111,7 @@ If you are Cursor:
 If you are Codex:
 1. Add a [mcp_servers.spaces-mockup] section to ~/.codex/config.toml with url set to the chosen URL and bearer_token_env_var = "MCP_BEARER_TOKEN".
 2. Do not put a literal secret in config.toml.
+3. The Codex desktop app and Codex CLI share this file. The desktop app only sees MCP_BEARER_TOKEN if it is set for the user account (setx on Windows, launchctl setenv on macOS), not just exported in a terminal.
 
 If you are Claude Code / Claude Desktop:
 1. Prefer the native add-server / MCP settings UI, or `claude mcp add` with transport http and an Authorization header that reads the env var.

@@ -15,7 +15,7 @@
 
 This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Mockup Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 50 minutes for the Easy track only, or about 2 hours for both tracks, plus time for any stretch goals.
 
-**You need:** Claude Code, Claude Desktop, Cursor, or Codex CLI, installed and signed in before the lab starts, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
+**You need:** Claude Code, Claude Desktop, Cursor, Codex CLI, or the Codex desktop app, installed and signed in before the lab starts, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
 
 **How the tracks work**
 
@@ -60,6 +60,7 @@ You'll connect your client to the hosted lab server at `https://spaces-mockup.mc
    | Claude Desktop | [Claude Desktop (Windows / macOS)](#claude-desktop-windows--macos) |
    | Cursor | [Cursor](#cursor) |
    | Codex CLI | [Codex CLI](#codex-cli) |
+   | Codex desktop app | [Codex desktop app](#codex-desktop-app) |
 
 ### Confirm it works
 
@@ -71,7 +72,7 @@ If your client asks permission to run the tool, allow it. The reply should say t
 
 If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client in the [appendix](#appendix-client-setup).
 
-**Start a new chat for each lab.** In Claude Code, run `/clear`, or exit and relaunch `claude`. In Codex, run `/new`. Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
+**Start a new chat for each lab.** In Claude Code, run `/clear`, or exit and relaunch `claude`. In Codex CLI, run `/new`. In the Codex desktop app, start a new chat. Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
 
 ## Data sources
 
@@ -485,6 +486,41 @@ Codex reads the server from its config file and the token from an environment va
 
 5. **Coming back later.** You don't need to add the server again. In a new terminal, set the token as in step 1 and run `codex`.
 
+### Codex desktop app
+
+The Codex desktop app (now part of the ChatGPT desktop app) uses the same `config.toml` as Codex CLI. If you've already set up Codex CLI on this computer, step 2 is done. The app's **MCP servers** settings screen has no field for a bearer token, so you add the server in the file and set the token where the app can read it.
+
+1. **Set your token.** An app opened from the Dock, Start menu or a launcher doesn't see a token you `export` in a terminal, so set it like this, then quit the app completely:
+
+   - **Windows (PowerShell):** run this to save the token for your user account:
+
+     ```powershell
+     setx MCP_BEARER_TOKEN "Found-In-Box-Folder"
+     ```
+
+   - **macOS:** run this in Terminal. It lasts until you restart your Mac:
+
+     ```bash
+     launchctl setenv MCP_BEARER_TOKEN 'Found-In-Box-Folder'
+     ```
+
+   - **Linux:** export it, then start the app from the same terminal with `chatgpt`:
+
+     ```bash
+     export MCP_BEARER_TOKEN='Found-In-Box-Folder'
+     chatgpt
+     ```
+
+2. **Add the MCP server.** Open `~/.codex/config.toml` on Linux and macOS, or `%USERPROFILE%\.codex\config.toml` on Windows, and add the section from [Codex CLI](#codex-cli) step 2. Keep any other `[mcp_servers.…]` sections, and have only one `[mcp_servers.spaces-mockup]` section.
+
+3. **Open the app and restart the server.** Reopen the app. On Linux, use the terminal from step 1. Go to **Settings → MCP servers**, find `spaces-mockup`, and select **Restart**.
+
+4. **Verify.** In a new chat, type `/mcp` and check that `spaces-mockup` is listed as connected. If it isn't:
+
+   - **401 or no tools:** the app started without the token. Do step 1 again, quit the app completely, and reopen it. On Windows, `setx` only applies to apps started after you run it. On macOS, run `launchctl setenv` again if you've restarted your Mac since.
+   - **`spaces-mockup` isn't in the list:** check the section in `config.toml` is copied exactly, then restart the app.
+   - **Windows with Codex running in WSL:** the app reads `%USERPROFILE%\.codex\config.toml` on Windows, not the config in your Linux home folder. Add the section to the Windows file.
+
 ### After the lab (optional)
 
 The token only works for this lab, but you can remove it and the server entry when you're done:
@@ -498,6 +534,13 @@ The token only works for this lab, but you can remove it and the server entry wh
   ```
 
 - **Codex CLI:** remove the `[mcp_servers.spaces-mockup]` section from `config.toml`. The token was only set for that terminal or window, so it's gone once you close it.
+- **Codex desktop app:** remove the `[mcp_servers.spaces-mockup]` section from `config.toml`. It's the same file Codex CLI uses, so this removes the server from both. Then remove the saved token. On Windows, run this in PowerShell:
+
+  ```powershell
+  [Environment]::SetEnvironmentVariable("MCP_BEARER_TOKEN", $null, "User")
+  ```
+
+  On macOS, run `launchctl unsetenv MCP_BEARER_TOKEN`, or restart your Mac.
 
 ## Answer key
 
