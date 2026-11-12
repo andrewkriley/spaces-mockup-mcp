@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# When the lab guide or its PDF build changes, stamp today's date into the guide and
+# rebuild both PDFs, then add them to this commit. Enable with: make hooks
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+if git diff --cached --name-only | grep -qxE 'docs/spaces-lab-guide\.md|scripts/build_pdfs\.py'; then
+  echo "pre-commit: lab guide changed; stamping date and rebuilding PDFs" >&2
+  if ! make -s pdf >&2; then
+    echo "pre-commit: PDF build failed (needs Chrome and 'make venv'). Fix it, or commit with --no-verify." >&2
+    exit 1
+  fi
+  git add docs/spaces-lab-guide.md docs/spaces-lab-guide.pdf docs/spaces-lab-guide-dark.pdf
+fi

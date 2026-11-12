@@ -6,11 +6,16 @@ headless Chrome or Chromium. Needs the docs packages from requirements-dev.txt
 (run `make venv`) and a Chromium-based browser. Set CHROME to pick one.
 
     .venv/bin/python scripts/build_pdfs.py            # or: make pdf
+
+Before printing, it stamps today's date into the guide's header line, so the
+Markdown and both PDFs always show when they were last built. The pre-commit
+hook in .githooks runs this whenever the guide changes.
 """
 
 from __future__ import annotations
 
 import argparse
+import datetime
 import glob
 import html
 import os
@@ -84,9 +89,10 @@ blockquote h2 { border: none; margin: 0 0 4pt; color: #0550ae; }
 h4 .xid { font-size: 10pt; margin-right: 3pt; }
 .task-list-item-checkbox { width: 10pt; height: 10pt; }
 h1 + p { color: #59636e; }
-/* Start the labs and the answer key on a new page, so answers stay out of sight. The labs,
-   stretch goals and setup appendix run on without breaks, which avoids half-empty pages. */
-h2#lab-1--rooms-and-environment, h2#answer-key { break-before: page; margin-top: 0; }
+/* Start the labs, the setup appendix and the answer key on a new page, so answers stay out
+   of sight and the appendix heading is never stranded at the foot of the stretch goals. */
+h2#lab-1--rooms-and-environment, h2#appendix-client-setup, h2#answer-key {
+  break-before: page; margin-top: 0; }
 """.replace("TITLE", TITLE)
 
 DARK_CSS = """
@@ -147,7 +153,7 @@ def render_body(markdown: str) -> str:
     body, back_links = re.subn(r"<p>(<a href=\"#[^\"]+\">↩)", r'<p class="back">\1', body)
     if back_links != 6:
         raise SystemExit(f"build_pdfs: expected 6 answer-key back links, found {back_links}")
-    for anchor in ("lab-1--rooms-and-environment", "answer-key"):
+    for anchor in ("lab-1--rooms-and-environment", "appendix-client-setup", "answer-key"):
         if f'id="{anchor}"' not in body:
             raise SystemExit(f"build_pdfs: heading #{anchor} not found; update the page-break CSS")
     return body
@@ -244,6 +250,17 @@ def print_pdf(chrome: str, html_path: Path, pdf_path: Path) -> None:
         raise SystemExit(f"build_pdfs: Chrome failed to write {pdf_path}")
 
 
+# The header line under the title, e.g. "**Easy to Advanced** · Nov 4, 2026 · @Author"
+DATE_LINE = re.compile(r"^(\*\*Easy to Advanced\*\* · )[A-Z][a-z]{2} \d{1,2}, \d{4}( · )", re.M)
+
+
+def stamp_date(markdown: str, today: datetime.date) -> str:
+    stamped, n = DATE_LINE.subn(rf"\g<1>{today:%b} {today.day}, {today.year}\g<2>", markdown)
+    if n != 1:
+        raise SystemExit("build_pdfs: header date line not found; update DATE_LINE")
+    return stamped
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("guide", nargs="?", type=Path, default=DEFAULT_GUIDE)
@@ -252,7 +269,9 @@ def main() -> None:
     guide = args.guide.resolve()
     out_dir = (args.out_dir or guide.parent).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
-    body = render_body(guide.read_text(encoding="utf-8"))
+    markdown = stamp_date(guide.read_text(encoding="utf-8"), datetime.date.today())
+    guide.write_text(markdown, encoding="utf-8")
+    body = render_body(markdown)
     chrome = find_chrome()
     with tempfile.TemporaryDirectory() as tmp:
         for suffix, dark in (("", False), ("-dark", True)):

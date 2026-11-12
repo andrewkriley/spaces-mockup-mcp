@@ -7,10 +7,14 @@ ifeq ($(RUFF),)
 RUFF := ruff
 endif
 
-.PHONY: venv lint test ci pdf
+.PHONY: venv hooks lint test ci pdf
 
 venv:
 	bash scripts/setup-venv.sh
+
+# Use the repo's git hooks (rebuilds the lab guide PDFs on commit). Run once per clone.
+hooks:
+	git config core.hooksPath .githooks
 
 lint:
 	$(RUFF) check .
@@ -22,6 +26,7 @@ test:
 
 ci: lint test
 
-# Rebuild docs/spaces-lab-guide.pdf and -dark.pdf. Set CHROME to pick a browser.
+# Stamp today's date into the guide, then rebuild docs/spaces-lab-guide.pdf and -dark.pdf.
+# Set CHROME to pick a browser.
 pdf:
 	$(PYTHON) scripts/build_pdfs.py
