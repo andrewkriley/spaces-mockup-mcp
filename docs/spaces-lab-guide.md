@@ -72,7 +72,7 @@ If your client asks permission to run the tool, allow it. The reply should say t
 
 If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client in the [appendix](#appendix-client-setup).
 
-**Start a new chat for each lab.** In Claude Code, run `/clear`, or exit and relaunch `claude`. In Codex CLI, run `/new`. In the Codex desktop app, start a new chat. Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
+**Start a new chat for each lab.** In Claude Code, run `/clear`, or exit and relaunch `claude`. In Codex CLI, run `/new`. In Claude Desktop, Cursor or the Codex desktop app, start a new chat. Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
 
 ## Data sources
 
