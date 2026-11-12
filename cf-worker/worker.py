@@ -46,6 +46,8 @@ class Default(WorkerEntrypoint):
         if method == "POST":
             body = await request.text()
         status, payload = srv.handle_http(method, path, authorization, body)
+        if payload is None:
+            return Response("", status=status)
         return Response(
             json.dumps(payload, default=str),
             status=status,

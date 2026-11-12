@@ -23,14 +23,18 @@ TOKEN = os.environ.get("MCP_BEARER_TOKEN", "")
 DATASET_PATH = Path(os.environ.get("DATASET_PATH", str(DEFAULT_DATASET_PATH)))
 DAY = 24 * 3_600_000
 MAX_EVENTS = 50
+# MCP spec versions this server can speak, newest first. initialize echoes the client's
+# version when it is listed here and otherwise offers the newest.
+PROTOCOL_VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
 
 TOOLS = [
     {
         "name": "location_search",
         "description": (
             "Search Mockup Campus locations (campus, buildings, floors) by name, city, "
-            "address, locationId or floor count. Each row names its parent, so an "
-            "unfiltered call returns the whole hierarchy."
+            "address, locationId or floor count. Campus and building rows carry floor_count; "
+            "floor rows carry floorNumber. Each row names its parent, so an unfiltered call "
+            "returns the whole hierarchy."
         ),
         "inputSchema": {
             "type": "object",
@@ -274,16 +278,20 @@ def data() -> dict:
 
 
 def public_location(row: dict) -> dict:
-    return {
+    out = {
         "locationId": row.get("locationId"),
         "name": row.get("name"),
         "inferredLocationTypes": list(row.get("inferredLocationTypes") or []),
         "city": row.get("city") or "",
         "address": row.get("address") or "",
         "country": row.get("country") or "",
-        "floor_count": row.get("floor_count") or row.get("floorNumber") or 0,
         "parent": row.get("parent") or {},
     }
+    if "floorNumber" in row:
+        out["floorNumber"] = row["floorNumber"]
+    else:
+        out["floor_count"] = row.get("floor_count") or 0
+    return out
 
 
 def public_workspace(row: dict) -> dict:
@@ -807,15 +815,19 @@ def rpc(body: dict) -> dict:
     method = body.get("method") or ""
     params = body.get("params") or {}
     if method == "initialize":
+        asked = params.get("protocolVersion") if isinstance(params, dict) else None
+        version = asked if asked in PROTOCOL_VERSIONS else PROTOCOL_VERSIONS[0]
         return {
             "jsonrpc": "2.0",
             "id": rid,
             "result": {
-                "protocolVersion": "2024-11-05",
+                "protocolVersion": version,
                 "capabilities": {"tools": {}},
                 "serverInfo": {"name": "spaces-mockup", "version": "0.1.0"},
             },
         }
+    if method == "ping":
+        return {"jsonrpc": "2.0", "id": rid, "result": {}}
     if method == "tools/list":
         return {"jsonrpc": "2.0", "id": rid, "result": {"tools": TOOLS}}
     if method == "tools/call":
@@ -849,12 +861,18 @@ def handle_http(
     path: str,
     authorization: str,
     body: bytes | str | None = None,
-) -> tuple[int, dict]:
-    """Route GET /health and POST /mcp. Used by the stdlib server and the Worker."""
+) -> tuple[int, dict | None]:
+    """Route GET /health and POST /mcp. Used by the stdlib server and the Worker.
+
+    A None payload means "no body": 202 for JSON-RPC notifications.
+    """
     route = path.split("?", 1)[0]
     if method == "GET":
         if route in ("/health", "/healthz"):
             return 200, {"status": "ok", "server": "spaces-mockup"}
+        if route.rstrip("/") == "/mcp":
+            # No server-to-client SSE stream. Streamable HTTP says 405 here.
+            return 405, {"error": "method not allowed"}
         return 404, {"error": "not found"}
     if method == "POST":
         if route.rstrip("/") != "/mcp":
@@ -881,6 +899,9 @@ def handle_http(
                 "id": None,
                 "error": {"code": -32600, "message": "invalid request"},
             }
+        if "id" not in parsed:
+            # Notifications get no JSON-RPC reply.
+            return 202, None
         return 200, rpc(parsed)
     return 404, {"error": "not found"}
 
@@ -892,9 +913,10 @@ class Handler(BaseHTTPRequestHandler):
         sys.stderr.write(f"{self.address_string()} - {fmt % args}\n")
 
     def _send(self, code: int, payload) -> None:
-        data = json.dumps(payload, default=str).encode()
+        data = b"" if payload is None else json.dumps(payload, default=str).encode()
         self.send_response(code)
-        self.send_header("Content-Type", "application/json")
+        if data:
+            self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -916,25 +938,23 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def stdio_write_message(payload: dict) -> bytes:
-    data = json.dumps(payload, default=str).encode()
-    return f"Content-Length: {len(data)}\r\n\r\n".encode() + data
+    """One JSON-RPC message per line, as the MCP stdio transport requires."""
+    return json.dumps(payload, default=str).encode() + b"\n"
 
 
 def stdio_read_message(stream) -> dict | None:
-    headers: dict[str, str] = {}
+    """Read the next newline-delimited JSON-RPC message. None at end of input."""
     while True:
         line = stream.readline()
-        if line in (b"", b"\r\n", b"\n"):
-            if line == b"":
-                return None
-            break
-        decoded = line.decode()
-        if ":" in decoded:
-            key, value = decoded.split(":", 1)
-            headers[key.strip().lower()] = value.strip()
-    length = int(headers.get("content-length") or "0")
-    body = stream.read(length) if length else b"{}"
-    return json.loads(body.decode())
+        if line == b"":
+            return None
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            return json.loads(line.decode())
+        except json.JSONDecodeError:
+            continue
 
 
 def serve_stdio() -> None:

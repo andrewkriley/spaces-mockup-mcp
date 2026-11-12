@@ -134,6 +134,20 @@ class LocationWorkspaceTest(unittest.TestCase):
         city = srv.location_search({"city": "Sydney"})
         self.assertGreaterEqual(city["count"], 3)
 
+    def test_floors_report_floor_number_not_floor_count(self):
+        rows = {r["locationId"]: r for r in srv.location_search({})["locations"]}
+        self.assertEqual(rows["loc-floor-n2"]["floorNumber"], 2)
+        self.assertNotIn("floor_count", rows["loc-floor-n2"])
+        self.assertEqual(rows["loc-bldg-north"]["floor_count"], 2)
+        self.assertNotIn("floorNumber", rows["loc-bldg-north"])
+        two = [r["locationId"] for r in srv.location_search({"floor_count": 2})["locations"]]
+        self.assertEqual(two, ["loc-bldg-north"])
+
+    def test_metric_temperatures_have_no_float_noise(self):
+        for w in srv.workspace_search({})["workspaces"]:
+            for x in srv.workspace_metrics({"workspace_id": w["id"]})["points"]:
+                self.assertEqual(x["temperatureC"], round(x["temperatureC"], 2))
+
     def test_workspace_search_filters(self):
         huddle = srv.workspace_search({"name": "Huddle"})
         self.assertEqual([w["id"] for w in huddle["workspaces"]], ["ws-huddle"])
@@ -315,6 +329,25 @@ class RpcAndHttpTest(unittest.TestCase):
         )
         self.assertEqual(code, 200)
         self.assertEqual(payload["result"]["serverInfo"]["name"], "spaces-mockup")
+
+    def test_initialize_negotiates_protocol_version(self):
+        def agreed(asked):
+            params = {} if asked is None else {"protocolVersion": asked}
+            reply = srv.rpc({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": params})
+            return reply["result"]["protocolVersion"]
+
+        for version in srv.PROTOCOL_VERSIONS:
+            self.assertEqual(agreed(version), version)
+        self.assertEqual(agreed("1999-01-01"), srv.PROTOCOL_VERSIONS[0])
+        self.assertEqual(agreed(None), srv.PROTOCOL_VERSIONS[0])
+
+    def test_handle_http_follows_streamable_http(self):
+        note = json.dumps({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        self.assertEqual(srv.handle_http("POST", "/mcp", "Bearer mcp-bearer", note), (202, None))
+        ping = json.dumps({"jsonrpc": "2.0", "id": 7, "method": "ping"})
+        code, payload = srv.handle_http("POST", "/mcp", "Bearer mcp-bearer", ping)
+        self.assertEqual((code, payload), (200, {"jsonrpc": "2.0", "id": 7, "result": {}}))
+        self.assertEqual(srv.handle_http("GET", "/mcp", "Bearer mcp-bearer")[0], 405)
 
     def test_http_health_and_mcp_roundtrip(self):
         httpd = ThreadingHTTPServer(("127.0.0.1", 0), srv.Handler)
@@ -914,8 +947,28 @@ class StdioTest(unittest.TestCase):
     def test_stdio_frame_roundtrip(self):
         message = {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
         framed = srv.stdio_write_message(message)
+        self.assertTrue(framed.endswith(b"\n"))
+        self.assertNotIn(b"Content-Length", framed)
         parsed = srv.stdio_read_message(io.BytesIO(framed))
         self.assertEqual(parsed["method"], "tools/list")
+
+    def test_stdio_process_speaks_newline_json(self):
+        lines = [
+            {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+            {"jsonrpc": "2.0", "method": "notifications/initialized"},
+            {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
+        ]
+        proc = subprocess.run(
+            [sys.executable, str(HERE / "server.py"), "--stdio"],
+            input="".join(json.dumps(m) + "\n" for m in lines),
+            capture_output=True,
+            text=True,
+            timeout=20,
+            env={**os.environ, "MCP_BEARER_TOKEN": ""},
+        )
+        replies = [json.loads(line) for line in proc.stdout.splitlines()]
+        self.assertEqual([r["id"] for r in replies], [1, 2])
+        self.assertEqual(len(replies[1]["result"]["tools"]), len(srv.TOOLS))
 
 
 if __name__ == "__main__":
