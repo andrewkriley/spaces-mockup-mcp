@@ -83,11 +83,11 @@ Ask the person who shared the demo for the bearer. Put it in your shell
 environment as `MCP_BEARER_TOKEN`. Do not paste it into git, tickets, or
 chat.
 
-## Configure from Claude or Cursor
+## Configure from Claude, Cursor or Codex
 
 Do not hand-edit JSON if you can avoid it. Paste the block below into a new
-Claude or Cursor chat (Agent / Composer). The assistant writes
-`mcp.json` or runs the client’s add-server command. You only supply the
+Claude, Cursor (Agent / Composer) or Codex CLI chat. The assistant writes
+`mcp.json` or `config.toml`, or runs the client’s add-server command. You only supply the
 bearer when asked, via the environment, not in the file.
 
 ```text
@@ -108,6 +108,10 @@ If you are Cursor:
 3. Interpolate the token. Example header value: Bearer ${env:MCP_BEARER_TOKEN}
 4. Do not put a literal secret in mcp.json.
 
+If you are Codex:
+1. Add a [mcp_servers.spaces-mockup] section to ~/.codex/config.toml with url set to the chosen URL and bearer_token_env_var = "MCP_BEARER_TOKEN".
+2. Do not put a literal secret in config.toml.
+
 If you are Claude Code / Claude Desktop:
 1. Prefer the native add-server / MCP settings UI, or `claude mcp add` with transport http and an Authorization header that reads the env var.
 2. If you write claude_desktop_config.json, use the same mcpServers shape and env interpolation. Do not dump a raw token.
@@ -117,7 +121,10 @@ After you write the config, tell me exactly which file or setting changed, remin
 
 Cursor interpolates `${env:MCP_BEARER_TOKEN}` in `url` and `headers`.
 Some clients also want `"type": "http"`. The README has the raw
-`mcpServers` shape if you later need it.
+`mcpServers` shape if you later need it. Codex CLI doesn't use
+`mcpServers`: it reads `[mcp_servers.spaces-mockup]` from
+`~/.codex/config.toml` and takes the token from the variable named in
+`bearer_token_env_var`.
 
 ## Suggested prompts
 

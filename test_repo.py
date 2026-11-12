@@ -141,7 +141,7 @@ class LabGuideContractTest(unittest.TestCase):
         self.assertIn("https://spaces-mockup.mcp.buildermate.ai/mcp", text)
         self.assertIn("MCP_BEARER_TOKEN", text)
         self.assertIn("${env:MCP_BEARER_TOKEN}", text)
-        self.assertIn("## Configure from Claude or Cursor", text)
+        self.assertIn("## Configure from Claude, Cursor or Codex", text)
         self.assertIn("## Suggested prompts", text)
         self.assertIn("## Building with other apps", text)
         self.assertIn("not a live cisco api", text.lower())

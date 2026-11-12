@@ -20,7 +20,7 @@ Nineteen reads.
 
 Occupancy is a clock-shifted weekday. Boardroom North overcrowds at stand-up
 (12 in a 10-seat room). Lab guide, with setup for Claude Code, Claude
-Desktop and Cursor, five labs and an answer key:
+Desktop, Cursor and Codex CLI, five labs and an answer key:
 [docs/spaces-lab-guide.md](docs/spaces-lab-guide.md). Data map and
 other-app ideas: [docs/lab-guide.md](docs/lab-guide.md).
 
@@ -92,6 +92,15 @@ curl -sS https://spaces-mockup.mcp.buildermate.ai/health
 ```
 
 Do not paste the token into the file. Some clients want `"type": "http"`.
+
+Codex CLI uses TOML in `~/.codex/config.toml` instead, and sends the bearer
+from the named variable (for self-host, use the `127.0.0.1` URL):
+
+```toml
+[mcp_servers.spaces-mockup]
+url = "https://spaces-mockup.mcp.buildermate.ai/mcp"
+bearer_token_env_var = "MCP_BEARER_TOKEN"
+```
 
 ## Data and timestamps
 
