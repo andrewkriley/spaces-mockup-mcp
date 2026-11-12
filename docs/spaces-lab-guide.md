@@ -488,7 +488,7 @@ Codex reads the server from its config file and the token from an environment va
 
 ### Codex desktop app
 
-The Codex desktop app (now part of the ChatGPT desktop app) uses the same `config.toml` as Codex CLI. If you've already set up Codex CLI on this computer, step 2 is done. The app's **MCP servers** settings screen has no field for a bearer token, so you add the server in the file and set the token where the app can read it.
+Since July 2026 the Codex desktop app is part of the ChatGPT desktop app, so on your computer it's called **ChatGPT**. Use Codex inside it. It uses the same `config.toml` as Codex CLI. If you've already set up Codex CLI on this computer, step 2 is done. The app's **MCP servers** settings screen has no field for a bearer token, so you add the server in the file and set the token where the app can read it.
 
 1. **Set your token.** An app opened from the Dock, Start menu or a launcher doesn't see a token you `export` in a terminal, so set it like this, then quit the app completely:
 
@@ -519,6 +519,12 @@ The Codex desktop app (now part of the ChatGPT desktop app) uses the same `confi
 
    - **401 or no tools:** the app started without the token. Do step 1 again, quit the app completely, and reopen it. On Windows, `setx` only applies to apps started after you run it. On macOS, run `launchctl setenv` again if you've restarted your Mac since.
    - **`spaces-mockup` isn't in the list:** check the section in `config.toml` is copied exactly, then restart the app.
+   - **Still 401 on macOS:** quit the app completely (**Cmd+Q**), then start it from Terminal with the token passed in directly. This works only if the app isn't already running:
+
+     ```bash
+     open -a ChatGPT --env MCP_BEARER_TOKEN='Found-In-Box-Folder'
+     ```
+
    - **Windows with Codex running in WSL:** the app reads `%USERPROFILE%\.codex\config.toml` on Windows, not the config in your Linux home folder. Add the section to the Windows file.
 
 ### After the lab (optional)
