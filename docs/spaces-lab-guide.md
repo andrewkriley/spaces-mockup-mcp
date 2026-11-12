@@ -302,12 +302,10 @@ Set up one client, then go back to [Confirm it works](#confirm-it-works).
    export MCP_BEARER_TOKEN=Found-In-Box-Folder
    ```
 
-3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. The single quotes keep `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file. Claude fills it in from your environment when it starts:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop your shell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. The command is one long line; paste it as is:
 
    ```bash
-   claude mcp add --transport http --scope project spaces-mockup \
-     https://spaces-mockup.mcp.buildermate.ai/mcp \
-     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
+   claude mcp add --transport http --scope project spaces-mockup https://spaces-mockup.mcp.buildermate.ai/mcp --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
 
    If it says `MCP server spaces-mockup already exists in .mcp.json`, you've added it before and can go on to the next step. To replace the old entry instead, run `claude mcp remove spaces-mockup -s project`, then run the command again.
@@ -325,7 +323,7 @@ Set up one client, then go back to [Confirm it works](#confirm-it-works).
 
 ### Claude Code CLI (Windows)
 
-Use PowerShell for every step.
+Use PowerShell for every step, not Command Prompt. The prompt should start with `PS`, for example `PS C:\Users\you>`. Run every step in the same PowerShell window.
 
 1. **Create a lab folder:**
 
@@ -333,29 +331,31 @@ Use PowerShell for every step.
    mkdir spaces-lab; cd spaces-lab
    ```
 
-2. **Set your token** for this PowerShell window:
+2. **Set your token.** This sets it for this PowerShell window only. If you open a new window later, run it again there:
 
    ```powershell
    $env:MCP_BEARER_TOKEN = "Found-In-Box-Folder"
    ```
 
-3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. The single quotes keep `${MCP_BEARER_TOKEN}` as a placeholder, so the real token is never written to the file:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop PowerShell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. The command is one long line; paste it as is:
 
    ```powershell
-   claude mcp add --transport http --scope project spaces-mockup `
-     https://spaces-mockup.mcp.buildermate.ai/mcp `
-     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
+   claude mcp add --transport http --scope project spaces-mockup https://spaces-mockup.mcp.buildermate.ai/mcp --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
 
-   If it says the server already exists, handle it as in the Linux / macOS steps.
+   If it says `MCP server spaces-mockup already exists in .mcp.json`, you've added it before and can go on to the next step. To replace the old entry instead, run `claude mcp remove spaces-mockup -s project`, then run the command again.
 
-4. **Launch Claude** from the same PowerShell window, and answer the trust and MCP server questions as in the Linux / macOS steps:
+4. **Launch Claude** from the same PowerShell window. Claude may ask two questions: first whether to trust this folder (say yes), then whether to use the project MCP servers in `.mcp.json` (approve `spaces-mockup`):
 
    ```powershell
    claude
    ```
 
-5. **Verify.** Run `/mcp` and check that `spaces-mockup` shows as connected. The troubleshooting is the same as for Linux / macOS, except that you set the token again with the `$env:` command from step 2.
+5. **Verify.** In Claude, run `/mcp` and check that `spaces-mockup` shows as connected. If it doesn't:
+
+   - **401 error or `Missing environment variables: MCP_BEARER_TOKEN`:** the token isn't set in the window Claude was launched from. Exit Claude, run the `$env:` command from step 2 in this window, and relaunch.
+   - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
+   - **`running scripts is disabled on this system` when you run `claude`:** PowerShell is blocking the script that npm installed for Claude Code. Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, answer `Y`, then run `claude` again.
 
 ### Claude Desktop (Windows / macOS)
 
@@ -365,14 +365,21 @@ Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs
 
 2. **Install it.** Double-click `spaces-mockup.mcpb`, or drag it onto the Claude Desktop window. You can also go to **Settings → Extensions → Advanced settings → Install Extension…** and choose the file. Click **Install** when Claude Desktop shows the extension details.
 
-3. **Enter your token.** When asked for **Bearer token**, paste your token and save.
+3. **Enter your token.** Do this even if the install window didn't ask for it. Installing doesn't always prompt for the token, and the extension can't connect without it.
 
-4. **Turn it on.** In **Settings → Extensions**, make sure **Spaces Mockup (Lab)** is enabled.
+   1. Go to **Settings → Extensions** and click **Spaces Mockup (Lab)**.
+   2. Click **Configure**.
+   3. In **Bearer token**, paste only the token from the `.txt` file. Don't type `Bearer` in front of it, and don't add quotes.
+   4. Click **Save**.
 
-5. **Verify.** Start a new chat and open the tools menu. It should list the `spaces-mockup` tools. If it doesn't, or a tool call fails:
+4. **Restart the extension.** The extension reads the token only when it starts, so a token saved while it's running isn't used until it restarts. In **Settings → Extensions**, turn **Spaces Mockup (Lab)** off and then on again. If it was already off, just turn it on.
 
-   - **"rejected the bearer token (HTTP 401)":** the token is wrong or missing. Go to **Settings → Extensions → Spaces Mockup (Lab) → Configure**, paste the token again, then turn the extension off and on.
-   - **Tools don't appear:** quit Claude Desktop fully (on Windows, right-click the Claude icon in the system tray and choose **Quit**) and reopen it.
+5. **Verify.** Start a new chat and send *"Call firehose_health."* Allow the tool when Claude Desktop asks. The reply should say the status is ok. If you get an error instead:
+
+   - **"No bearer token is set for spaces-mockup":** Claude Desktop started the extension without a token. Do steps 3 and 4 again. Make sure you click **Save** before you turn the extension off and on.
+   - **"rejected the bearer token (HTTP 401)":** the extension sent a token, but it's not the right one. Copy it again from the `.txt` file, paste it into **Configure**, save, and turn the extension off and on.
+   - **Tools don't appear:** quit Claude Desktop fully and reopen it. On Windows, right-click the Claude icon in the system tray and choose **Quit**. On macOS, press **Cmd+Q**. Closing the window isn't enough.
+   - **Still stuck:** the extension's log is in **Settings → Developer**. Lines starting with `[spaces-mockup]` say whether the token was missing or rejected.
 
 ### Cursor
 
@@ -386,14 +393,14 @@ Cursor connects to the server directly and reads the token from an environment v
      setx MCP_BEARER_TOKEN "Found-In-Box-Folder"
      ```
 
-   - **Linux / macOS:** export it, then open Cursor from the same shell:
+   - **Linux / macOS:** export it, then open Cursor from the same shell. Opening Cursor from the Dock or a launcher doesn't pass the variable on. If `cursor` isn't found, open the Command Palette in Cursor and run **Shell Command: Install 'cursor' command**, then try again:
 
      ```bash
      export MCP_BEARER_TOKEN=Found-In-Box-Folder
      cursor .
      ```
 
-2. **Add the MCP server.** Open **Cursor Settings → MCP** (shown as **Tools & MCP** in some versions) and choose **Add Custom MCP**. This opens `mcp.json`. Add the following. If the file already has an `mcpServers` block, add only the `spaces-mockup` entry inside it, so your existing servers are kept:
+2. **Add the MCP server.** Open your global Cursor MCP file in the editor: `~/.cursor/mcp.json` on Linux and macOS, or `%USERPROFILE%\.cursor\mcp.json` on Windows. Create the file if it doesn't exist. You can also reach it from Cursor's MCP settings; the menu names change between Cursor versions. Add the following. If the file already has an `mcpServers` block, add only the `spaces-mockup` entry inside it, so your existing servers are kept. Save the file:
 
    ```json
    {
@@ -410,7 +417,10 @@ Cursor connects to the server directly and reads the token from an environment v
 
    Cursor uses `${env:...}`, not the `${...}` form that Claude Code uses.
 
-3. **Verify.** Back in **Cursor Settings → MCP**, `spaces-mockup` should show a green dot and list its tools. If it's red or shows a 401, the variable wasn't set when Cursor started: on Windows, quit Cursor fully and reopen it; on Linux or macOS, relaunch it from the shell where you ran `export`.
+3. **Verify.** In Cursor's MCP settings, `spaces-mockup` should be enabled and list its tools. If it shows an error or no tools:
+
+   - **401 or "bearer required":** the variable wasn't set when Cursor started. On Windows, quit Cursor fully and reopen it. On Linux or macOS, quit Cursor and relaunch it from the shell where you ran `export`.
+   - **Anything else:** open the Output panel (**Ctrl+Shift+U**, or **Cmd+Shift+U** on macOS) and choose **MCP Logs** to see the error.
 
 4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
 

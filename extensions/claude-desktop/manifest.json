@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "spaces-mockup",
   "display_name": "Spaces Mockup (Lab)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Connects Claude Desktop to the hosted spaces-mockup lab MCP server.",
   "long_description": "Read-only sample Webex Workspaces and Spaces Firehose data for the Spaces Mockup MCP lab. Enter the bearer token from the lab's Box folder when prompted.",
   "author": {

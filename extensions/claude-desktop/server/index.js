@@ -5,7 +5,19 @@
 // No dependencies: uses the fetch built into Node 18+.
 
 const URL_ = process.env.MCP_SERVER_URL || "https://spaces-mockup.mcp.buildermate.ai/mcp";
-const TOKEN = (process.env.MCP_BEARER_TOKEN || "").trim();
+// Forgive common paste mistakes: surrounding whitespace or quotes, and a
+// leading "Bearer " copied along with the token. An unexpanded
+// ${user_config...} placeholder means Claude Desktop has no token saved.
+function cleanToken(raw) {
+  let t = (raw || "").trim().replace(/^["']+|["']+$/g, "").trim();
+  t = t.replace(/^bearer\s+/i, "").trim();
+  if (t.startsWith("${")) t = "";
+  return t;
+}
+const TOKEN = cleanToken(process.env.MCP_BEARER_TOKEN);
+const NO_TOKEN_MSG =
+  "No bearer token is set for spaces-mockup. In Claude Desktop open Settings > Extensions > " +
+  "Spaces Mockup (Lab) > Configure, paste the token, save, then turn the extension off and on.";
 let sessionId = null;
 
 const log = (...a) => console.error("[spaces-mockup]", ...a);
@@ -14,9 +26,11 @@ const fail = (id, message) => {
   if (id !== undefined && id !== null) send({ jsonrpc: "2.0", id, error: { code: -32000, message } });
 };
 
-if (!TOKEN) log("MCP_BEARER_TOKEN is empty. Set the bearer token in the extension settings.");
+if (!TOKEN) log(NO_TOKEN_MSG);
 
 async function forward(msg) {
+  if (!TOKEN) return fail(msg.id, NO_TOKEN_MSG);
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json, text/event-stream",
@@ -37,7 +51,12 @@ async function forward(msg) {
 
   if (res.status === 401) {
     log("401 from server: bearer token rejected");
-    return fail(msg.id, "spaces-mockup rejected the bearer token (HTTP 401). Check the token in the extension settings.");
+    return fail(
+      msg.id,
+      "spaces-mockup rejected the bearer token (HTTP 401). The token is set but wrong. " +
+        "Open Settings > Extensions > Spaces Mockup (Lab) > Configure, paste the token from the " +
+        "Box folder again (only the token, without 'Bearer'), save, then turn the extension off and on."
+    );
   }
   if (!res.ok && res.status !== 202) {
     const text = await res.text().catch(() => "");
