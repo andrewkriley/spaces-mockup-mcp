@@ -1,6 +1,6 @@
 # Spaces Mockup MCP Lab Guide
 
-**Easy to Advanced** · Nov 4, 2026 · @Jason Churchill
+**Easy to Advanced** · Nov 12, 2026 · @Jason Churchill
 
 ## Contents
 
@@ -82,7 +82,7 @@ You don't call the tools directly. Ask a question and the assistant (Claude, or 
 
 | Tool | What it returns | Input |
 | --- | --- | --- |
-| `location_search` | Campus → building → floor tree, with address and floor count | optional filter |
+| `location_search` | Campus → building → floor tree, with address, floor count and floor number | optional filter |
 | `workspace_search` | Rooms: type, capacity, floor, devices, capacity note | optional filter |
 | `workspace_metrics` | Hourly series for one room: people, presence, booked, temperature °C, humidity %, noise, used and booked minutes | `workspace_id` |
 
@@ -157,8 +157,6 @@ Each device's RoomOS version and connection status are yours to find in Lab 3.
 **Time:** Easy about 10 min · Advanced about 10 min.
 
 Tools: `workspace_search`, `workspace_metrics`, `firehose_events`.
-
-The campus, building and floor layout is in [Locations](#locations) above. Lab 5 starts with the tool that returns it.
 
 ### Easy
 
@@ -302,10 +300,12 @@ Set up one client, then go back to [Confirm it works](#confirm-it-works).
    export MCP_BEARER_TOKEN='Found-In-Box-Folder'
    ```
 
-3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop your shell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. The command is one long line; paste it as is:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop your shell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. Paste all three lines together; they're one command:
 
    ```bash
-   claude mcp add --transport http --scope project spaces-mockup https://spaces-mockup.mcp.buildermate.ai/mcp --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
+   claude mcp add --transport http --scope project spaces-mockup \
+     https://spaces-mockup.mcp.buildermate.ai/mcp \
+     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
 
    If it says `MCP server spaces-mockup already exists in .mcp.json`, you've added it before and can go on to the next step. To replace the old entry instead, run `claude mcp remove spaces-mockup -s project`, then run the command again.
@@ -336,7 +336,8 @@ Use PowerShell for every step, not Command Prompt. The prompt should start with 
 1. **Create a lab folder.** It's safe to run this again if the folder already exists:
 
    ```powershell
-   New-Item -ItemType Directory -Force spaces-lab | Out-Null; cd spaces-lab
+   New-Item -ItemType Directory -Force spaces-lab | Out-Null
+   cd spaces-lab
    ```
 
 2. **Set your token.** This sets it for this PowerShell window only. If you open a new window later, run it again there:
@@ -345,10 +346,12 @@ Use PowerShell for every step, not Command Prompt. The prompt should start with 
    $env:MCP_BEARER_TOKEN = "Found-In-Box-Folder"
    ```
 
-3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop PowerShell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. The command is one long line; paste it as is:
+3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop PowerShell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. Paste all three lines together; they're one command:
 
    ```powershell
-   claude mcp add --transport http --scope project spaces-mockup https://spaces-mockup.mcp.buildermate.ai/mcp --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
+   claude mcp add --transport http --scope project spaces-mockup `
+     https://spaces-mockup.mcp.buildermate.ai/mcp `
+     --header 'Authorization: Bearer ${MCP_BEARER_TOKEN}'
    ```
 
    If it says `MCP server spaces-mockup already exists in .mcp.json`, you've added it before and can go on to the next step. To replace the old entry instead, run `claude mcp remove spaces-mockup -s project`, then run the command again.
@@ -401,9 +404,9 @@ Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs
 
 Cursor connects to the server directly and reads the token from an environment variable, so it stays out of the config file.
 
-1. **Set your token.** Cursor only sees the variable if it's set before Cursor starts.
+1. **Set your token.** Cursor only sees the variable if it's set before Cursor starts, so quit Cursor completely first.
 
-   - **Windows (PowerShell):** run this to save the token for your user account, then quit Cursor completely and reopen it:
+   - **Windows (PowerShell):** run this to save the token for your user account, then reopen Cursor:
 
      ```powershell
      setx MCP_BEARER_TOKEN "Found-In-Box-Folder"
