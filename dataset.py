@@ -943,7 +943,7 @@ def build_metrics(workspaces: list[dict]) -> dict[str, list[dict]]:
                     "peopleCount": people,
                     "presence": presence,
                     "booked": booked,
-                    "temperatureC": 22.4 + (people * 0.15),
+                    "temperatureC": round(22.4 + (people * 0.15), 2),
                     "humidityPct": 48 + people,
                     "ambientNoise": 28 + people * 2,
                     "useMinutes": 50 if presence else 0,
