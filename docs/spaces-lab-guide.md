@@ -15,7 +15,7 @@
 
 This guide covers all 19 tools on the `spaces-mockup` MCP server and nothing else. The server serves a read-only sample tenant, Mockup Campus in Sydney, so nothing you ask can change real systems. There are five labs, each with an Easy track and an Advanced track, and stretch goals at the end. Allow about 10 minutes for setup, then 50 minutes for the Easy track only, or about 2 hours for both tracks, plus time for any stretch goals.
 
-**You need:** Claude Code, Claude Desktop, or Cursor, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
+**You need:** Claude Code, Claude Desktop, or Cursor, installed and signed in before the lab starts, and the bearer token from the lab's Box folder. Claude Desktop users also need the `spaces-mockup.mcpb` extension from the same folder. [Before you start](#before-you-start) covers connecting to the `spaces-mockup` server. The labs don't use any other connectors.
 
 **How the tracks work**
 
@@ -70,7 +70,7 @@ If your client asks permission to run the tool, allow it. The reply should say t
 
 If the tool call fails or the assistant answers without calling a tool, go back to the **Verify** step for your client in the [appendix](#appendix-client-setup).
 
-**Start a new chat for each lab.** Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
+**Start a new chat for each lab.** In Claude Code, run `/clear`, or exit and relaunch `claude`. Every tool reply stays in the chat, and Lab 5's Firehose pulls are large, so a long chat gets slow and less reliable. Each lab stands on its own. Note down your Lab 1 model, because S4 uses it.
 
 ## Data sources
 
@@ -290,16 +290,16 @@ Set up one client, then go back to [Confirm it works](#confirm-it-works).
 
 ### Claude Code CLI (Linux / macOS)
 
-1. **Create a lab folder.** Work in a new, empty folder so the lab files stay together:
+1. **Create a lab folder.** Work in a new folder so the lab files stay together. It's safe to run this again if the folder already exists:
 
    ```bash
-   mkdir spaces-lab && cd spaces-lab
+   mkdir -p spaces-lab && cd spaces-lab
    ```
 
-2. **Set your token** in your shell:
+2. **Set your token.** This sets it for this terminal only. If you open a new terminal later, run it again there:
 
    ```bash
-   export MCP_BEARER_TOKEN=Found-In-Box-Folder
+   export MCP_BEARER_TOKEN='Found-In-Box-Folder'
    ```
 
 3. **Add the MCP server.** This command adds `spaces-mockup` to `.mcp.json` in the lab folder. It creates the file if it doesn't exist. If the file already exists, it adds the new entry and keeps your other servers. Keep the single quotes around the header: they stop your shell from filling in `${MCP_BEARER_TOKEN}`, so the real token is never written to the file. Claude fills it in from your environment when it starts. The command is one long line; paste it as is:
@@ -321,14 +321,22 @@ Set up one client, then go back to [Confirm it works](#confirm-it-works).
    - **401 error or `Missing environment variables: MCP_BEARER_TOKEN`:** the token isn't set in the shell Claude was launched from. Exit Claude, run the `export` from step 2 in this shell, and relaunch.
    - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
 
+6. **Coming back later.** You don't need to add the server again. In a new terminal, go to the lab folder, set the token, and launch Claude:
+
+   ```bash
+   cd spaces-lab
+   export MCP_BEARER_TOKEN='Found-In-Box-Folder'
+   claude
+   ```
+
 ### Claude Code CLI (Windows)
 
 Use PowerShell for every step, not Command Prompt. The prompt should start with `PS`, for example `PS C:\Users\you>`. Run every step in the same PowerShell window.
 
-1. **Create a lab folder:**
+1. **Create a lab folder.** It's safe to run this again if the folder already exists:
 
    ```powershell
-   mkdir spaces-lab; cd spaces-lab
+   New-Item -ItemType Directory -Force spaces-lab | Out-Null; cd spaces-lab
    ```
 
 2. **Set your token.** This sets it for this PowerShell window only. If you open a new window later, run it again there:
@@ -357,13 +365,21 @@ Use PowerShell for every step, not Command Prompt. The prompt should start with 
    - **Scope shows "User config" instead of "Project config":** you have an older `spaces-mockup` entry that takes priority over `.mcp.json`. Exit Claude, run `claude mcp remove spaces-mockup -s user`, and relaunch.
    - **`running scripts is disabled on this system` when you run `claude`:** PowerShell is blocking the script that npm installed for Claude Code. Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, answer `Y`, then run `claude` again.
 
+6. **Coming back later.** You don't need to add the server again. In a new PowerShell window, go to the lab folder, set the token, and launch Claude:
+
+   ```powershell
+   cd spaces-lab
+   $env:MCP_BEARER_TOKEN = "Found-In-Box-Folder"
+   claude
+   ```
+
 ### Claude Desktop (Windows / macOS)
 
 Claude Desktop connects through a small extension, `spaces-mockup.mcpb`. It runs on the Node.js built into Claude Desktop, so you don't need to install anything else, and the token is stored in your system's credential store rather than in a config file.
 
 1. **Download the extension.** Get `spaces-mockup.mcpb` from the lab's Box folder.
 
-2. **Install it.** Double-click `spaces-mockup.mcpb`, or drag it onto the Claude Desktop window. You can also go to **Settings → Extensions → Advanced settings → Install Extension…** and choose the file. Click **Install** when Claude Desktop shows the extension details.
+2. **Install it.** Double-click `spaces-mockup.mcpb`, or drag it onto the Claude Desktop window. You can also go to **Settings → Extensions → Advanced settings → Install Extension…** and choose the file. Click **Install** when Claude Desktop shows the extension details. If double-clicking opens nothing, or Windows asks **How do you want to open this file?**, close that prompt and use the drag-and-drop or **Install Extension…** route instead. Claude Desktop must be open for either.
 
 3. **Enter your token.** Do this even if the install window didn't ask for it. Installing doesn't always prompt for the token, and the extension can't connect without it.
 
@@ -396,7 +412,7 @@ Cursor connects to the server directly and reads the token from an environment v
    - **Linux / macOS:** export it, then open Cursor from the same shell. Opening Cursor from the Dock or a launcher doesn't pass the variable on. If `cursor` isn't found, open the Command Palette in Cursor and run **Shell Command: Install 'cursor' command**, then try again:
 
      ```bash
-     export MCP_BEARER_TOKEN=Found-In-Box-Folder
+     export MCP_BEARER_TOKEN='Found-In-Box-Folder'
      cursor .
      ```
 
@@ -423,6 +439,18 @@ Cursor connects to the server directly and reads the token from an environment v
    - **Anything else:** open the Output panel (**Ctrl+Shift+U**, or **Cmd+Shift+U** on macOS) and choose **MCP Logs** to see the error.
 
 4. **Use it in Agent mode.** Open the chat panel, switch to **Agent**, and ask the lab questions there. Cursor asks before each tool call unless you allow it to run them automatically.
+
+### After the lab (optional)
+
+The token only works for this lab, but you can remove it and the server entry when you're done:
+
+- **Claude Code:** delete the `spaces-lab` folder. The token was only set for that terminal or window, so it's gone once you close it.
+- **Claude Desktop:** in **Settings → Extensions**, open **Spaces Mockup (Lab)** and uninstall it. This also removes the saved token.
+- **Cursor:** remove the `spaces-mockup` entry from `mcp.json`. On Windows, also remove the saved token in PowerShell:
+
+  ```powershell
+  [Environment]::SetEnvironmentVariable("MCP_BEARER_TOKEN", $null, "User")
+  ```
 
 ## Answer key
 
